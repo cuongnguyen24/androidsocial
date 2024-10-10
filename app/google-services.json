@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "230643984748",
+    "project_id": "modulelogin-7c245",
+    "storage_bucket": "modulelogin-7c245.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230643984748:android:21e906e6c8926451f26b49",
+        "android_client_info": {
+          "package_name": "com.utt.tt21.cc_modulelogin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAh2SX46K_ATMnrI6YQWjt-PUD76G7MUYI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
