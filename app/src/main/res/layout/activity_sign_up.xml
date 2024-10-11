@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:padding="20dp"
     android:gravity="center"
-    tools:context=".SignUpActivity">
+    tools:context=".authentication.SignUpActivity">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -58,6 +58,29 @@
         android:text="Sign Up"
         android:layout_marginTop="30dp"
         android:background="@color/orange"></Button>
+
+    <LinearLayout
+        android:id="@+id/layout_sign_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="Have an account"></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/holo_orange_dark"
+            android:text="Sign In"></TextView>
+
+    </LinearLayout>
 
 
 </LinearLayout>

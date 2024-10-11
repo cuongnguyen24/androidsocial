@@ -1,17 +1,15 @@
-package com.utt.tt21.cc_modulelogin;
+package com.utt.tt21.cc_modulelogin.authentication;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.utt.tt21.cc_modulelogin.MainActivity;
+import com.utt.tt21.cc_modulelogin.R;
 
 public class SplashActivity extends AppCompatActivity {
 

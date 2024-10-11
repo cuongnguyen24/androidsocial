@@ -1,28 +1,26 @@
-package com.utt.tt21.cc_modulelogin;
+package com.utt.tt21.cc_modulelogin.authentication;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.utt.tt21.cc_modulelogin.MainActivity;
+import com.utt.tt21.cc_modulelogin.R;
 
 public class SignUpActivity extends AppCompatActivity {
-
+    private LinearLayout layoutSignIn;
     private EditText edtEmail, edtPassword, edtConfirmPassword;
     private Button btnSignUp;
     private ProgressDialog progressDialog;
@@ -37,6 +35,14 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void initListener() {
+        layoutSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+                startActivity(intent);
+            }
+        });
+
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,6 +90,8 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void initUi(){
+        layoutSignIn = findViewById(R.id.layout_sign_in);
+
         edtEmail = findViewById(R.id.edt_email);
         edtPassword = findViewById(R.id.edt_password);
         btnSignUp = findViewById(R.id.btn_sign_up);

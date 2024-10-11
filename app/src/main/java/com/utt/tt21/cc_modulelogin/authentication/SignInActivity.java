@@ -1,4 +1,4 @@
-package com.utt.tt21.cc_modulelogin;
+package com.utt.tt21.cc_modulelogin.authentication;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -9,13 +9,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.utt.tt21.cc_modulelogin.MainActivity;
+import com.utt.tt21.cc_modulelogin.R;
 
 public class SignInActivity extends AppCompatActivity {
 
