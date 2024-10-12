@@ -1,13 +1,8 @@
 package com.utt.tt21.cc_modulelogin;
 
-<<<<<<< HEAD
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
-import androidx.activity.EdgeToEdge;
-=======
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -16,20 +11,14 @@ import android.widget.Toolbar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
->>>>>>> second_repo/Binh
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-<<<<<<< HEAD
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.utt.tt21.cc_modulelogin.authentication.SignInActivity;
 
-public class MainActivity extends AppCompatActivity {
-
-    private Button btnLogout;
-=======
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -44,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private BottomNavigationView bottomNavigationView;
 
->>>>>>> second_repo/Binh
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,25 +45,6 @@ public class MainActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
-<<<<<<< HEAD
-        });
-
-        // Khởi tạo nút đăng xuất
-        btnLogout = findViewById(R.id.btn_logout);
-
-        // Sự kiện OnClickListener cho nút đăng xuất
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut(); // Đăng xuất khỏi Firebase
-                Intent intent = new Intent(MainActivity.this, SignInActivity.class); // Chuyển về màn hình đăng ký
-                startActivity(intent);
-                finishAffinity(); // Đóng tất cả các activity trước đó
-            }
-        });
-    }
-=======
-
         });
 
         // Khởi tạo nút đăng xuất
@@ -159,5 +128,4 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
     }
->>>>>>> second_repo/Binh
 }
