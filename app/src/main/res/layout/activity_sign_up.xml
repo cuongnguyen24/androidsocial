@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:text="Sign Up"
         android:layout_marginTop="30dp"
-        android:background="@color/orange"></Button>
+        ></Button>
 
     <LinearLayout
         android:id="@+id/layout_sign_in"
