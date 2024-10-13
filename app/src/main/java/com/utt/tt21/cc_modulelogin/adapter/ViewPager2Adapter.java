@@ -8,7 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.utt.tt21.cc_modulelogin.fragment.Add;
 import com.utt.tt21.cc_modulelogin.fragment.Home;
 import com.utt.tt21.cc_modulelogin.fragment.Notification;
-import com.utt.tt21.cc_modulelogin.fragment.Profile;
+import com.utt.tt21.cc_modulelogin.accountmanagement.Profile;
 import com.utt.tt21.cc_modulelogin.fragment.Search;
 
 public class ViewPager2Adapter extends FragmentStateAdapter {
