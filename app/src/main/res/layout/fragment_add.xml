@@ -3,12 +3,159 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.Add">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:background="@color/black"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="ACTIVITY ADD" />
+        android:orientation="vertical"
+        android:weightSum="10">
+        <LinearLayout
+            android:layout_weight="0.8"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <ImageView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                app:tint="@color/white"
+                android:src="@drawable/exit_button" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="7"
+                android:text="Thread mới"
+                android:textSize="20dp"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+            <Button
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:text="Đăng"
+                android:background="@color/white" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9.2"
+            android:orientation="vertical"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    app:cardCornerRadius="50dp"
+
+                    android:elevation="4dp">
+
+                    <ImageView
+                        android:id="@+id/circularImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitCenter"
+                        app:tint="#A4A4A4"
+                        android:src="@drawable/quang_default_avatar" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/tv_nickname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" ></TextView>
+            </LinearLayout>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="9">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/editTextInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/black"
+                        android:textColor="@color/white"
+                        android:minLines="1"
+                        android:layout_marginLeft="70dp"
+                        android:inputType="textMultiLine"
+                        android:scrollbars="vertical"
+                        android:gravity="top|start"
+                        android:hint="Có gì mới ?"
+                        android:textColorHint="@color/color_navigation"
+                        android:padding="10dp"
+                        android:overScrollMode="always" />
+
+                    <!-- Các icon khác -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="10">
+
+                        <TextView
+                            android:layout_weight="1.9"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content" />
+
+                        <ImageView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            app:tint="@color/color_navigation"
+                            android:src="@drawable/quang_add_image" />
+
+                        <TextView
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content" />
+
+                        <ImageView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            app:tint="@color/color_navigation"
+                            android:src="@drawable/quang_camera" />
+
+                        <TextView
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content" />
+
+                        <ImageView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            app:tint="@color/color_navigation"
+                            android:src="@drawable/quang_hashtag" />
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+
+
+    </LinearLayout>
 
 </FrameLayout>
