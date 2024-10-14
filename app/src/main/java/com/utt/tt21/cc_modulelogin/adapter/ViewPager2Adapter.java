@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.utt.tt21.cc_modulelogin.fragment.Add;
-import com.utt.tt21.cc_modulelogin.fragment.Home;
+import com.utt.tt21.cc_modulelogin.home.Home;
 import com.utt.tt21.cc_modulelogin.fragment.Notification;
 import com.utt.tt21.cc_modulelogin.fragment.Profile;
 import com.utt.tt21.cc_modulelogin.fragment.Search;
