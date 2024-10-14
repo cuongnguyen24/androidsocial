@@ -49,6 +49,10 @@ public class Profile extends Fragment implements GalleryOpener {
                         if (intent == null) {
                             return;
                         }
+                        if (intent != null && intent.getBooleanExtra("isUpdated", false)) {
+                            // Gọi lại showUserInformation để cập nhật giao diện ngay lập tức
+                            showUserInformation();
+                        }
                         Uri uri = intent.getData();
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
@@ -93,6 +97,7 @@ public class Profile extends Fragment implements GalleryOpener {
                 startActivity(intent);
             }
         });
+
 
         // Sự kiện gọi dữ liệu user
         showUserInformation();
@@ -140,6 +145,13 @@ public class Profile extends Fragment implements GalleryOpener {
             accountInfo.setVisibility(View.VISIBLE); // Hiện nếu có tên
             accountInfo.setText("Chào mình là " + name + "."); // Thiết lập văn bản cho account_info
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Tải lại dữ liệu người dùng khi Profile trở lại
+        showUserInformation();
     }
 
     @Override

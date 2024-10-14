@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class EditProfileActivity extends AppCompatActivity implements GalleryOpe
     private ImageView imgAvatar;
     private EditText edtFullName, edtEmail;
     private Button btnUpdateProfile;
+    private ImageButton btnClose;
     private Uri selectedImageUri; // Biến để lưu trữ URI của ảnh đã chọn
 
     @Override
@@ -48,6 +50,7 @@ public class EditProfileActivity extends AppCompatActivity implements GalleryOpe
         edtFullName = findViewById(R.id.edt_full_name_edit);
         edtEmail = findViewById(R.id.edt_email_edit);
         btnUpdateProfile = findViewById(R.id.btn_update_profile);
+        btnClose = findViewById(R.id.btn_close);
     }
 
     private void setUserInformation() {
@@ -73,6 +76,13 @@ public class EditProfileActivity extends AppCompatActivity implements GalleryOpe
             @Override
             public void onClick(View view) {
                 updateUserInformation();
+            }
+        });
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
     }
@@ -141,20 +151,24 @@ public class EditProfileActivity extends AppCompatActivity implements GalleryOpe
 
             user.updateProfile(profileUpdates).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(this, "Thông tin đã được cập nhật", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    intent.putExtra("isUpdated", true);  // Đánh dấu cập nhật thành công
+                    Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK, intent);
+                    finish();
                 } else {
                     Toast.makeText(this, "Cập nhật không thành công", Toast.LENGTH_SHORT).show();
                 }
             });
 
             // Nếu bạn cũng muốn cập nhật email
-            user.updateEmail(email).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(this, "Email đã được cập nhật", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Cập nhật email không thành công", Toast.LENGTH_SHORT).show();
-                }
-            });
+//            user.updateEmail(email).addOnCompleteListener(task -> {
+//                if (task.isSuccessful()) {
+//                    Toast.makeText(this, "Email đã được cập nhật", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(this, "Cập nhật email không thành công", Toast.LENGTH_SHORT).show();
+//                }
+//            });
         } else {
             Toast.makeText(this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
         }
