@@ -16,7 +16,16 @@ import com.utt.tt21.cc_modulelogin.authentication.SignInActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+<<<<<<< Updated upstream
     private Button btnLogout;
+=======
+
+    private TableLayout tableLayout;
+    private ViewPager2 viewPager2;
+
+    private BottomNavigationView bottomNavigationView;
+
+>>>>>>> Stashed changes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +33,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        // Thiết lập các insets cho cửa sổ
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
 
         // Khởi tạo nút đăng xuất
         btnLogout = findViewById(R.id.btn_logout);
