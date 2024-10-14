@@ -58,10 +58,10 @@ public class Home extends Fragment {
         HomeAdapter adapter = new HomeAdapter(list, getContext());
         recyclerView.setAdapter(adapter);
         loadDataFromFirestore();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("list_user");
-
-        myRef.setValue(list);
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference myRef = database.getReference("list_user");
+//
+//        myRef.setValue(list);
 
     }
 

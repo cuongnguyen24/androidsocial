@@ -18,9 +18,17 @@
     <!-- Space để tạo khoảng cách giữa ảnh và phần nhập thông tin -->
     <Space
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="60dp"
         android:layout_weight="0"/>
-
+    <EditText
+        android:id="@+id/edt_full_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Full Name"
+        android:inputType="textEmailAddress"
+        android:imeOptions="actionNext"
+        android:maxLength="100"
+        android:textColor="@color/black"></EditText>
     <EditText
         android:id="@+id/edt_email"
         android:layout_width="match_parent"
