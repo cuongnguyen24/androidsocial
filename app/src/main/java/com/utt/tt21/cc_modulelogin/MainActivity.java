@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TableLayout tableLayout;
     private ViewPager2 viewPager2;
-
     private BottomNavigationView bottomNavigationView;
 
 

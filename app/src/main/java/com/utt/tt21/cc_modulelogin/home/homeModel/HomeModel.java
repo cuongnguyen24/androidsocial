@@ -11,6 +11,8 @@ public class HomeModel {
 
     private int likeCount, cmtCount, reupCount, postCount;
 
+    public HomeModel() {
+    }
 
     public String getUid() {
         return uid;

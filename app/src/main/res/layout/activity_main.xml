@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+<<<<<<< Updated upstream
 
     tools:context=".MainActivity"
     >
@@ -33,10 +34,11 @@
             android:textStyle="bold"/>
     </RelativeLayout>
 </androidx.appcompat.widget.Toolbar>
+=======
+>>>>>>> Stashed changes
     <androidx.viewpager2.widget.ViewPager2
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
         android:layout_above="@+id/bottom_navigation"
         android:id="@+id/viewPager"
         />

@@ -11,10 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.utt.tt21.cc_modulelogin.MainActivity;
 import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.home.homeAdapter.HomeAdapter;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
@@ -47,12 +52,16 @@ public class Home extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init(view);
 
-//       reference = FirebaseFirestore.getInstance().collection("Post").document(user.getUid());
-//
+
+
         list = new ArrayList<>();
         HomeAdapter adapter = new HomeAdapter(list, getContext());
         recyclerView.setAdapter(adapter);
         loadDataFromFirestore();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("list_user");
+
+        myRef.setValue(list);
 
     }
 
