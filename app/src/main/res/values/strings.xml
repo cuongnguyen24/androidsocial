@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">CC_ModuleLogin</string>
+    <string name="app_name">Threads</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_home">Home</string>
+    <string name="action_search">Search</string>
+    <string name="action_add">Add</string>
+    <string name="action_profile">Profile</string>
+    <string name="action_notification">Notification</string>
 </resources>
