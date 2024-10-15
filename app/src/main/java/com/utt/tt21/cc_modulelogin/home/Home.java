@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +34,7 @@ public class Home extends Fragment {
     private RecyclerView recyclerView;
     private List<HomeModel> list;
     private FirebaseAuth user;
+    private BottomNavigationView bottomNavigationView;
 
     DocumentReference reference;
 
@@ -62,7 +64,22 @@ public class Home extends Fragment {
 //        DatabaseReference myRef = database.getReference("list_user");
 //
 //        myRef.setValue(list);
+        scrollScreen();
+    }
+    // Keo tha navigation_bar
+    private void scrollScreen() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
 
+                    bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(300);
+                } else if (dy < 0) {
+
+                    bottomNavigationView.animate().translationY(0).setDuration(300);
+                }
+            }
+        });
     }
 
     private void loadDataFromFirestore() {
@@ -77,7 +94,6 @@ public class Home extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-
+        bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
     }
 }
