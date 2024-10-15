@@ -2,7 +2,7 @@ package com.utt.tt21.cc_modulelogin.profile.profileModel;
 
 import java.util.List;
 
-public class ProfileModel {
+public class Profile {
     private String uid;
     private String nameProfile;
 
@@ -12,7 +12,7 @@ public class ProfileModel {
     private List<Follower> followers;
     private List<Following> followings;
 
-    public ProfileModel(String uid, String nameProfile, int imgProfile, String emailProfile, String desProfile, List<Follower> followers, List<Following> followings) {
+    public Profile(String uid, String nameProfile, int imgProfile, String emailProfile, String desProfile, List<Follower> followers, List<Following> followings) {
         this.uid = uid;
         this.nameProfile = nameProfile;
         this.imgProfile = imgProfile;
@@ -22,7 +22,7 @@ public class ProfileModel {
         this.followings = followings;
     }
 
-    public ProfileModel() {
+    public Profile() {
     }
 
     public String getUid() {
@@ -89,5 +89,18 @@ public class ProfileModel {
     public int countFollowings()
     {
         return followings.size();
+    }
+
+    @Override
+    public String toString() {
+        return "ProfileModel{" +
+                "uid='" + uid + '\'' +
+                ", nameProfile='" + nameProfile + '\'' +
+                ", imgProfile=" + imgProfile +
+                ", emailProfile='" + emailProfile + '\'' +
+                ", desProfile='" + desProfile + '\'' +
+                ", followers=" + followers +
+                ", followings=" + followings +
+                '}';
     }
 }
