@@ -14,7 +14,9 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +40,7 @@ import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.authentication.SignInActivity;
 import com.utt.tt21.cc_modulelogin.profile.accountmanagement.EditProfileActivity;
 import com.utt.tt21.cc_modulelogin.profile.accountmanagement.GalleryOpener;
+import com.utt.tt21.cc_modulelogin.profile.threads.SectionsPagerAdapter;
 
 import java.io.IOException;
 
@@ -45,6 +49,11 @@ public class Profile extends Fragment implements GalleryOpener {
     public static final int MY_REQUEST_CODE = 10;
     private ImageView imgAvartar;
     private TextView tvName, tvEmail, accountInfo, tvFollowers;
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private SectionsPagerAdapter sectionsPagerAdapter;
+
 
     private ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -82,6 +91,12 @@ public class Profile extends Fragment implements GalleryOpener {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         initUi(view);
 
+        // Khởi tạo adapter
+        sectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
+        viewPager.setAdapter(sectionsPagerAdapter);
+        // Kết nối TabLayout với ViewPager
+        tabLayout.setupWithViewPager(viewPager);
+
         // Khởi tạo nút đăng xuất
         Button btnLogout = view.findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +131,8 @@ public class Profile extends Fragment implements GalleryOpener {
         tvEmail = view.findViewById(R.id.tv_email);
         accountInfo = view.findViewById(R.id.account_info);
         tvFollowers = view.findViewById(R.id.followers);
+        tabLayout = view.findViewById(R.id.tab_layout);
+        viewPager = view.findViewById(R.id.view_pager);
 
         // Bắt sự kiện click vào avatar để mở gallery
         imgAvartar.setOnClickListener(new View.OnClickListener() {
