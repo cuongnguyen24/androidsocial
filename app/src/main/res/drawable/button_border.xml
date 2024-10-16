@@ -4,5 +4,5 @@
     <stroke
         android:width="2dp"
         android:color="@color/white" /> <!-- Đặt màu và độ rộng của khung -->
-    <corners android:radius="8dp" /> <!-- Tùy chọn bo góc -->
+    <corners android:radius="15dp" /> <!-- Tùy chọn bo góc -->
 </shape>
