@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
-    android:background="@android:color/white">
+    android:background="@android:color/black">
 
     <!-- Nút Đóng -->
     <ImageButton
@@ -14,7 +14,7 @@
         android:layout_height="18dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_close"
+        android:src="@drawable/ic_close2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="10dp" />
@@ -41,7 +41,10 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:hint="Full name"
-            android:layout_marginTop="30dp" />
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/white"/>
 
         <EditText
             android:id="@+id/edt_email_edit"
@@ -49,7 +52,10 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:hint="Email"
-            android:layout_marginTop="10dp" />
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/white"/>
 
         <EditText
             android:id="@+id/edt_desc_edit"
@@ -57,7 +63,10 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:hint="Desc"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/white"/>
 
         <Button
             android:id="@+id/btn_update_profile"
@@ -65,6 +74,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:textAllCaps="false"
-            android:text="Update Profile" />
+            android:background="@drawable/button_border"
+            android:text="Update Profile"
+            android:textColor="@color/white"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
