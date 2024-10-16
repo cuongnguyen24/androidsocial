@@ -1,29 +1,30 @@
 package com.utt.tt21.cc_modulelogin.home;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.utt.tt21.cc_modulelogin.MainActivity;
 import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.home.homeAdapter.HomeAdapter;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
+import com.utt.tt21.cc_modulelogin.profile.profileModel.ImageItems;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +36,9 @@ public class Home extends Fragment {
     private List<HomeModel> list;
     private FirebaseAuth user;
     private BottomNavigationView bottomNavigationView;
-
+    private Context context;
     DocumentReference reference;
+
 
     public Home() {
         // Required empty public constructor
@@ -65,7 +67,15 @@ public class Home extends Fragment {
 //
 //        myRef.setValue(list);
         scrollScreen();
+
+        //Ngan cach cac bai viet
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(itemDecoration);
+
     }
+
+
+
     // Keo tha navigation_bar
     private void scrollScreen() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -95,5 +105,7 @@ public class Home extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
+        context = getContext();
+
     }
 }
