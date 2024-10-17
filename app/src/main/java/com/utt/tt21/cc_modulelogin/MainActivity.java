@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 onClickPushDataFromEditText();
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
             }
         });
 
@@ -145,8 +146,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         imageAdapter = new ImageAdapter(this, imageUris);
         recyclerView.setAdapter(imageAdapter);
-
-
+        imageAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     private void readNicknameDatabase() {
@@ -215,18 +216,14 @@ public class MainActivity extends AppCompatActivity {
                 idStatus = userid + "_" + index; // Tạo idStatus mới
 
                 // Đẩy dữ liệu vào node con mới
-                reference.child(userid).child(idStatus).child("content").setValue(edtContent)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                // Thành công
-                                reference.child(userid).child(idStatus).child("timesstamp").setValue(random.nextInt(25) +"h");
-                                uploadImageToStorage();
-                                Log.d("PushData", "Data pushed successfully with idStatus: " + idStatus);
-                            } else {
-                                // Lỗi
-                                Log.e("PushData", "Failed to push data", task.getException());
-                            }
-                        });
+                reference.child(userid).child(idStatus).child("content").setValue(edtContent);
+                reference.child(userid).child(idStatus).child("timestamp").setValue(random.nextInt(25) +"h");
+                reference.child(userid).child(idStatus).child("commentCount").setValue(0);
+                reference.child(userid).child(idStatus).child("likeCount").setValue(0);
+                reference.child(userid).child(idStatus).child("postCount").setValue(0);
+                reference.child(userid).child(idStatus).child("reupCount").setValue(0);
+                reference.child(userid).child(idStatus).child("uid").setValue(index);
+                uploadImageToStorage();
             }
 
             @Override
@@ -321,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         bottomNavigationView.getMenu().findItem(R.id.action_home).setChecked(true);
                         idFragment = 0;
+                        //reloadHome();
                         break;
                     case 1:
                         bottomNavigationView.getMenu().findItem(R.id.action_search).setChecked(true);
@@ -348,6 +346,7 @@ public class MainActivity extends AppCompatActivity {
                 if(item.getItemId() == R.id.action_home)
                 {
                     viewPager2.setCurrentItem(0, false);
+                    reloadHome();
                 } else if (item.getItemId() == R.id.action_search) {
                     viewPager2.setCurrentItem(1, false);
                 }
@@ -374,6 +373,12 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void reloadHome() {
+        Intent intent = getIntent();
+        finish(); // Kết thúc Activity hiện tại
+        startActivity(intent); // Khởi động lại Activity
     }
 
     private void loadUserAvatar() {
@@ -481,6 +486,7 @@ public class MainActivity extends AppCompatActivity {
         }).addOnFailureListener(exception -> {
             Log.e("UploadImage", "Failed to list files", exception);
         });
+
     }
 
     private void uploadImage(Uri imageUri, StorageReference storageRef) {

@@ -9,7 +9,7 @@ public class HomeModel {
     private List<String> postImage;
     private String uid;
 
-    private String des;
+    private String content;
 
     private int likeCount, cmtCount, reupCount, postCount;
 
@@ -88,15 +88,15 @@ public class HomeModel {
         this.postCount = postCount;
     }
 
-    public String getDes() {
-        return des;
+    public String getContent() {
+        return content;
     }
 
-    public void setDes(String des) {
-        this.des = des;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public HomeModel(String userName, String timestamp, String profileImage, List<String> postImage, int likeCount, int cmtCount, int reupCount, int postCount, String des, String uid) {
+    public HomeModel(String userName, String timestamp, String profileImage, List<String> postImage, int likeCount, int cmtCount, int reupCount, int postCount, String content, String uid) {
         this.userName = userName;
         this.timestamp = timestamp;
         this.profileImage = profileImage;
@@ -105,7 +105,7 @@ public class HomeModel {
         this.cmtCount = cmtCount;
         this.reupCount = reupCount;
         this.postCount = postCount;
-        this.des = des;
+        this.content = content;
         this.uid = uid;
     }
 }

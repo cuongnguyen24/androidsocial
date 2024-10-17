@@ -51,7 +51,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         // Sử dụng Glide để tải ảnh từ URL
         Glide.with(context)
                 .load(imageUrl)
-                .placeholder(R.drawable.home)  // Ảnh hiển thị trong khi chờ tải
+                .placeholder(null)  // Ảnh hiển thị trong khi chờ tải
                 .error(R.drawable.profile)       // Ảnh hiển thị khi có lỗi
                 .into(holder.profileImage);
 
@@ -68,6 +68,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         holder.recyclerViewImage.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         imageStringAdapter = new ImageStringAdapter(context, listImg);
         holder.recyclerViewImage.setAdapter(imageStringAdapter);
+
 
 
 
@@ -114,7 +115,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         }
 
 
-        holder.tvDes.setText(list.get(position).getDes());
+        holder.tvDes.setText(list.get(position).getContent());
 
     }
 
