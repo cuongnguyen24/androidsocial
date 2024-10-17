@@ -12,16 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.utt.tt21.cc_modulelogin.R;
-import com.utt.tt21.cc_modulelogin.profile.profileModel.ImageItems;
 
 import java.util.List;
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
+public class ImageStringAdapter extends RecyclerView.Adapter<ImageStringAdapter.ImageViewHolder> {
 
     private Context context;
-    private List<Uri> imageUris;
+    private List<String> imageUris;
 
-    public ImageAdapter(Context context, List<Uri> imageUris) {
+    public ImageStringAdapter(Context context, List<String> imageUris) {
         this.context = context;
         this.imageUris = imageUris;
     }
@@ -35,8 +34,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        Uri uri = imageUris.get(position);
-        Glide.with(context).load(uri).into(holder.imageView); // Sử dụng Glide để tải hình ảnh
+        String imageUrl = imageUris.get(position);
+        // Sử dụng Glide để tải ảnh từ URL
+        Glide.with(context)
+                .load(imageUrl)
+                .placeholder(R.drawable.home)  // Ảnh hiển thị trong khi chờ tải
+                .error(R.drawable.profile)       // Ảnh hiển thị khi có lỗi
+                .into(holder.imageView);
     }
 
     @Override

@@ -58,14 +58,18 @@ import com.utt.tt21.cc_modulelogin.adapter.ViewPager2Adapter;
 import com.utt.tt21.cc_modulelogin.home.homeAdapter.ImageAdapter;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.time.LocalDate;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
 
     private Button btnLogout;
-
     private Button btnPostUp;
     private TableLayout tableLayout;
     private ViewPager2 viewPager2;
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Button btnCancel;
     private EditText tvDes;
-
+    private Random random = new Random();
     //Add quang kuns
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
@@ -215,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 // Thành công
+                                reference.child(userid).child(idStatus).child("timesstamp").setValue(random.nextInt(25) +"h");
                                 uploadImageToStorage();
                                 Log.d("PushData", "Data pushed successfully with idStatus: " + idStatus);
                             } else {
@@ -509,7 +514,6 @@ public class MainActivity extends AppCompatActivity {
         bottomSheet = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         btnCancel = findViewById(R.id.btnCancel);
-
 
         //init Quangkuns
         tv_nickname = findViewById(R.id.tvName);

@@ -1,10 +1,12 @@
 package com.utt.tt21.cc_modulelogin.home.homeModel;
 
+import java.util.List;
+
 public class HomeModel {
     private String userName;
     private String timestamp;
     private String profileImage;
-    private String postImage;
+    private List<String> postImage;
     private String uid;
 
     private String des;
@@ -46,11 +48,11 @@ public class HomeModel {
         this.profileImage = profileImage;
     }
 
-    public String getPostImage() {
+    public List<String> getPostImage() {
         return postImage;
     }
 
-    public void setPostImage(String postImage) {
+    public void setPostImage(List<String> postImage) {
         this.postImage = postImage;
     }
 
@@ -94,7 +96,7 @@ public class HomeModel {
         this.des = des;
     }
 
-    public HomeModel(String userName, String timestamp, String profileImage, String postImage, int likeCount, int cmtCount, int reupCount, int postCount, String des, String uid) {
+    public HomeModel(String userName, String timestamp, String profileImage, List<String> postImage, int likeCount, int cmtCount, int reupCount, int postCount, String des, String uid) {
         this.userName = userName;
         this.timestamp = timestamp;
         this.profileImage = profileImage;

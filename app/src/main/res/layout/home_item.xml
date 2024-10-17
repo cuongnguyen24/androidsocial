@@ -10,7 +10,7 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:id="@+id/profileImage"
+        android:id="@+id/detailProfileImage"
         android:layout_margin="8dp"
         android:src="@drawable/profile"
         app:civ_border_color="#434343"
@@ -18,7 +18,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/profileImage"
+        android:layout_toRightOf="@+id/detailProfileImage"
         android:orientation="vertical">
 
         <LinearLayout
@@ -49,12 +49,12 @@
             android:textColor="@color/white"
             android:text="mùa đôg ơi tới i trong lòng lạnh rồi rất sẵn sàng đón mùa đông"
             android:textSize="15sp" />
-        <ImageView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:id="@+id/postImage"
-            android:background="@color/white"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rcv_postImage"
+            android:background="@color/black"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
