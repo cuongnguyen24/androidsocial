@@ -11,12 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.home.Home;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
+import com.utt.tt21.cc_modulelogin.profile.profileModel.ImageItems;
 
 import java.util.List;
 import java.util.Random;
@@ -27,7 +29,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
 
     private List<HomeModel> list;
     Context context;
-
+    private ImageStringAdapter imageStringAdapter;
     public HomeAdapter(List<HomeModel> list, Context context) {
         this.list = list;
         this.context = context;
@@ -45,19 +47,32 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         holder.tvUserName.setText(list.get(position).getUserName());
         holder.tvTime.setText(list.get(position).getTimestamp());
 
-        Glide.with(context.getApplicationContext())
-                        .load(list.get(position).getProfileImage())
-                        .placeholder(R.drawable.profile)
-                        .timeout(6500)
-                        .into(holder.profileImage);
+        String imageUrl = list.get(position).getProfileImage();
+        // Sử dụng Glide để tải ảnh từ URL
+        Glide.with(context)
+                .load(imageUrl)
+                .placeholder(null)  // Ảnh hiển thị trong khi chờ tải
+                .error(R.drawable.profile)       // Ảnh hiển thị khi có lỗi
+                .into(holder.profileImage);
 
-        Random random = new Random();
-        int color = Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
-        Glide.with(context.getApplicationContext())
-                .load(list.get(position).getPostImage())
-                .placeholder(new ColorDrawable(color))
-                .timeout(7000)
-                .into(holder.imageView);
+//        Random random = new Random();
+//        int color = Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
+//        Glide.with(context.getApplicationContext())
+//                .load(list.get(position).getPostImage())
+//                .placeholder(new ColorDrawable(color))
+//                .timeout(7000)
+//                .into(holder.recyclerViewImage);
+
+        List<String> listImg = list.get(position).getPostImage();
+
+        holder.recyclerViewImage.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        imageStringAdapter = new ImageStringAdapter(context, listImg);
+        holder.recyclerViewImage.setAdapter(imageStringAdapter);
+
+
+
+
+
         // Xu ly count like
         int countLike = list.get(position).getLikeCount();
 
@@ -100,7 +115,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         }
 
 
-        holder.tvDes.setText(list.get(position).getDes());
+        holder.tvDes.setText(list.get(position).getContent());
 
     }
 
@@ -113,12 +128,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
 
         private CircleImageView profileImage;
         private TextView tvUserName, tvTime, tvLikeCount, tvCmtCount, tvPostCount, tvReupCount, tvDes;
-        private ImageView imageView;
+        private RecyclerView recyclerViewImage;
         private ImageButton btnLike, btnComment, btnReUp, btnPost;
+        private ImageAdapter imageAdapter;
+        private ImageItems imageItems;
 
         public HomeHolder(@NonNull View itemView) {
             super(itemView);
-            profileImage = itemView.findViewById(R.id.profileImage);
+            profileImage = itemView.findViewById(R.id.detailProfileImage);
             tvUserName = itemView.findViewById(R.id.tvName);
             tvDes = itemView.findViewById(R.id.tvDes);
             tvTime = itemView.findViewById(R.id.tvTimeStamp);
@@ -126,11 +143,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
             tvCmtCount = itemView.findViewById(R.id.tvCountCmt);
             tvPostCount = itemView.findViewById(R.id.tvCountPost);
             tvReupCount = itemView.findViewById(R.id.tvCountReUp);
-            imageView = itemView.findViewById(R.id.postImage);
+            recyclerViewImage = itemView.findViewById(R.id.rcv_postImage);
             btnLike = itemView.findViewById(R.id.btnLike);
             btnComment = itemView.findViewById(R.id.btnComment);
             btnReUp = itemView.findViewById(R.id.btnReup);
             btnPost = itemView.findViewById(R.id.btnPost);
+
         }
     }
 }
