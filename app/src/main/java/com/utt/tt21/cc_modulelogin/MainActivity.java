@@ -346,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
                 if(item.getItemId() == R.id.action_home)
                 {
                     viewPager2.setCurrentItem(0, false);
-                    reloadHome();
+                    //reloadHome();
                 } else if (item.getItemId() == R.id.action_search) {
                     viewPager2.setCurrentItem(1, false);
                 }

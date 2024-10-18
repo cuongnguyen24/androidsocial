@@ -103,8 +103,8 @@ public class Home extends Fragment {
         scrollScreen();
 
         //Ngan cach cac bai viet
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(itemDecoration);
+//        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+//        recyclerView.addItemDecoration(itemDecoration);
 
         //readNicknameDatabase();
 
@@ -112,9 +112,8 @@ public class Home extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                list.clear();
                 loadDataFromFirestore();
-
+                list.clear();
             }
         });
     }

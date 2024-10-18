@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/black"
     android:paddingBottom="20dp">
-
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -153,14 +152,13 @@
                     android:textSize="16sp"/>
             </LinearLayout>
 
-
-
-
-
         </LinearLayout>
-
 
     </LinearLayout>
 
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.2dp"
+        android:layout_marginTop="320dp"
+        android:background="@color/color_navigation" />
 </RelativeLayout>
