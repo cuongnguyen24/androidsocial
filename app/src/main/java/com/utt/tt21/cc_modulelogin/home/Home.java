@@ -96,19 +96,10 @@ public class Home extends Fragment {
         adapter.notifyDataSetChanged();
 
 
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        DatabaseReference myRef = database.getReference("list_user");
-//
-//        myRef.setValue(list);
+
         scrollScreen();
 
-        //Ngan cach cac bai viet
-//        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-//        recyclerView.addItemDecoration(itemDecoration);
-
-        //readNicknameDatabase();
-
-        //imageStringAdapter.notifyDataSetChanged();
+       
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -146,6 +137,7 @@ public class Home extends Fragment {
                     bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(300);
                 } else if (dy < 0) {
 
+
                     bottomNavigationView.animate().translationY(0).setDuration(300);
                 }
             }
@@ -154,22 +146,6 @@ public class Home extends Fragment {
 
     private void loadDataFromFirestore() {
 
-//        CollectionReference reference = FirebaseFirestore.getInstance().collection("Users")
-//                .document(user.getUid());
-
-
-//        String imageAva = "https://firebasestorage.googleapis.com/v0/b/modulelogin-7c245.appspot.com/o/users%2FckILMQoxSthO5sj6E3A8CYUpDT43%2FckILMQoxSthO5sj6E3A8CYUpDT43.jpg?alt=media&token=e93b8a00-21b7-4475-9da8-82418842145f";
-//        List<String> Imgs = new ArrayList<>();
-//        Imgs.add("https://firebasestorage.googleapis.com/v0/b/modulelogin-7c245.appspot.com/o/users%2FckILMQoxSthO5sj6E3A8CYUpDT43%2FIdImgStt_1%2Fimage.jpg?alt=media&token=ae7949dc-02fd-4468-bdf8-488593039546");
-//        Imgs.add("https://firebasestorage.googleapis.com/v0/b/modulelogin-7c245.appspot.com/o/users%2FckILMQoxSthO5sj6E3A8CYUpDT43%2FIdImgStt_1%2Fimage.jpg?alt=media&token=ae7949dc-02fd-4468-bdf8-488593039546");
-//        Imgs.add("https://firebasestorage.googleapis.com/v0/b/modulelogin-7c245.appspot.com/o/users%2FckILMQoxSthO5sj6E3A8CYUpDT43%2FIdImgStt_1%2Fimage.jpg?alt=media&token=ae7949dc-02fd-4468-bdf8-488593039546");
-//        Imgs.add("https://firebasestorage.googleapis.com/v0/b/modulelogin-7c245.appspot.com/o/users%2FckILMQoxSthO5sj6E3A8CYUpDT43%2FIdImgStt_1%2Fimage_2.jpg?alt=media&token=0bda6866-df23-43cd-8b5b-48f55b9cdd50");
-//        list.add(new HomeModel("Dabi", "13/10/2024", imageAva, Imgs , 10, 10, 20, 0, "accc", "123"));
-//        list.add(new HomeModel("Dabi", "13/10/2024", imageAva, Imgs , 10, 10, 20, 0, "accc", "123"));
-//        list.add(new HomeModel("Dabi", "13/10/2024", imageAva, Imgs , 10, 10, 20, 0, "accc", "123"));
-//        list.add(new HomeModel("Dabi", "13/10/2024", imageAva, Imgs , 10, 10, 20, 0, "accc", "123"));
-//        list.add(new HomeModel("Dabi", "13/10/2024", imageAva, Imgs , 10, 10, 20, 0, "accc", "123"));
-//        list.add(new HomeModel("Dabi", "13/10/2024", imageAva, Imgs , 10, 10, 20, 0, "accc", "123"));
 
 
         Toast.makeText(context, mUser.getEmail(), Toast.LENGTH_SHORT).show();
