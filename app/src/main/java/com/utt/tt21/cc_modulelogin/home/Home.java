@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
@@ -68,7 +69,7 @@ public class Home extends Fragment {
     DocumentReference reference;
     private HomeAdapter adapter;
     private ImageStringAdapter imageStringAdapter;
-
+    private SwipeRefreshLayout refreshLayout;
     public Home() {
         // Required empty public constructor
     }
@@ -108,6 +109,14 @@ public class Home extends Fragment {
         //readNicknameDatabase();
 
         //imageStringAdapter.notifyDataSetChanged();
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                list.clear();
+                loadDataFromFirestore();
+
+            }
+        });
     }
 
     @Override
@@ -167,126 +176,159 @@ public class Home extends Fragment {
         Toast.makeText(context, mUser.getEmail(), Toast.LENGTH_SHORT).show();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference getList = database.getReference("list_status").child(mUser.getUid());
 
 
-        getList.addChildEventListener(new ChildEventListener() {
-            int postIndex = 1;
+        DatabaseReference getListStatus = database.getReference("list_status");
+
+        getListStatus.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                HomeModel homeModelList = new HomeModel();
-                homeModelList.setContent(snapshot.child("content").getValue(String.class));
-                homeModelList.setCmtCount(0);
-                homeModelList.setLikeCount(0);
-                homeModelList.setPostCount(0);
-                homeModelList.setReupCount(0);
+            public void onChildAdded(@NonNull DataSnapshot snapshotList, @Nullable String previousChildName) {
+                DatabaseReference getList = database.getReference("list_status").child(snapshotList.getKey());
 
 
+                getList.addChildEventListener(new ChildEventListener() {
 
-                //Lay anh cho profile trong storage
-
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                String imagePath = "users/" + mUser.getUid() + "/"+mUser.getUid()+".jpg";
-                Log.d("FirebaseStorage", "URL ảnh: " + imagePath);
-                String imageUrl = "";
-                StorageReference imageRef = storage.getReference().child(imagePath);
-                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onSuccess(Uri uri) {
-                        // Đây là URL download của ảnh
-                        String imageUrl = uri.toString();
-                        homeModelList.setProfileImage(imageUrl);
-                        Log.d("FirebaseStorage", "URL ảnh: " + imageUrl);
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                        // Bạn có thể dùng URL này để hiển thị ảnh trong ImageView hoặc xử lý khác
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Xử lý khi có lỗi xảy ra
-                        Log.e("FirebaseStorage", "Lỗi khi lấy URL: " + exception.getMessage());
-                    }
-                });
+                        HomeModel homeModelList = new HomeModel();
+                        homeModelList.setContent(snapshot.child("content").getValue(String.class));
+                        homeModelList.setCmtCount(0);
+                        homeModelList.setLikeCount(0);
+                        homeModelList.setPostCount(0);
+                        homeModelList.setReupCount(0);
 
 
-//
-                List<String> imageLists = new ArrayList<>();
 
+                        //Lay anh cho profile trong storage
 
-                //get all list photo in storage
-
-                FirebaseStorage storage1 = FirebaseStorage.getInstance();
-                 // Số thứ tự bài viết
-                String folderPath = "users/" + mUser.getUid() + "/IdImgStt_" + snapshot.child("uid").getValue(Integer.class);
-                Log.e("FirebaseStorageIamge", "URL ảnh: " + folderPath);
-                StorageReference listRef1 = storage1.getReference().child(folderPath);
-                listRef1.listAll()
-                        .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                        String imagePath = "users/" + snapshotList.getKey() + "/"+snapshotList.getKey()+".jpg";
+                        Log.d("FirebaseStorage", "URL ảnh: " + imagePath);
+                        String imageUrl = "";
+                        StorageReference imageRef = storage.getReference().child(imagePath);
+                        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
-                            public void onSuccess(ListResult listResult) {
-                                // Duyệt qua tất cả các tệp trong thư mục
-                                for (StorageReference item : listResult.getItems()) {
-                                    // Lấy URL download của từng ảnh
-                                    item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            // Đây là URL của ảnh
-                                            String imageUrl = uri.toString();
-                                            imageUrl+=".jpg";
-                                            imageLists.add(imageUrl);
-                                            Log.e("FirebaseStorageImage", "URL ảnh: " + imageUrl);
-                                            // Bạn có thể sử dụng imageUrl để hiển thị ảnh trong ImageView hoặc lưu trữ URL
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception exception) {
-                                            // Xử lý khi có lỗi xảy ra
-                                            Log.e("FirebaseStorageImage", "Lỗi khi lấy URL: " + exception.getMessage());
-                                        }
-                                    });
-                                }
+                            public void onSuccess(Uri uri) {
+                                // Đây là URL download của ảnh
+                                String imageUrl = uri.toString();
+                                homeModelList.setProfileImage(imageUrl);
+                                Log.d("FirebaseStorage", "URL ảnh: " + imageUrl);
+
+                                // Bạn có thể dùng URL này để hiển thị ảnh trong ImageView hoặc xử lý khác
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
                                 // Xử lý khi có lỗi xảy ra
-                                Log.e("FirebaseStorage", "Lỗi khi liệt kê các tệp: " + exception.getMessage());
+                                Log.e("FirebaseStorage", "Lỗi khi lấy URL: " + exception.getMessage());
                             }
                         });
 
-                homeModelList.setPostImage(imageLists);
-                homeModelList.setUserName("dabi");
-                homeModelList.setUid("123");
+
+//
+                        List<String> imageLists = new ArrayList<>();
 
 
-                Log.e("TAGCONTENT", "onChildAdded: "+snapshot);
-                list.add(homeModelList);
+                        //get all list photo in storage
 
-                Log.e("FirebaseStorage", mUser.getUid());
-                adapter.notifyDataSetChanged();
+                        FirebaseStorage storage1 = FirebaseStorage.getInstance();
+                        // Số thứ tự bài viết
+                        String folderPath = "users/" + snapshotList.getKey() + "/IdImgStt_" + snapshot.child("uid").getValue(Integer.class);
+                        Log.e("FirebaseStorageIamge", "URL ảnh: " + folderPath);
+                        StorageReference listRef1 = storage1.getReference().child(folderPath);
+                        listRef1.listAll()
+                                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                                    @Override
+                                    public void onSuccess(ListResult listResult) {
+                                        // Duyệt qua tất cả các tệp trong thư mục
+                                        for (StorageReference item : listResult.getItems()) {
+                                            // Lấy URL download của từng ảnh
+                                            item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    // Đây là URL của ảnh
+                                                    String imageUrl = uri.toString();
+                                                    imageUrl+=".jpg";
+                                                    imageLists.add(imageUrl);
+                                                    Log.e("FirebaseStorageImage", "URL ảnh: " + imageUrl);
+                                                    // Bạn có thể sử dụng imageUrl để hiển thị ảnh trong ImageView hoặc lưu trữ URL
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception exception) {
+                                                    // Xử lý khi có lỗi xảy ra
+                                                    Log.e("FirebaseStorageImage", "Lỗi khi lấy URL: " + exception.getMessage());
+                                                }
+                                            });
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Xử lý khi có lỗi xảy ra
+                                        Log.e("FirebaseStorage", "Lỗi khi liệt kê các tệp: " + exception.getMessage());
+                                    }
+                                });
+
+                        homeModelList.setPostImage(imageLists);
+                        homeModelList.setUserName("dabi");
+                        homeModelList.setUid("123");
+                        homeModelList.setTimestamp(snapshot.child("timestamp").getValue(String.class));
+
+
+                        Log.e("TAGCONTENT", "onChildAdded: "+snapshot);
+                        list.add(homeModelList);
+
+                        Log.e("FirebaseStorage", mUser.getUid());
+                        adapter.notifyDataSetChanged();
+                        refreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        //adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                        //adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        //adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        //adapter.notifyDataSetChanged();
+                    }
+                });
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                //adapter.notifyDataSetChanged();
+
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                //adapter.notifyDataSetChanged();
+
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                //adapter.notifyDataSetChanged();
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                //adapter.notifyDataSetChanged();
+
             }
         });
+
+
     }
 
 
@@ -305,5 +347,6 @@ public class Home extends Fragment {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();
+        refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
     }
 }
