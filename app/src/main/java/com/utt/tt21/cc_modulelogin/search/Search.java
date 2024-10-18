@@ -18,8 +18,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
-import com.utt.tt21.cc_modulelogin.profile.profileModel.Profile;
-import com.utt.tt21.cc_modulelogin.profile.profileModel.Quang;
 
 
 public class Search extends Fragment {
