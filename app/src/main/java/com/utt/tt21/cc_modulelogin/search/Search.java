@@ -45,31 +45,10 @@ public class Search extends Fragment {
                 onClickPushData();
             }
         });
-        btnGet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickGetData();
-            }
-        });
+        
     }
 
-    private void onClickGetData() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("QuangTest");
 
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Quang quang = snapshot.getValue(Quang.class);
-                tvShow.setText(quang.toString());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                tvShow.setText(error.toString());
-            }
-        });
-    }
     //push data
     private void onClickPushData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
