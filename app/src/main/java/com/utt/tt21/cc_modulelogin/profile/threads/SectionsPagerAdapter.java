@@ -17,8 +17,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return new ThreadFragment();
             case 1:
-                return new ReplyThreadFragment();
-            case 2:
                 return new RepostFragment();
             default:
                 return null;
@@ -27,7 +25,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3; // Số lượng tab
+        return 2; // Số lượng tab
     }
 
     @Override
@@ -36,8 +34,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return "Thread";
             case 1:
-                return "Thread trả lời";
-            case 2:
                 return "Bài đăng lại";
             default:
                 return null;
