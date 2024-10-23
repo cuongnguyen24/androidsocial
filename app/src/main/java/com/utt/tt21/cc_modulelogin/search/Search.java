@@ -1,16 +1,15 @@
 package com.utt.tt21.cc_modulelogin.search;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,71 +17,49 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
-import com.utt.tt21.cc_modulelogin.profile.profileModel.Profile;
-import com.utt.tt21.cc_modulelogin.profile.profileModel.Quang;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class Search extends Fragment {
-    private Button btnGet, btnPush;
-    private TextView tvShow;
-    public Search() {
-        // Required empty public constructor
-    }
 
+    private DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("TestSearch");
+
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
-
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_search, container, false); // Thay đổi với layout của bạn
+        fetchUserData(view); // Gọi hàm lấy dữ liệu
+        return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        init(view);
-        btnPush.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickPushData();
-            }
-        });
-        btnGet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickGetData();
-            }
-        });
-    }
-
-    private void onClickGetData() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("QuangTest");
-
-        reference.addValueEventListener(new ValueEventListener() {
+    private void fetchUserData(View view) {
+        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Quang quang = snapshot.getValue(Quang.class);
-                tvShow.setText(quang.toString());
+                List<Account> userList = new ArrayList<>();
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    String userId = userSnapshot.getKey(); // Lấy user ID
+                    Account account = userSnapshot.getValue(Account.class);
+                    if (account != null) {
+                        account.setUserId(userId); // Cập nhật userId vào đối tượng Account
+                        userList.add(account);
+                    }
+                }
+                setupRecyclerView(userList, view); // Truyền view vào
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                tvShow.setText(error.toString());
+                // Xử lý lỗi nếu cần
             }
         });
     }
-    //push data
-    private void onClickPushData() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("list_user");
 
-        reference.setValue("");
-    }
-
-    private void init(View view) {
-        btnGet = view.findViewById(R.id.getString);
-        btnPush = view.findViewById(R.id.pushString);
-        tvShow = view.findViewById(R.id.tvShow);
+    private void setupRecyclerView(List<Account> userList, View view) {
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        ListAccountAdapter adapter = new ListAccountAdapter(userList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
     }
 }
