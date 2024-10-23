@@ -138,21 +138,14 @@ public class ThreadFragment extends Fragment {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
 
-        DatabaseReference getListStatus = database.getReference("list_status");
+        DatabaseReference getMyStatus = database.getReference("list_status").child(mUser.getUid());
 
-        getListStatus.addChildEventListener(new ChildEventListener() {
+        getMyStatus.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshotList, @Nullable String previousChildName) {
-                DatabaseReference getList = database.getReference("list_status").child(mUser.getUid());
-
-
-                getList.addChildEventListener(new ChildEventListener() {
-
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            public void onChildAdded(@NonNull DataSnapshot snapshotStatus, @Nullable String previousChildName) {
 
                         HomeModel homeModelList = new HomeModel();
-                        homeModelList.setContent(snapshot.child("content").getValue(String.class));
+                        homeModelList.setContent(snapshotStatus.child("content").getValue(String.class));
                         homeModelList.setCmtCount(0);
                         homeModelList.setLikeCount(0);
                         homeModelList.setPostCount(0);
@@ -163,7 +156,7 @@ public class ThreadFragment extends Fragment {
                         //Lay anh cho profile trong storage
 
                         FirebaseStorage storage = FirebaseStorage.getInstance();
-                        String imagePath = "users/" + snapshotList.getKey() + "/"+snapshotList.getKey()+".jpg";
+                        String imagePath = "users/" + snapshotStatus.getKey() + "/"+snapshotStatus.getKey()+".jpg";
                         Log.d("FirebaseStorage", "URL ảnh: " + imagePath);
                         String imageUrl = "";
                         StorageReference imageRef = storage.getReference().child(imagePath);
@@ -194,7 +187,7 @@ public class ThreadFragment extends Fragment {
 
                         FirebaseStorage storage1 = FirebaseStorage.getInstance();
                         // Số thứ tự bài viết
-                        String folderPath = "users/" + snapshotList.getKey() + "/IdImgStt_" + snapshot.child("uid").getValue(Integer.class);
+                        String folderPath = "users/" + snapshotStatus.getKey() + "/IdImgStt_" + snapshotStatus.child("uid").getValue(Integer.class);
                         Log.e("FirebaseStorageIamge", "URL ảnh: " + folderPath);
                         StorageReference listRef1 = storage1.getReference().child(folderPath);
                         listRef1.listAll()
@@ -234,10 +227,10 @@ public class ThreadFragment extends Fragment {
                         homeModelList.setPostImage(imageLists);
                         homeModelList.setUserName("dabi");
                         homeModelList.setUid("123");
-                        homeModelList.setTimestamp(snapshot.child("timestamp").getValue(String.class));
+                        homeModelList.setTimestamp(snapshotStatus.child("timestamp").getValue(String.class));
 
 
-                        Log.e("TAGCONTENT", "onChildAdded: "+snapshot);
+                        Log.e("TAGCONTENT", "onChildAdded: "+snapshotStatus);
                         list.add(homeModelList);
 
                         Log.e("FirebaseStorage", mUser.getUid());
@@ -267,29 +260,6 @@ public class ThreadFragment extends Fragment {
                 });
             }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-    }
 
 
 
