@@ -160,7 +160,7 @@ public class Home extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot snapshotList, @Nullable String previousChildName) {
                 DatabaseReference getList = database.getReference("list_status").child(snapshotList.getKey());
 
-
+                Log.e("uid", snapshotList.getKey());
                 getList.addChildEventListener(new ChildEventListener() {
 
                     @Override
@@ -247,7 +247,22 @@ public class Home extends Fragment {
                                 });
 
                         homeModelList.setPostImage(imageLists);
-                        homeModelList.setUserName("dabi");
+
+
+                        FirebaseDatabase databaseGetName = FirebaseDatabase.getInstance();
+                        DatabaseReference referenceGetName = databaseGetName.getReference("users").child(snapshotList.getKey()).child("nameProfile");
+                        homeModelList.setUserName("Anonymous");
+                        referenceGetName.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshotGetName) {
+                                homeModelList.setUserName(snapshotGetName.getValue(String.class));
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                            }
+                        });
+
                         homeModelList.setUid("123");
                         homeModelList.setTimestamp(snapshot.child("timestamp").getValue(String.class));
 

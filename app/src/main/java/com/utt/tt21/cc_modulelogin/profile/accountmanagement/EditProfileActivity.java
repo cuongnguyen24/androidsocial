@@ -29,11 +29,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.utt.tt21.cc_modulelogin.R;
 
 import java.io.IOException;
 
-public class EditProfileActivity extends AppCompatActivity implements GalleryOpener { // Implementing GalleryOpener interface
+public class EditProfileActivity extends AppCompatActivity { // Implementing GalleryOpener interface
     private ImageView imgAvatar;
     private EditText edtFullName, edtEmail, edtDesc;
     private Button btnUpdateProfile;
@@ -44,7 +47,6 @@ public class EditProfileActivity extends AppCompatActivity implements GalleryOpe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-
         initUi();
         setUserInformation();
         initListener();
@@ -102,7 +104,8 @@ public class EditProfileActivity extends AppCompatActivity implements GalleryOpe
         imgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onClickRequestPermission();
+//                onClickRequestPermission();
+                openGallery();
             }
         });
 
@@ -121,35 +124,6 @@ public class EditProfileActivity extends AppCompatActivity implements GalleryOpe
         });
     }
 
-    private void onClickRequestPermission() {
-        // Từ Android 6 trở lên cần yêu cầu quyền
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            openGallery();
-            return;
-        }
-
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            openGallery();
-        } else {
-            String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
-            requestPermissions(permissions, MY_REQUEST_CODE);
-        }
-    }
-
-    // Xử lý kết quả yêu cầu quyền truy cập
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery();
-            } else {
-                Toast.makeText(this, "Permission denied. Please allow gallery access in settings.", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    @Override
     public void openGallery() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
@@ -175,42 +149,78 @@ public class EditProfileActivity extends AppCompatActivity implements GalleryOpe
     private void updateUserInformation() {
         String fullName = edtFullName.getText().toString();
         String desc = edtDesc.getText().toString();
-        // email không cho cập nhật
-        // String email = edtEmail.getText().toString();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            // Cập nhật DisplayName và PhotoURL trên Firebase Authentication
-            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(fullName)
-                    .setPhotoUri(selectedImageUri) // Sử dụng URI đã lưu
-                    .build();
+            String userId = user.getUid();
 
-            user.updateProfile(profileUpdates).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    // Cập nhật tên và mô tả trên Realtime Database
-                    String userId = user.getUid();
-                    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+            // Tạo đường dẫn lưu trữ ảnh trên Firebase Storage
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference("users/" + userId + "/" + userId + ".jpg");
 
-                    databaseRef.child("nameProfile").setValue(fullName);
-                    databaseRef.child("desProfile").setValue(desc).addOnCompleteListener(dbTask -> {
-                        if (dbTask.isSuccessful()) {
-                            Intent intent = new Intent();
-                            intent.putExtra("isUpdated", true);  // Đánh dấu cập nhật thành công
-                            Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        } else {
-                            Toast.makeText(this, "Cập nhật mô tả không thành công", Toast.LENGTH_SHORT).show();
-                        }
+            if (selectedImageUri != null) {
+                // Tải ảnh lên Firebase Storage
+                UploadTask uploadTask = storageRef.putFile(selectedImageUri);
+
+                uploadTask.addOnSuccessListener(taskSnapshot -> {
+                    // Sau khi ảnh được tải lên thành công, lấy URL của ảnh
+                    storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        // Cập nhật DisplayName và PhotoURL trên Firebase Authentication
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(fullName)
+                                .setPhotoUri(uri) // Sử dụng URI ảnh từ Firebase Storage
+                                .build();
+
+                        user.updateProfile(profileUpdates).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                // Cập nhật tên và mô tả trên Realtime Database
+                                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+
+                                databaseRef.child("nameProfile").setValue(fullName);
+                                databaseRef.child("desProfile").setValue(desc);
+                                databaseRef.child("imgProfile").setValue(uri.toString()).addOnCompleteListener(dbTask -> {
+                                    if (dbTask.isSuccessful()) {
+                                        Intent intent = new Intent();
+                                        intent.putExtra("isUpdated", true);  // Đánh dấu cập nhật thành công
+                                        Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                                        setResult(RESULT_OK, intent);
+                                        finish();
+                                    } else {
+                                        Toast.makeText(this, "Cập nhật mô tả không thành công", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(this, "Cập nhật thông tin không thành công", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     });
-                } else {
-                    Toast.makeText(this, "Cập nhật thông tin không thành công", Toast.LENGTH_SHORT).show();
-                }
-            });
+                }).addOnFailureListener(e -> {
+                    // Xử lý khi tải ảnh lên không thành công
+                    Toast.makeText(EditProfileActivity.this, "Tải ảnh lên không thành công", Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                // Nếu không có ảnh được chọn, chỉ cập nhật tên và mô tả
+                updateDatabaseWithoutImage(fullName, desc, userId);
+            }
         } else {
             Toast.makeText(this, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void updateDatabaseWithoutImage(String fullName, String desc, String userId) {
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+
+        databaseRef.child("nameProfile").setValue(fullName);
+        databaseRef.child("desProfile").setValue(desc).addOnCompleteListener(dbTask -> {
+            if (dbTask.isSuccessful()) {
+                Intent intent = new Intent();
+                intent.putExtra("isUpdated", true);
+                Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK, intent);
+                finish();
+            } else {
+                Toast.makeText(this, "Cập nhật mô tả không thành công", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }
