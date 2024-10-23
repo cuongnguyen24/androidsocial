@@ -65,7 +65,7 @@ public class EditProfileActivity extends AppCompatActivity implements GalleryOpe
             return;
         }
         String userId = user.getUid(); // Lấy UID của người dùng
-        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("list_user").child(userId);
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -190,7 +190,7 @@ public class EditProfileActivity extends AppCompatActivity implements GalleryOpe
                 if (task.isSuccessful()) {
                     // Cập nhật tên và mô tả trên Realtime Database
                     String userId = user.getUid();
-                    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("list_user").child(userId);
+                    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
                     databaseRef.child("nameProfile").setValue(fullName);
                     databaseRef.child("desProfile").setValue(desc).addOnCompleteListener(dbTask -> {

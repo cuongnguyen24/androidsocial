@@ -153,7 +153,7 @@ public class Profile extends Fragment implements GalleryOpener {
         }
 
         String userId = user.getUid(); // Lấy UID của người dùng
-        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("list_user").child(userId);
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
         // Lấy thông tin từ Realtime Database
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {

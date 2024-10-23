@@ -85,7 +85,7 @@ public class SignUpActivity extends AppCompatActivity {
                             String userId = user.getUid();
 
                             // Lưu fullName vào Realtime Database
-                            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("list_user").child(userId);
+                            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
                             databaseRef.child("nameProfile").setValue(strFullName);
                             databaseRef.child("desProfile").setValue("");
                             databaseRef.child("emailProfile").setValue(strEmail);
