@@ -2,12 +2,8 @@ package com.utt.tt21.cc_modulelogin.profile;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +13,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -28,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
@@ -42,12 +36,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.authentication.SignInActivity;
 import com.utt.tt21.cc_modulelogin.profile.accountmanagement.EditProfileActivity;
-import com.utt.tt21.cc_modulelogin.profile.accountmanagement.GalleryOpener;
 import com.utt.tt21.cc_modulelogin.profile.threads.SectionsPagerAdapter;
 
 import java.io.IOException;
 
-public class Profile extends Fragment implements GalleryOpener {
+public class Profile extends Fragment {
 
     public static final int MY_REQUEST_CODE = 10;
     private ImageView imgAvartar;
@@ -137,13 +130,13 @@ public class Profile extends Fragment implements GalleryOpener {
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager = view.findViewById(R.id.view_pager);
 
-        // Bắt sự kiện click vào avatar để mở gallery
-        imgAvartar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGallery(); // Gọi phương thức mở thư viện ảnh
-            }
-        });
+//        // Bắt sự kiện click vào avatar để mở gallery
+//        imgAvartar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openGallery(); // Gọi phương thức mở thư viện ảnh
+//            }
+//        });
     }
 
     private void showUserInformation() {
@@ -192,8 +185,6 @@ public class Profile extends Fragment implements GalleryOpener {
                     if (followers != null) {
                         tvFollowers.setText( followers +" người theo dõi");
                     }
-
-
                 }
             }
 
@@ -217,25 +208,5 @@ public class Profile extends Fragment implements GalleryOpener {
         super.onResume();
         // Tải lại dữ liệu người dùng khi Profile trở lại
         showUserInformation();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery();
-            } else {
-                Toast.makeText(getContext(), "Permission denied. Please allow gallery access in settings.", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    @Override
-    public void openGallery() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        mActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
     }
 }
