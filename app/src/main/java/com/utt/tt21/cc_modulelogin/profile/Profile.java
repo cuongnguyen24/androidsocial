@@ -130,13 +130,6 @@ public class Profile extends Fragment {
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager = view.findViewById(R.id.view_pager);
 
-//        // Bắt sự kiện click vào avatar để mở gallery
-//        imgAvartar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openGallery(); // Gọi phương thức mở thư viện ảnh
-//            }
-//        });
     }
 
     private void showUserInformation() {
