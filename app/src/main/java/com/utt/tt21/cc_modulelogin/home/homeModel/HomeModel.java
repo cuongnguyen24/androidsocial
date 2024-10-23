@@ -8,6 +8,7 @@ public class HomeModel {
     private String profileImage;
     private List<String> postImage;
     private String uid;
+    private String userID;
 
     private String content;
 
@@ -26,6 +27,14 @@ public class HomeModel {
 
     public String getUserName() {
         return userName;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public void setUserName(String userName) {

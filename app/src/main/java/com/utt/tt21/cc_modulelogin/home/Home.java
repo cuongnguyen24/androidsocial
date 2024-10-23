@@ -172,7 +172,7 @@ public class Home extends Fragment {
                         homeModelList.setLikeCount(0);
                         homeModelList.setPostCount(0);
                         homeModelList.setReupCount(0);
-
+                        homeModelList.setUserID(snapshotList.getKey());
 
 
                         //Lay anh cho profile trong storage
