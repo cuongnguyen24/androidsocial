@@ -156,7 +156,7 @@ public class ThreadFragment extends Fragment {
                         //Lay anh cho profile trong storage
 
                         FirebaseStorage storage = FirebaseStorage.getInstance();
-                        String imagePath = "users/" + snapshotStatus.getKey() + "/"+snapshotStatus.getKey()+".jpg";
+                        String imagePath = "users/" + mUser.getUid() + "/"+mUser.getUid()+".jpg";
                         Log.d("FirebaseStorage", "URL ảnh: " + imagePath);
                         String imageUrl = "";
                         StorageReference imageRef = storage.getReference().child(imagePath);
@@ -187,7 +187,7 @@ public class ThreadFragment extends Fragment {
 
                         FirebaseStorage storage1 = FirebaseStorage.getInstance();
                         // Số thứ tự bài viết
-                        String folderPath = "users/" + snapshotStatus.getKey() + "/IdImgStt_" + snapshotStatus.child("uid").getValue(Integer.class);
+                        String folderPath = "users/" + mUser.getUid() + "/IdImgStt_" + snapshotStatus.child("uid").getValue(Integer.class);
                         Log.e("FirebaseStorageIamge", "URL ảnh: " + folderPath);
                         StorageReference listRef1 = storage1.getReference().child(folderPath);
                         listRef1.listAll()
