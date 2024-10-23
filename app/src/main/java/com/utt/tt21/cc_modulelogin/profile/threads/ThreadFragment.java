@@ -28,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
@@ -82,7 +83,7 @@ public class ThreadFragment extends Fragment {
 
 
 
-        scrollScreen();
+        //scrollScreen();
 
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -146,6 +147,8 @@ public class ThreadFragment extends Fragment {
 
                         HomeModel homeModelList = new HomeModel();
                         homeModelList.setContent(snapshotStatus.child("content").getValue(String.class));
+
+                        // Sửa lại reaction
                         homeModelList.setCmtCount(0);
                         homeModelList.setLikeCount(0);
                         homeModelList.setPostCount(0);
@@ -178,8 +181,6 @@ public class ThreadFragment extends Fragment {
                             }
                         });
 
-
-//
                         List<String> imageLists = new ArrayList<>();
 
 
@@ -225,15 +226,22 @@ public class ThreadFragment extends Fragment {
                                 });
 
                         homeModelList.setPostImage(imageLists);
-                        homeModelList.setUserName("dabi");
-                        homeModelList.setUid("123");
+
+                        FirebaseDatabase databaseGetName = FirebaseDatabase.getInstance();
+                        DatabaseReference referenceGetName = databaseGetName.getReference("users").child(mUser.getUid()).child("nameProfile");
+                        homeModelList.setUserName("Anonymous");
+                        referenceGetName.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshotGetName) {
+                                homeModelList.setUserName(snapshotGetName.getValue(String.class));
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                            }
+                        });
                         homeModelList.setTimestamp(snapshotStatus.child("timestamp").getValue(String.class));
-
-
-                        Log.e("TAGCONTENT", "onChildAdded: "+snapshotStatus);
                         list.add(homeModelList);
-
-                        Log.e("FirebaseStorage", mUser.getUid());
                         adapter.notifyDataSetChanged();
                         refreshLayout.setRefreshing(false);
                     }
@@ -260,21 +268,15 @@ public class ThreadFragment extends Fragment {
                 });
             }
 
-
-
-
     private void init(View view) {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         context = getContext();
         imvAvatar = view.findViewById(R.id.detailProfileImage);
         tv_nickname = view.findViewById(R.id.tvName);
         timestamp = view.findViewById(R.id.tvTimeStamp);
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();
         refreshLayout = view.findViewById(R.id.swipeRefreshLayout);

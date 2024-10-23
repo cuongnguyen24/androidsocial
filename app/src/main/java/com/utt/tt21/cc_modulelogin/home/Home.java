@@ -263,14 +263,13 @@ public class Home extends Fragment {
                             }
                         });
 
-                        homeModelList.setUid("123");
+
                         homeModelList.setTimestamp(snapshot.child("timestamp").getValue(String.class));
 
 
-                        Log.e("TAGCONTENT", "onChildAdded: "+snapshot);
                         list.add(homeModelList);
 
-                        Log.e("FirebaseStorage", mUser.getUid());
+
                         adapter.notifyDataSetChanged();
                         refreshLayout.setRefreshing(false);
                     }
