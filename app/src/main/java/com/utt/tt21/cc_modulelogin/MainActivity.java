@@ -216,7 +216,6 @@ public class MainActivity extends AppCompatActivity {
                     index++;
                 }
                 idStatus = userid + "_" + index; // Tạo idStatus mới
-
                 // Đẩy dữ liệu vào node con mới
                 reference.child(userid).child(idStatus).child("content").setValue(edtContent);
                 reference.child(userid).child(idStatus).child("timestamp").setValue(random.nextInt(25) +"h");

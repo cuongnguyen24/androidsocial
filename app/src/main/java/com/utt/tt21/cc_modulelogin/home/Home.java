@@ -81,21 +81,12 @@ public class Home extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init(view);
-
-
-
-
         list = new ArrayList<>();
         adapter = new HomeAdapter(list, getContext());
         recyclerView.setAdapter(adapter);
         loadDataFromFirestore();
         adapter.notifyDataSetChanged();
-
-
-
         scrollScreen();
-
-       
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -143,8 +134,6 @@ public class Home extends Fragment {
 
                     bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(300);
                 } else if (dy < 0) {
-
-
                     bottomNavigationView.animate().translationY(0).setDuration(300);
                 }
             }
@@ -153,13 +142,8 @@ public class Home extends Fragment {
 
     private void loadDataFromFirestore() {
 
-
-
         Toast.makeText(context, mUser.getEmail(), Toast.LENGTH_SHORT).show();
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-
         DatabaseReference getListStatus = database.getReference("list_status");
 
         getListStatus.addChildEventListener(new ChildEventListener() {
@@ -273,9 +257,11 @@ public class Home extends Fragment {
 
                         homeModelList.setTimestamp(snapshot.child("timestamp").getValue(String.class));
 
+                        Log.e("TAGCONTENT", "onChildAdded: "+snapshot);
+                        list.add(homeModelList);
+                        Log.e("FirebaseStorage", mUser.getUid());
 
                         list.add(homeModelList);
-
 
                         adapter.notifyDataSetChanged();
                         refreshLayout.setRefreshing(false);
@@ -323,8 +309,6 @@ public class Home extends Fragment {
 
             }
         });
-
-
     }
 
 
@@ -334,13 +318,11 @@ public class Home extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         btn_messenger = view.findViewById(R.id.btn_messenger);
-
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         context = getContext();
         imvAvatar = view.findViewById(R.id.detailProfileImage);
         tv_nickname = view.findViewById(R.id.tvName);
         timestamp = view.findViewById(R.id.tvTimeStamp);
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();
         refreshLayout = view.findViewById(R.id.swipeRefreshLayout);

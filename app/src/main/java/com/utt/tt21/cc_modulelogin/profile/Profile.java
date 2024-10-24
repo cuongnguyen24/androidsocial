@@ -45,7 +45,6 @@ public class Profile extends Fragment {
     public static final int MY_REQUEST_CODE = 10;
     private ImageView imgAvartar;
     private TextView tvName, tvEmail, accountInfo, tvFollowers;
-
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SectionsPagerAdapter sectionsPagerAdapter;
