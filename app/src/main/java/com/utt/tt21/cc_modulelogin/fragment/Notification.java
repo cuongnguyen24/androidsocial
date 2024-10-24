@@ -3,24 +3,52 @@ package com.utt.tt21.cc_modulelogin.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.utt.tt21.cc_modulelogin.R;
+import com.utt.tt21.cc_modulelogin.profile.threads.SectionsPagerAdapter;
+import com.utt.tt21.cc_modulelogin.search.TabAdapter;
 
 
 public class Notification extends Fragment {
-
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private TabAdapter tabAdapter;
+    private ImageButton btnBack;
     public Notification() {
         // Required empty public constructor
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notification, container, false);
+        View view= inflater.inflate(R.layout.fragment_friend, container, false);
+        // Khởi tạo views
+        mapping(view);
+        // Thiết lập adapter cho ViewPager
+        tabAdapter = new TabAdapter(getChildFragmentManager());
+        viewPager.setAdapter(tabAdapter);
+        // Kết nối TabLayout với ViewPager
+        tabLayout.setupWithViewPager(viewPager);
+        // Xử lý sự kiện nút quay lại
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+       return view;
+    }
+    public void mapping(View view){
+        tabLayout = view.findViewById(R.id.tabLayout);
+        viewPager = view.findViewById(R.id.viewPager);
+        btnBack = view.findViewById(R.id.btnBack);
     }
 }

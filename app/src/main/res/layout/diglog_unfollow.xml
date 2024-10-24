@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_avatar"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_marginEnd="0dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_default_user" >
+    </de.hdodenhof.circleimageview.CircleImageView>
+    <TextView
+        android:id="@+id/dialog_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="Bỏ theo dõi lckvietnam?"
+        android:textSize="18sp"
+        android:textColor="@android:color/black" />
+
+    <!-- Các nút lựa chọn -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="30dp">
+
+        <!-- Nút Bỏ theo dõi -->
+        <Button
+            android:id="@+id/button_unfollow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bỏ theo dõi"
+            android:textColor="@android:color/white"
+            android:background="@drawable/td_background"/>
+
+        <!-- Nút Hủy -->
+        <Button
+            android:id="@+id/button_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Hủy"
+            android:textColor="@android:color/black"
+            android:backgroundTint="@android:color/darker_gray" />
+    </LinearLayout>
+
+</LinearLayout>
