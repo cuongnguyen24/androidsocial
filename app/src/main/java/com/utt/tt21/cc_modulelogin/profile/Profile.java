@@ -150,9 +150,8 @@ public class Profile extends Fragment {
                     String nameProfile = dataSnapshot.child("nameProfile").getValue(String.class);
                     String emailProfile = dataSnapshot.child("emailProfile").getValue(String.class);
                     String desProfile = dataSnapshot.child("desProfile").getValue(String.class);
-                    //followers kiểu long
-                    Long followersLong = dataSnapshot.child("followers").getValue(Long.class);
-                    String followers = String.valueOf(followersLong);
+//                    Long followersLong = dataSnapshot.child("followers").getValue(Long.class);
+//                    String followers = String.valueOf(followersLong);
 
                     // Thiết lập nameProfile vào tvName
                     if (nameProfile != null) {
@@ -175,8 +174,12 @@ public class Profile extends Fragment {
                         accountInfo.setText(desProfile); // Thiết lập văn bản cho account_info
                     }
 
-                    if (followers != null) {
-                        tvFollowers.setText( followers +" người theo dõi");
+                    //Lấy và đếm số lượng người theo dõi từ nhánh "followers"
+                    if (dataSnapshot.hasChild("followers")) {
+                        long followersCount = dataSnapshot.child("followers").getChildrenCount();
+                        tvFollowers.setText(followersCount + " người theo dõi");
+                    } else {
+                        tvFollowers.setText("0 người theo dõi");
                     }
                 }
             }
