@@ -76,12 +76,12 @@ public class GuestProfileActivity extends AppCompatActivity {
             }
         });
 
-        // Khởi tạo nút nhắc đến
-        Button btnTagUser = findViewById(R.id.btn_tag_user);
+        // Khởi tạo nút nhắn tin
+        Button btnTagUser = findViewById(R.id.btn_message);
         btnTagUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Thực hiện hành động khi nhấn nút nhắc đến
+                // Thực hiện hành động khi nhấn nút nhắn tin
             }
         });
 

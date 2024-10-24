@@ -93,12 +93,12 @@
                 android:textAllCaps="false"
                 android:layout_marginEnd="8dp"/>
             <Button
-                android:id="@+id/btn_tag_user"
+                android:id="@+id/btn_message"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button_border"
-                android:text="Nhắc đến"
+                android:text="Nhắn tin"
                 android:textColor="@color/white"
                 android:textAllCaps="false"
                 android:layout_marginStart="8dp"/>
