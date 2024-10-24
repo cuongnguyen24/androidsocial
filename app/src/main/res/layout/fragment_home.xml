@@ -38,6 +38,17 @@
                     android:layout_centerVertical="true"
                     android:textSize="40sp"
                     android:textStyle="bold"/>
+                <ImageButton
+                    android:id="@+id/btn_messenger"
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@color/black"
+                    android:src="@drawable/btn_mail"
+                    android:focusableInTouchMode="true"
+                    android:layout_marginRight="10dp"
+                    android:scaleType="fitCenter"/>
             </RelativeLayout>
         </Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
