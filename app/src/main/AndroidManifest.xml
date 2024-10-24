@@ -21,10 +21,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CC_ModuleLogin"
         tools:targetApi="31">
+
+        <activity android:name=".profile.guestProfile.GuestProfileActivity"
+            android:exported="false"/>
         <activity
-
-            android:name=".profile.guestProfile.GuestProfileActivity"
-
             android:name=".messenger.messenger"
 
             android:exported="false" />
