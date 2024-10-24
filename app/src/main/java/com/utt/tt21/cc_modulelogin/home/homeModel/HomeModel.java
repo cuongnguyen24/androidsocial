@@ -1,16 +1,21 @@
 package com.utt.tt21.cc_modulelogin.home.homeModel;
 
+import java.util.List;
+
 public class HomeModel {
     private String userName;
     private String timestamp;
     private String profileImage;
-    private String postImage;
+    private List<String> postImage;
     private String uid;
+    private String userID;
 
-    private String des;
+    private String content;
 
     private int likeCount, cmtCount, reupCount, postCount;
 
+    public HomeModel() {
+    }
 
     public String getUid() {
         return uid;
@@ -22,6 +27,14 @@ public class HomeModel {
 
     public String getUserName() {
         return userName;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public void setUserName(String userName) {
@@ -44,11 +57,11 @@ public class HomeModel {
         this.profileImage = profileImage;
     }
 
-    public String getPostImage() {
+    public List<String> getPostImage() {
         return postImage;
     }
 
-    public void setPostImage(String postImage) {
+    public void setPostImage(List<String> postImage) {
         this.postImage = postImage;
     }
 
@@ -84,15 +97,15 @@ public class HomeModel {
         this.postCount = postCount;
     }
 
-    public String getDes() {
-        return des;
+    public String getContent() {
+        return content;
     }
 
-    public void setDes(String des) {
-        this.des = des;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public HomeModel(String userName, String timestamp, String profileImage, String postImage, int likeCount, int cmtCount, int reupCount, int postCount, String des, String uid) {
+    public HomeModel(String userName, String timestamp, String profileImage, List<String> postImage, int likeCount, int cmtCount, int reupCount, int postCount, String content, String uid) {
         this.userName = userName;
         this.timestamp = timestamp;
         this.profileImage = profileImage;
@@ -101,7 +114,7 @@ public class HomeModel {
         this.cmtCount = cmtCount;
         this.reupCount = reupCount;
         this.postCount = postCount;
-        this.des = des;
+        this.content = content;
         this.uid = uid;
     }
 }
