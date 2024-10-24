@@ -2,12 +2,8 @@ package com.utt.tt21.cc_modulelogin.profile;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +13,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -28,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
@@ -42,12 +36,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.authentication.SignInActivity;
 import com.utt.tt21.cc_modulelogin.profile.accountmanagement.EditProfileActivity;
-import com.utt.tt21.cc_modulelogin.profile.accountmanagement.GalleryOpener;
 import com.utt.tt21.cc_modulelogin.profile.threads.SectionsPagerAdapter;
 
 import java.io.IOException;
 
-public class Profile extends Fragment implements GalleryOpener {
+public class Profile extends Fragment {
 
     public static final int MY_REQUEST_CODE = 10;
     private ImageView imgAvartar;
@@ -136,13 +129,6 @@ public class Profile extends Fragment implements GalleryOpener {
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager = view.findViewById(R.id.view_pager);
 
-        // Bắt sự kiện click vào avatar để mở gallery
-        imgAvartar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGallery(); // Gọi phương thức mở thư viện ảnh
-            }
-        });
     }
 
     private void showUserInformation() {
@@ -152,7 +138,7 @@ public class Profile extends Fragment implements GalleryOpener {
         }
 
         String userId = user.getUid(); // Lấy UID của người dùng
-        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("list_user").child(userId);
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
         // Lấy thông tin từ Realtime Database
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -163,9 +149,8 @@ public class Profile extends Fragment implements GalleryOpener {
                     String nameProfile = dataSnapshot.child("nameProfile").getValue(String.class);
                     String emailProfile = dataSnapshot.child("emailProfile").getValue(String.class);
                     String desProfile = dataSnapshot.child("desProfile").getValue(String.class);
-                    //followers kiểu long
-                    Long followersLong = dataSnapshot.child("followers").getValue(Long.class);
-                    String followers = String.valueOf(followersLong);
+//                    Long followersLong = dataSnapshot.child("followers").getValue(Long.class);
+//                    String followers = String.valueOf(followersLong);
 
                     // Thiết lập nameProfile vào tvName
                     if (nameProfile != null) {
@@ -188,11 +173,13 @@ public class Profile extends Fragment implements GalleryOpener {
                         accountInfo.setText(desProfile); // Thiết lập văn bản cho account_info
                     }
 
-                    if (followers != null) {
-                        tvFollowers.setText( followers +" người theo dõi");
+                    //Lấy và đếm số lượng người theo dõi từ nhánh "followers"
+                    if (dataSnapshot.hasChild("followers")) {
+                        long followersCount = dataSnapshot.child("followers").getChildrenCount();
+                        tvFollowers.setText(followersCount + " người theo dõi");
+                    } else {
+                        tvFollowers.setText("0 người theo dõi");
                     }
-
-
                 }
             }
 
@@ -216,25 +203,5 @@ public class Profile extends Fragment implements GalleryOpener {
         super.onResume();
         // Tải lại dữ liệu người dùng khi Profile trở lại
         showUserInformation();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery();
-            } else {
-                Toast.makeText(getContext(), "Permission denied. Please allow gallery access in settings.", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    @Override
-    public void openGallery() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        mActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
     }
 }

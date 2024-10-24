@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnCancel;
     private EditText tvDes;
     private Random random = new Random();
+    private FirebaseUser mUser;
     //Add quang kuns
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
@@ -151,8 +152,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readNicknameDatabase() {
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("QuangTest/nickname");
+        DatabaseReference reference = database.getReference("users").child(mUser.getUid()).child("nameProfile");
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -519,7 +521,8 @@ public class MainActivity extends AppCompatActivity {
         bottomSheet = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         btnCancel = findViewById(R.id.btnCancel);
-
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        mUser = auth.getCurrentUser();
         //init Quangkuns
         tv_nickname = findViewById(R.id.tvName);
         btnUpStatus = findViewById(R.id.btnUpStatus);

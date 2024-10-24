@@ -1,10 +1,14 @@
 package com.utt.tt21.cc_modulelogin.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +17,12 @@ import android.widget.ImageButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.utt.tt21.cc_modulelogin.R;
+
 import com.utt.tt21.cc_modulelogin.profile.threads.SectionsPagerAdapter;
 import com.utt.tt21.cc_modulelogin.search.TabAdapter;
+
+import com.utt.tt21.cc_modulelogin.messenger.messenger;
+
 
 
 public class Notification extends Fragment {
@@ -50,5 +58,17 @@ public class Notification extends Fragment {
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
         btnBack = view.findViewById(R.id.btnBack);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initId(view);
+
+    }
+
+    private void initId(View view) {
+
     }
 }

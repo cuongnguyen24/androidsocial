@@ -1,14 +1,13 @@
 package com.utt.tt21.cc_modulelogin.home.homeAdapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,12 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.utt.tt21.cc_modulelogin.R;
-import com.utt.tt21.cc_modulelogin.home.Home;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
+import com.utt.tt21.cc_modulelogin.profile.guestProfile.GuestProfileActivity;
 import com.utt.tt21.cc_modulelogin.profile.profileModel.ImageItems;
 
 import java.util.List;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -116,7 +114,29 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
 
 
         holder.tvDes.setText(list.get(position).getContent());
+        // Cường: Thêm sự kiện click vào profileImage và tvUserName
+        setOnClickListener(holder, position);
+    }
 
+    // Cường: thêm setonclick để vào trang profile guest
+    private void setOnClickListener(HomeHolder holder, int position) {
+        // Lấy uid của người đăng bài
+        String uid = list.get(position).getUserID();
+
+        // Thiết lập sự kiện nhấn cho profileImage
+        holder.profileImage.setOnClickListener(v -> {
+            //            Toast.makeText(context, "UID: " + uid, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context, GuestProfileActivity.class);
+            intent.putExtra("uid", uid);
+            context.startActivity(intent);
+        });
+
+        // Thiết lập sự kiện nhấn cho tvUserName
+        holder.tvUserName.setOnClickListener(v -> {
+            Intent intent = new Intent(context, GuestProfileActivity.class);
+            intent.putExtra("uid", uid);
+            context.startActivity(intent);
+        });
     }
 
     @Override

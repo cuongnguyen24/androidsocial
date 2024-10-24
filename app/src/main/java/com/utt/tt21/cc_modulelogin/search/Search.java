@@ -1,5 +1,6 @@
 package com.utt.tt21.cc_modulelogin.search;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,10 +8,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.ImageButton;
+import android.widget.Button;
+import android.widget.TextView;
+
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -19,16 +25,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
+import com.utt.tt21.cc_modulelogin.messenger.messenger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class Search extends Fragment {
+
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private TabAdapter tabAdapter;
     private ImageButton btnBack;
+
+    private Button btnGet, btnPush;
+    private TextView tvShow;
+
+
     public Search() {
         // Required empty public constructor
     }
@@ -52,11 +65,31 @@ public class Search extends Fragment {
 
             }
         });
+
         return view;
     }
     public void mapping(View view){
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
         btnBack = view.findViewById(R.id.btnBack);
+
+
+    }
+
+
+    //push data
+    private void onClickPushData() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("list_user");
+
+        reference.setValue("");
+    }
+
+    private void init(View view) {
+        btnGet = view.findViewById(R.id.getString);
+        btnPush = view.findViewById(R.id.pushString);
+        tvShow = view.findViewById(R.id.tvShow);
+
+
     }
 }
