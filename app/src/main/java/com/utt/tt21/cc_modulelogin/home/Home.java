@@ -260,8 +260,7 @@ public class Home extends Fragment {
                         Log.e("TAGCONTENT", "onChildAdded: "+snapshot);
                         list.add(homeModelList);
                         Log.e("FirebaseStorage", mUser.getUid());
-
-                        list.add(homeModelList);
+                        
 
                         adapter.notifyDataSetChanged();
                         refreshLayout.setRefreshing(false);
