@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
+import com.utt.tt21.cc_modulelogin.profile.accountmanagement.ImageDisplayActivity;
 import com.utt.tt21.cc_modulelogin.profile.threads.SectionsPagerAdapter;
 
 import java.io.IOException;
@@ -45,6 +47,11 @@ public class GuestProfileActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> mActivityResultLauncher;
     private String userId; // Biến để lưu UID của người dùng
 
+    private FirebaseAuth mAuth;
+    private DatabaseReference userRef;
+    private Button btnFollow;
+    private ImageButton btnClose;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +61,12 @@ public class GuestProfileActivity extends AppCompatActivity {
 
         if (userId == null) {
             Toast.makeText(this, "Không tìm thấy người dùng", Toast.LENGTH_SHORT).show();
-            finish(); // Hoặc bạn có thể điều hướng trở về activity trước đó
+            finish();
             return;
         }
+
+        mAuth = FirebaseAuth.getInstance();
+        userRef = FirebaseDatabase.getInstance().getReference("users");
 
         initUi();
         initActivityResultLauncher();
@@ -67,12 +77,15 @@ public class GuestProfileActivity extends AppCompatActivity {
         // Kết nối TabLayout với ViewPager
         tabLayout.setupWithViewPager(viewPager);
 
-        // Khởi tạo nút theo dõi
-        Button btnFollow = findViewById(R.id.btn_follow);
-        btnFollow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Thực hiện hành động khi nhấn nút theo dõi
+        // Khởi tạo nút theo dõi và kiểm tra trạng thái Follow
+        checkFollowStatus(mAuth.getCurrentUser().getUid(), userId);
+
+        // Xử lý sự kiện khi nhấn nút theo dõi
+        btnFollow.setOnClickListener(v -> {
+            if (btnFollow.getText().toString().equals("Follow")) {
+                followUser(mAuth.getCurrentUser().getUid(), userId);
+            } else {
+                unfollowUser(mAuth.getCurrentUser().getUid(), userId);
             }
         });
 
@@ -85,18 +98,45 @@ public class GuestProfileActivity extends AppCompatActivity {
             }
         });
 
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        imgAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Lấy URL của ảnh đại diện từ FirebaseUser
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    Uri photoUrl = user.getPhotoUrl();
+                    Intent intent = new Intent(GuestProfileActivity.this, ImageDisplayActivity.class);
+                    if (photoUrl != null) {
+                        intent.putExtra("imageUrl", photoUrl.toString());
+                    }
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(GuestProfileActivity.this, "Không tìm thấy ảnh đại diện", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         // Sự kiện gọi dữ liệu user
         showUserInformation(userId); // Truyền UID vào hàm này
     }
 
     private void initUi() {
-        imgAvatar = findViewById(R.id.img_avatar);
+        imgAvatar = findViewById(R.id.img_avatar_guest);
         tvName = findViewById(R.id.tv_name);
         tvEmail = findViewById(R.id.tv_email);
         accountInfo = findViewById(R.id.account_info);
         tvFollowers = findViewById(R.id.followers);
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
+        btnFollow = findViewById(R.id.btn_follow);
+        btnClose = findViewById(R.id.btn_close_guest);
     }
 
     private void initActivityResultLauncher() {
@@ -136,8 +176,6 @@ public class GuestProfileActivity extends AppCompatActivity {
                     String nameProfile = dataSnapshot.child("nameProfile").getValue(String.class);
                     String emailProfile = dataSnapshot.child("emailProfile").getValue(String.class);
                     String desProfile = dataSnapshot.child("desProfile").getValue(String.class);
-//                    Long followersLong = dataSnapshot.child("followers").getValue(Long.class);
-//                    String followers = String.valueOf(followersLong);
 
                     // Thiết lập nameProfile vào tvName
                     if (nameProfile != null) {
@@ -184,5 +222,38 @@ public class GuestProfileActivity extends AppCompatActivity {
             Uri photoUrl = user.getPhotoUrl();
             Glide.with(this).load(photoUrl).error(R.drawable.ic_default_user).into(imgAvatar);
         }
+    }
+
+    // Kiểm tra trạng thái follow
+    private void checkFollowStatus(String currentUserId, String targetUserId) {
+        userRef.child(currentUserId).child("followings").child(targetUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    btnFollow.setText("Unfollow");
+                } else {
+                    btnFollow.setText("Follow");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Xử lý lỗi nếu cần
+            }
+        });
+    }
+
+    // Hàm follow người dùng
+    private void followUser(String currentUserId, String targetUserId) {
+        userRef.child(currentUserId).child("followings").child(targetUserId).setValue(true);
+        userRef.child(targetUserId).child("followers").child(currentUserId).setValue(true);
+        btnFollow.setText("Unfollow");
+    }
+
+    // Hàm unfollow người dùng
+    private void unfollowUser(String currentUserId, String targetUserId) {
+        userRef.child(currentUserId).child("followings").child(targetUserId).removeValue();
+        userRef.child(targetUserId).child("followers").child(currentUserId).removeValue();
+        btnFollow.setText("Follow");
     }
 }
