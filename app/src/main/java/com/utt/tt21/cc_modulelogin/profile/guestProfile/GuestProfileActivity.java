@@ -2,10 +2,8 @@ package com.utt.tt21.cc_modulelogin.profile.guestProfile;
 
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -13,10 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -34,10 +29,9 @@ import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.profile.accountmanagement.ImageDisplayActivity;
 import com.utt.tt21.cc_modulelogin.profile.threads.SectionsPagerAdapter;
 
-import java.io.IOException;
 
 public class GuestProfileActivity extends AppCompatActivity {
-    private ImageView imgAvatar;
+    private ImageView imgAvatarGuest;
     private TextView tvName, tvEmail, accountInfo, tvFollowers;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -69,7 +63,6 @@ public class GuestProfileActivity extends AppCompatActivity {
         userRef = FirebaseDatabase.getInstance().getReference("users");
 
         initUi();
-        initActivityResultLauncher();
 
         // Khởi tạo adapter
         sectionsGuestPagerAdapter = new SectionsGuestPagerAdapter(getSupportFragmentManager(),userId);
@@ -79,6 +72,8 @@ public class GuestProfileActivity extends AppCompatActivity {
 
         // Khởi tạo nút theo dõi và kiểm tra trạng thái Follow
         checkFollowStatus(mAuth.getCurrentUser().getUid(), userId);
+        // Sự kiện gọi dữ liệu user
+        showUserInformation(userId);
 
         // Xử lý sự kiện khi nhấn nút theo dõi
         btnFollow.setOnClickListener(v -> {
@@ -105,7 +100,7 @@ public class GuestProfileActivity extends AppCompatActivity {
             }
         });
 
-        imgAvatar.setOnClickListener(new View.OnClickListener() {
+        imgAvatarGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Lấy URL của ảnh đại diện từ FirebaseUser
@@ -123,12 +118,11 @@ public class GuestProfileActivity extends AppCompatActivity {
             }
         });
 
-        // Sự kiện gọi dữ liệu user
-        showUserInformation(userId); // Truyền UID vào hàm này
+
     }
 
     private void initUi() {
-        imgAvatar = findViewById(R.id.img_avatar_guest);
+        imgAvatarGuest = findViewById(R.id.img_avatar_guest);
         tvName = findViewById(R.id.tv_name);
         tvEmail = findViewById(R.id.tv_email);
         accountInfo = findViewById(R.id.account_info);
@@ -137,32 +131,6 @@ public class GuestProfileActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.view_pager);
         btnFollow = findViewById(R.id.btn_follow);
         btnClose = findViewById(R.id.btn_close_guest);
-    }
-
-    private void initActivityResultLauncher() {
-        mActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-                            Intent intent = result.getData();
-                            if (intent != null && intent.getBooleanExtra("isUpdated", false)) {
-                                // Gọi lại showUserInformation để cập nhật giao diện ngay lập tức
-                                showUserInformation(userId);
-                            }
-                            Uri uri = intent.getData();
-                            if (uri != null) {
-                                try {
-                                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                                    imgAvatar.setImageBitmap(bitmap); // Hiển thị hình ảnh lên ImageView
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        }
-                    }
-                });
     }
 
     private void showUserInformation(String userId) {
@@ -220,7 +188,7 @@ public class GuestProfileActivity extends AppCompatActivity {
             String email = user.getEmail();
             tvEmail.setText(email);
             Uri photoUrl = user.getPhotoUrl();
-            Glide.with(this).load(photoUrl).error(R.drawable.ic_default_user).into(imgAvatar);
+            Glide.with(this).load(photoUrl).error(R.drawable.ic_default_user).into(imgAvatarGuest);
         }
     }
 
