@@ -4,6 +4,7 @@ package com.utt.tt21.cc_modulelogin.profile.guestProfile;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -17,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,6 +28,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.profile.accountmanagement.ImageDisplayActivity;
 import com.utt.tt21.cc_modulelogin.profile.threads.SectionsPagerAdapter;
@@ -104,17 +109,30 @@ public class GuestProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Lấy URL của ảnh đại diện từ FirebaseUser
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user != null) {
-                    Uri photoUrl = user.getPhotoUrl();
-                    Intent intent = new Intent(GuestProfileActivity.this, ImageDisplayActivity.class);
-                    if (photoUrl != null) {
-                        intent.putExtra("imageUrl", photoUrl.toString());
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                String imagePath = "users/" + userId + "/" + userId + ".jpg";
+                StorageReference imageRef = storage.getReference().child(imagePath);
+                Log.d("FirebaseStorage3", "URL ảnh: " + imageRef);
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        // Đây là URL download của ảnh
+                        String imageUrl = uri.toString();
+                        imageUrl+=".jpg";
+                        Intent intent = new Intent(GuestProfileActivity.this, ImageDisplayActivity.class);
+                        if (imageUrl != null) {
+                            intent.putExtra("imageUrl", imageUrl.toString());
+                        }
+                        startActivity(intent);
+                        // Bạn có thể dùng URL này để hiển thị ảnh trong ImageView hoặc xử lý khác
                     }
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(GuestProfileActivity.this, "Không tìm thấy ảnh đại diện", Toast.LENGTH_SHORT).show();
-                }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Xử lý khi có lỗi xảy ra
+                        Log.e("FirebaseStorage", "Lỗi khi lấy URL: " + exception.getMessage());
+                    }
+                });
             }
         });
 
@@ -134,6 +152,30 @@ public class GuestProfileActivity extends AppCompatActivity {
     }
 
     private void showUserInformation(String userId) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        String imagePath = "users/" + userId + "/" + userId + ".jpg";
+        StorageReference imageRef = storage.getReference().child(imagePath);
+        Log.d("FirebaseStorage3", "URL ảnh: " + imageRef);
+        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Đây là URL download của ảnh
+                String imageUrl = uri.toString();
+                imageUrl+=".jpg";
+                Glide.with(GuestProfileActivity.this).load(imageUrl).error(R.drawable.ic_default_user).into(imgAvatarGuest);
+                Log.d("FirebaseStorage", "URL ảnh: " + imageUrl);
+
+                // Bạn có thể dùng URL này để hiển thị ảnh trong ImageView hoặc xử lý khác
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Xử lý khi có lỗi xảy ra
+                Log.e("FirebaseStorage", "Lỗi khi lấy URL: " + exception.getMessage());
+            }
+        });
+
+
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
         // Lấy thông tin từ Realtime Database
@@ -183,13 +225,8 @@ public class GuestProfileActivity extends AppCompatActivity {
         });
 
         // Nếu bạn vẫn muốn lấy ảnh đại diện từ FirebaseUser
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            String email = user.getEmail();
-            tvEmail.setText(email);
-            Uri photoUrl = user.getPhotoUrl();
-            Glide.with(this).load(photoUrl).error(R.drawable.ic_default_user).into(imgAvatarGuest);
-        }
+
+
     }
 
     // Kiểm tra trạng thái follow
