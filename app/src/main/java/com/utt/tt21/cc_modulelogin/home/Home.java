@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +66,7 @@ public class Home extends Fragment {
     private ImageStringAdapter imageStringAdapter;
     private SwipeRefreshLayout refreshLayout;
     private ImageButton btn_messenger;
+    private ProgressBar progressBar;
     public Home() {
         // Required empty public constructor
     }
@@ -82,18 +84,11 @@ public class Home extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init(view);
         list = new ArrayList<>();
+        loadDataFromFirestore();
         adapter = new HomeAdapter(list, getContext());
         recyclerView.setAdapter(adapter);
-        loadDataFromFirestore();
         adapter.notifyDataSetChanged();
         scrollScreen();
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadDataFromFirestore();
-                list.clear();
-            }
-        });
         btn_messenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,23 +102,29 @@ public class Home extends Fragment {
         });
     }
 
+    private void refresh() {
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadDataFromFirestore();
+                list.clear();
+            }
+        });
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        //adapter.notifyDataSetChanged();
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        //adapter.notifyDataSetChanged();
+
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //adapter.notifyDataSetChanged();
-    }
+
 
     // Keo tha navigation_bar
     private void scrollScreen() {
@@ -142,7 +143,21 @@ public class Home extends Fragment {
 
     private void loadDataFromFirestore() {
 
-        Toast.makeText(context, mUser.getEmail(), Toast.LENGTH_SHORT).show();
+        String name;
+        FirebaseDatabase databaseGetName = FirebaseDatabase.getInstance();
+        DatabaseReference referenceGetName = databaseGetName.getReference("users").child(mUser.getUid()).child("nameProfile");
+        referenceGetName.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshotGetName) {
+                String name = snapshotGetName.getValue(String.class);
+                Toast.makeText(context, "Xin chào " + name, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference getListStatus = database.getReference("list_status");
 
@@ -171,7 +186,6 @@ public class Home extends Fragment {
                         FirebaseStorage storage = FirebaseStorage.getInstance();
                         String imagePath = "users/" + snapshotList.getKey() + "/"+snapshotList.getKey()+".jpg";
                         Log.d("FirebaseStorage", "URL ảnh: " + imagePath);
-                        String imageUrl = "";
                         StorageReference imageRef = storage.getReference().child(imagePath);
                         imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
@@ -217,7 +231,7 @@ public class Home extends Fragment {
                                                     String imageUrl = uri.toString();
                                                     imageUrl+=".jpg";
                                                     imageLists.add(imageUrl);
-                                                    Log.e("FirebaseStorageImage", "URL ảnh: " + imageUrl);
+
                                                     // Bạn có thể sử dụng imageUrl để hiển thị ảnh trong ImageView hoặc lưu trữ URL
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
@@ -238,8 +252,6 @@ public class Home extends Fragment {
                                 });
 
                         homeModelList.setPostImage(imageLists);
-
-
                         FirebaseDatabase databaseGetName = FirebaseDatabase.getInstance();
                         DatabaseReference referenceGetName = databaseGetName.getReference("users").child(snapshotList.getKey()).child("nameProfile");
                         homeModelList.setUserName("Anonymous");
@@ -260,51 +272,56 @@ public class Home extends Fragment {
                         Log.e("TAGCONTENT", "onChildAdded: "+snapshot);
                         list.add(homeModelList);
                         Log.e("FirebaseStorage", mUser.getUid());
-                        
+
 
                         adapter.notifyDataSetChanged();
+
                         refreshLayout.setRefreshing(false);
                     }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        //adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }
 
                     @Override
                     public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                        //adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }
 
                     @Override
                     public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        //adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        //adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }
                 });
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                adapter.notifyDataSetChanged();
 
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                adapter.notifyDataSetChanged();
 
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                adapter.notifyDataSetChanged();
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                adapter.notifyDataSetChanged();
 
             }
         });
@@ -325,5 +342,6 @@ public class Home extends Fragment {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();
         refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+
     }
 }

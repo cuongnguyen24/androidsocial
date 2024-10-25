@@ -56,5 +56,6 @@ public class ImageStringAdapter extends RecyclerView.Adapter<ImageStringAdapter.
             imageView = itemView.findViewById(R.id.imageView);
         }
     }
+
 }
 

@@ -53,19 +53,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
                 .error(R.drawable.profile)       // Ảnh hiển thị khi có lỗi
                 .into(holder.profileImage);
 
-//        Random random = new Random();
-//        int color = Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
-//        Glide.with(context.getApplicationContext())
-//                .load(list.get(position).getPostImage())
-//                .placeholder(new ColorDrawable(color))
-//                .timeout(7000)
-//                .into(holder.recyclerViewImage);
-
         List<String> listImg = list.get(position).getPostImage();
 
         holder.recyclerViewImage.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         imageStringAdapter = new ImageStringAdapter(context, listImg);
+        imageStringAdapter.notifyDataSetChanged();
         holder.recyclerViewImage.setAdapter(imageStringAdapter);
+        holder.recyclerViewImage.setHasFixedSize(true);
 
 
 
