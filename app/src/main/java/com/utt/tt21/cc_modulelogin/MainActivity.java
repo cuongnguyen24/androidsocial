@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
     private Random random = new Random();
     private FirebaseUser mUser;
     //Add quang kuns
-    private static final int PICK_IMAGE_REQUEST = 1;
-    private static final int CAMERA_REQUEST = 2;
+    public static final int PICK_IMAGE_REQUEST = 1;
+    public static final int CAMERA_REQUEST = 2;
     private List<Uri> imageUris = new ArrayList<>(); // Khai báo danh sách chứa URIs
     private TextView tv_nickname;
     private EditText edtContent;
@@ -152,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readNicknameDatabase() {
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("users").child(mUser.getUid()).child("nameProfile");
 

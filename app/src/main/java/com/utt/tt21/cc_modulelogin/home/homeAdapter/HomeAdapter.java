@@ -1,13 +1,11 @@
 package com.utt.tt21.cc_modulelogin.home.homeAdapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,12 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.utt.tt21.cc_modulelogin.R;
-import com.utt.tt21.cc_modulelogin.home.Home;
+import com.utt.tt21.cc_modulelogin.detailstatus.DetailStatusActivity;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
 import com.utt.tt21.cc_modulelogin.profile.profileModel.ImageItems;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -30,6 +28,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
     private List<HomeModel> list;
     Context context;
     private ImageStringAdapter imageStringAdapter;
+    private int countViewStatus = 0;
     public HomeAdapter(List<HomeModel> list, Context context) {
         this.list = list;
         this.context = context;
@@ -54,7 +53,47 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
                 .placeholder(null)  // Ảnh hiển thị trong khi chờ tải
                 .error(R.drawable.profile)       // Ảnh hiển thị khi có lỗi
                 .into(holder.profileImage);
+        HomeModel currentItem = list.get(position);
+        // Hiển thị userID và idStatus nếu cần
+        String userID = currentItem.getUserID();
+        String idStatus = currentItem.getIdStatus();
+        String content = currentItem.getContent();
 
+        holder.btnComment.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailStatusActivity.class);
+            intent.putExtra("uid", currentItem.getUserID());
+            intent.putExtra("status_id", currentItem.getIdStatus());
+            intent.putExtra("content", currentItem.getContent());// Hoặc định danh khác cho bài viết
+            intent.putExtra("username", currentItem.getUserName());
+
+            // Truyền danh sách URL của ảnh (dạng ArrayList)
+            ArrayList<String> imageList = new ArrayList<>(currentItem.getPostImage());
+            intent.putStringArrayListExtra("image_list", imageList);
+
+            // Truyền URL của ảnh đại diện
+            intent.putExtra("profile_image", currentItem.getProfileImage());
+
+            context.startActivity(intent);
+        });
+
+
+        // Xử lý sự kiện khi nhấn vào bài viết
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailStatusActivity.class);
+            intent.putExtra("uid", currentItem.getUserID());
+            intent.putExtra("status_id", currentItem.getIdStatus());
+            intent.putExtra("content", currentItem.getContent());// Hoặc định danh khác cho bài viết
+            intent.putExtra("username", currentItem.getUserName());
+
+            // Truyền danh sách URL của ảnh (dạng ArrayList)
+            ArrayList<String> imageList = new ArrayList<>(currentItem.getPostImage());
+            intent.putStringArrayListExtra("image_list", imageList);
+
+            // Truyền URL của ảnh đại diện
+            intent.putExtra("profile_image", currentItem.getProfileImage());
+
+            context.startActivity(intent);
+        });
 //        Random random = new Random();
 //        int color = Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
 //        Glide.with(context.getApplicationContext())

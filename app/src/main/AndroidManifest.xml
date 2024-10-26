@@ -38,6 +38,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".detailstatus.CommentLayoutActivity"></activity>
+        <activity android:name=".commentInHome.CommentInHomeLayoutActivity" />
+        <activity android:name=".commentInHome.DetailStatusInHomeActivity" />
+
+        <activity android:name=".detailstatus.DetailStatusActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="false" />

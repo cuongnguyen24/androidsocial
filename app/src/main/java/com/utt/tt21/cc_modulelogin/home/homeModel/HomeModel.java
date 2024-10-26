@@ -8,18 +8,33 @@ public class HomeModel {
     private String profileImage;
     private List<String> postImage;
     private String uid;
-
+    private String userID;
+    private String idStatus;
     private String content;
 
     private int likeCount, cmtCount, reupCount, postCount;
 
     public HomeModel() {
     }
-
     public String getUid() {
         return uid;
     }
+    public String getUserID() {
+        return userID;
+    }
 
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    // Getter và Setter cho idStatus
+    public String getIdStatus() {
+        return idStatus;
+    }
+
+    public void setIdStatus(String idStatus) {
+        this.idStatus = idStatus;
+    }
     public void setUid(String uid) {
         this.uid = uid;
     }
