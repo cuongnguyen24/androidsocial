@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
 import android.os.MessageQueue;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -116,7 +117,7 @@ public class Home extends Fragment {
             }
         });
         Log.d("list",list.toString());
-        
+
     }
 
 
@@ -282,8 +283,10 @@ public class Home extends Fragment {
                         Log.e("FirebaseStorage", mUser.getUid());
 
                         Log.d("list",list.toString());
-                        adapter.notifyDataSetChanged();
-
+                        Handler handler = new Handler();
+                        handler.postDelayed(() -> {
+                            adapter.notifyDataSetChanged(); // Cập nhật dữ liệu sau 5 giây
+                        }, 3000);
                         refreshLayout.setRefreshing(false);
                     }
 
