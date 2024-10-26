@@ -34,7 +34,7 @@
             android:layout_marginLeft="110dp"
             android:layout_width="100dp"
             android:layout_height="35dp"
-            android:text="Đăng"
+            android:text="Post"
             android:background="@drawable/rounded_button"
             ></Button>
     </LinearLayout>

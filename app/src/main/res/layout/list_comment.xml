@@ -25,10 +25,11 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             >
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_height="wrap_content"
                 >
 
@@ -98,28 +99,7 @@
                         android:layout_marginLeft="4dp"
                         android:textSize="16sp"/>
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginRight="12dp">
 
-                    <ImageButton
-                        android:id="@+id/btnComment"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/ic_comment"
-                        android:contentDescription="NULL"
-                        tools:ignore="TouchTargetSizeCheck" />
-                    <TextView
-                        android:id="@+id/tvCountCmt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:layout_marginLeft="4dp"
-                        android:textSize="16sp"/>
-                </LinearLayout>
 
 
 
