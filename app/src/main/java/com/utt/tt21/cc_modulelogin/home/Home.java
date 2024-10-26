@@ -1,5 +1,7 @@
 package com.utt.tt21.cc_modulelogin.home;
 
+import static java.util.Collections.swap;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -46,7 +48,9 @@ import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
 import com.utt.tt21.cc_modulelogin.messenger.messenger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 
 public class Home extends Fragment {
@@ -85,6 +89,9 @@ public class Home extends Fragment {
         init(view);
         list = new ArrayList<>();
         loadDataFromFirestore();
+
+
+
         adapter = new HomeAdapter(list, getContext());
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -100,17 +107,18 @@ public class Home extends Fragment {
                 startActivity(intent);
             }
         });
-    }
-
-    private void refresh() {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadDataFromFirestore();
                 list.clear();
+                loadDataFromFirestore();
+                Collections.shuffle(list);
             }
         });
+        Log.d("list",list.toString());
+        
     }
+
 
     @Override
     public void onResume() {
@@ -273,11 +281,12 @@ public class Home extends Fragment {
                         list.add(homeModelList);
                         Log.e("FirebaseStorage", mUser.getUid());
 
-
+                        Log.d("list",list.toString());
                         adapter.notifyDataSetChanged();
 
                         refreshLayout.setRefreshing(false);
                     }
+
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -329,6 +338,7 @@ public class Home extends Fragment {
 
 
 
+
     private void init(View view) {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -342,6 +352,5 @@ public class Home extends Fragment {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();
         refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-
     }
 }
