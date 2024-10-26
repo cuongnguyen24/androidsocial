@@ -11,16 +11,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.utt.tt21.cc_modulelogin.R;
 
 import com.utt.tt21.cc_modulelogin.detailstatus.DetailStatusActivity;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
+import com.utt.tt21.cc_modulelogin.post.EditPostActivity;
 import com.utt.tt21.cc_modulelogin.profile.guestProfile.GuestProfileActivity;
 import com.utt.tt21.cc_modulelogin.profile.profileModel.ImageItems;
 
@@ -95,7 +101,26 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         }
         holder.btnMore.setOnClickListener(v -> {
 
-            // Xu ly trong day
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Chọn hành động")
+                    .setItems(new CharSequence[]{"Sửa", "Xóa"}, (dialog, which) -> {
+                        if (which == 0) {
+                            // Người dùng chọn sửa
+                            Intent intent = new Intent(context, EditPostActivity.class);
+                            intent.putExtra("uid", currentItem.getUserID());
+                            intent.putExtra("status_id", currentItem.getIdStatus());
+                            intent.putExtra("content", currentItem.getContent());
+                            intent.putExtra("username", currentItem.getUserName());
+
+
+                            // Truyền URL của ảnh đại diện
+                            intent.putExtra("profile_image", currentItem.getProfileImage());
+                            context.startActivity(intent);
+                        } else if (which == 1) {
+                            deletePost(currentItem.getUserID(), currentItem.getIdStatus());
+                        }
+                    })
+                    .show();
 
         });
 
@@ -181,7 +206,48 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         // Cường: Thêm sự kiện click vào profileImage và tvUserName
         setOnClickListener(holder, position);
     }
+    private void deletePost(String userId, String statusId) {
+        // Khởi tạo Firebase Database
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("list_status").child(userId).child(statusId);
 
+        // Xóa bài viết khỏi Realtime Database
+        databaseRef.removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FirebaseDatabase", "Post deleted successfully.");
+                    // Xóa ảnh khỏi Firebase Storage
+                    deleteImagesFromStorage(userId, statusId);
+                    Toast.makeText(context, "Bài viết đã được xóa.", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(exception -> {
+                    Log.e("FirebaseDatabase", "Error deleting post", exception);
+                    Toast.makeText(context, "Lỗi khi xóa bài viết.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void deleteImagesFromStorage(String userId, String statusId) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        String[] parts = statusId.split("_");
+        String idImgStt = parts[1];
+
+        // Xây dựng đường dẫn đến thư mục ảnh
+        String imagesFolderPath = "users/" + userId + "/IdImgStt_" + idImgStt + "/";
+        StorageReference imagesFolderRef = storage.getReference(imagesFolderPath);
+
+        // Xóa tất cả các ảnh trong thư mục
+        imagesFolderRef.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference item : listResult.getItems()) {
+                item.delete()
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("FirebaseStorage", "Image deleted: " + item.getName());
+                        })
+                        .addOnFailureListener(exception -> {
+                            Log.e("FirebaseStorage", "Error deleting image", exception);
+                        });
+            }
+        }).addOnFailureListener(exception -> {
+            Log.e("FirebaseStorage", "Error listing images", exception);
+        });
+    }
     // Cường: thêm setonclick để vào trang profile guest
     private void setOnClickListener(HomeHolder holder, int position) {
         // Lấy uid của người đăng bài
