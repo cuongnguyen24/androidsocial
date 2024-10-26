@@ -54,7 +54,7 @@ public class ThreadFragment extends Fragment {
     private TextView timestamp;
     private FirebaseUser mUser;
     DocumentReference reference;
-    private HomeAdapter adapter;
+    private ThreadFragmentAdapter adapter;
     private ImageStringAdapter imageStringAdapter;
     private SwipeRefreshLayout refreshLayout;
     public ThreadFragment() {
@@ -77,14 +77,14 @@ public class ThreadFragment extends Fragment {
 
 
         list = new ArrayList<>();
-        adapter = new HomeAdapter(list, getContext());
+        adapter = new ThreadFragmentAdapter(list, getContext());
         recyclerView.setAdapter(adapter);
         loadDataFromFirestore();
         adapter.notifyDataSetChanged();
 
 
 
-        //scrollScreen();
+        scrollScreen();
 
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

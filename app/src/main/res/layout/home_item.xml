@@ -21,9 +21,12 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/detailProfileImage"
         android:orientation="vertical">
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/boxUser"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp">
             <TextView
@@ -41,7 +44,21 @@
                 android:text="18h"
                 android:textColor="#8F8C8C"
                 android:layout_marginLeft="4dp"/>
+
+
         </LinearLayout>
+            <ImageButton
+
+                android:layout_marginTop="15dp"
+                android:id="@+id/btnMore"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/ic_more"
+                tools:ignore="TouchTargetSizeCheck"
+                android:layout_toRightOf="@id/boxUser"
+                />
+
+        </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"

@@ -72,6 +72,7 @@ public class Home extends Fragment {
     private SwipeRefreshLayout refreshLayout;
     private ImageButton btn_messenger;
     private ProgressBar progressBar;
+    private ImageButton btn_more;
     public Home() {
         // Required empty public constructor
     }
@@ -279,7 +280,6 @@ public class Home extends Fragment {
                         Log.e("TAGCONTENT", "onChildAdded: "+snapshot);
                         list.add(homeModelList);
                         Log.e("FirebaseStorage", mUser.getUid());
-
                         Log.d("list",list.toString());
                         adapter.notifyDataSetChanged();
                         Handler handler = new Handler();
@@ -287,6 +287,7 @@ public class Home extends Fragment {
                             adapter.notifyDataSetChanged(); // Cập nhật dữ liệu sau 5 giây
                         }, 3000);
                         refreshLayout.setRefreshing(false);
+
                     }
 
 
@@ -356,5 +357,6 @@ public class Home extends Fragment {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();
         refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        btn_more = view.findViewById(R.id.btnMore);
     }
 }
