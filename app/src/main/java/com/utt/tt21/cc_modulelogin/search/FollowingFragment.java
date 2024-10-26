@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,7 +32,6 @@ public class FollowingFragment extends Fragment {
     List<Account> userList ;
     ListAccountAdapter adapter;
     RecyclerView recyclerView;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,17 +40,26 @@ public class FollowingFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // tạo dòng kẻ phân cách item
-        DividerItemDecoration dividerItemDecoration= new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-        // (Tùy chọn) Bạn có thể tùy chỉnh divider với một drawable riêng nếu muốn:
-        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), R.drawable.custom_divider);
-        dividerItemDecoration.setDrawable(dividerDrawable);
-        recyclerView.addItemDecoration(dividerItemDecoration);
+//        // tạo dòng kẻ phân cách item
+//        DividerItemDecoration dividerItemDecoration= new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
+//        // (Tùy chọn) Bạn có thể tùy chỉnh divider với một drawable riêng nếu muốn:
+//        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), R.drawable.custom_divider);
+//        dividerItemDecoration.setDrawable(dividerDrawable);
+//        recyclerView.addItemDecoration(dividerItemDecoration);
 
         userList = new ArrayList<>();
-        adapter = new ListAccountAdapter(getContext(),userList);
-        recyclerView.setAdapter(adapter);
+        adapter = new ListAccountAdapter(getContext(), userList, new ListAccountAdapter.IClickListener() {
+            @Override
+            public void onclickUpdate(Account account) {
+                onUpdate(account);
+            }
 
+            @Override
+            public void onCLickDelete(Account account) {
+
+            }
+        },1);
+        recyclerView.setAdapter(adapter);
         mAuth = FirebaseAuth.getInstance();
         String currentUserId = mAuth.getCurrentUser().getUid();
         userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("followings");
@@ -109,7 +118,21 @@ public class FollowingFragment extends Fragment {
     }
     private void updateFollowingRecyclerView(List<Account> followingUsers) {
         // Giả sử bạn đã có RecyclerView và Adapter để hiển thị danh sách
-        ListAccountAdapter adapter = new ListAccountAdapter(getContext(), followingUsers);
+        ListAccountAdapter adapter = new ListAccountAdapter(getContext(), followingUsers, new ListAccountAdapter.IClickListener() {
+            @Override
+            public void onclickUpdate(Account account) {
+                onUpdate(account);
+            }
+
+            @Override
+            public void onCLickDelete(Account account) {
+
+            }
+        },1);
         recyclerView.setAdapter(adapter);
+    }
+    private void onUpdate(Account account){
+        userList.remove(account);
+        updateFollowingRecyclerView(userList);
     }
 }

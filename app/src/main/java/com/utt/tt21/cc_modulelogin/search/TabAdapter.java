@@ -15,28 +15,32 @@ public class TabAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 return new FollowingFragment();
-            case 1:
-                return new FollowersFragment();
             case 2:
+                return new FollowersFragment();
+            case 1:
+                return new GoiiFragment();
+            case 3:
                 return new GoiiFragment();
             default:
-                return new FollowingFragment();
+                return null;
         }
     }
 
     @Override
     public int getCount() {
-        return 3; // Số lượng tab
+        return 4; // Số lượng tab
     }
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
                 return "Đang theo dõi";
-            case 1:
-                return "Người theo dõi";
             case 2:
+                return "Người theo dõi";
+            case 1:
                 return "Gợi í";
+            case 3:
+                return "Tào lao";
             default:
                 return null;
         }

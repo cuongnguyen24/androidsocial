@@ -18,17 +18,17 @@
             android:background="@color/black">
 
             <!-- Nút quay lại -->
-            <ImageButton
-                android:id="@+id/btnBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_back1"
-                android:contentDescription="Quay lại" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/btnBack"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:src="@drawable/ic_back1"-->
+<!--                android:contentDescription="Quay lại" />-->
 
             <!-- Tiêu đề -->
             <TextView
-                android:id="@+id/toolbarTitle"
+                android:id="@+id/toolbar_t"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -39,10 +39,10 @@
             <ImageButton
                 android:id="@+id/btnTimKiem"
                 android:layout_width="wrap_content"
-                android:layout_marginLeft="180dp"
+                android:layout_marginLeft="179dp"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/tkiem"
+                android:src="@drawable/peopleadd"
                 android:contentDescription="Quay lại" />
         </androidx.appcompat.widget.Toolbar>
 

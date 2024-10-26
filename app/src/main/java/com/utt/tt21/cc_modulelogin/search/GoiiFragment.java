@@ -48,7 +48,17 @@ public class GoiiFragment extends Fragment {
         recyclerView.addItemDecoration(dividerItemDecoration);
 
         userList = new ArrayList<>();
-        adapter = new ListAccountAdapter(getContext(),userList);
+        adapter = new ListAccountAdapter(getContext(), userList, new ListAccountAdapter.IClickListener() {
+            @Override
+            public void onclickUpdate(Account account) {
+
+            }
+
+            @Override
+            public void onCLickDelete(Account account) {
+
+            }
+        },3);
         recyclerView.setAdapter(adapter);
 
         // Initialize Firebase reference and authentication

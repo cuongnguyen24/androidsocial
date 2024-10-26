@@ -2,7 +2,6 @@ package com.utt.tt21.cc_modulelogin.messenger;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,19 +9,11 @@ import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.utt.tt21.cc_modulelogin.MainActivity;
 import com.utt.tt21.cc_modulelogin.R;
-import com.utt.tt21.cc_modulelogin.fragment.Notification;
-import com.utt.tt21.cc_modulelogin.home.Home;
-import com.utt.tt21.cc_modulelogin.search.Search;
 
 import java.util.ArrayList;
 import java.util.List;

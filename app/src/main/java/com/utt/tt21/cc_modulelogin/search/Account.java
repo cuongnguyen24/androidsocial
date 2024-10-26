@@ -3,6 +3,7 @@ package com.utt.tt21.cc_modulelogin.search;
 public class Account {
     private String userId;// Thêm thuộc tính userId
     private String nameProfile;
+    private String imgProfile;
 //    private int followers;
  //   private boolean following;
     private String desProfile;
@@ -10,9 +11,10 @@ public class Account {
         // Để Firebase sử dụng phản xạ
     }
 
-    public Account(String userId, String nameProfile, String desProfile) {
+    public Account(String userId, String nameProfile, String imgProfile,String desProfile) {
         this.userId = userId;
         this.nameProfile = nameProfile;
+        this.imgProfile = imgProfile;
 //        this.followers = followers;
    //     this.following = following;
         this.desProfile = desProfile;
@@ -38,6 +40,15 @@ public class Account {
 //    public void setFollowing(boolean following) {
 //        this.following = following;
 //    }
+
+
+    public String getImgProfile() {
+        return imgProfile;
+    }
+
+    public void setImgProfile(String imgProfile) {
+        this.imgProfile = imgProfile;
+    }
 
     public String getDesProfile() {
         return desProfile;

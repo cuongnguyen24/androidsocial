@@ -3,6 +3,7 @@ package com.utt.tt21.cc_modulelogin.search;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 
 import com.google.android.material.tabs.TabLayout;
@@ -36,8 +38,8 @@ public class Search extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private TabAdapter tabAdapter;
-    private ImageButton btnBack;
-
+    private ImageButton btnTimKiem;
+    private Toolbar toolbar;
     private Button btnGet, btnPush;
     private TextView tvShow;
 
@@ -58,11 +60,12 @@ public class Search extends Fragment {
         viewPager.setAdapter(tabAdapter);
         // Kết nối TabLayout với ViewPager
         tabLayout.setupWithViewPager(viewPager);
+
         // Xử lý sự kiện nút quay lại
-        btnBack.setOnClickListener(new View.OnClickListener() {
+        btnTimKiem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(getContext(),TimKiem.class));
             }
         });
 
@@ -71,9 +74,7 @@ public class Search extends Fragment {
     public void mapping(View view){
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
-        btnBack = view.findViewById(R.id.btnBack);
-
-
+         btnTimKiem = view.findViewById(R.id.btnTimKiem);
     }
 
 
@@ -81,7 +82,6 @@ public class Search extends Fragment {
     private void onClickPushData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("list_user");
-
         reference.setValue("");
     }
 
