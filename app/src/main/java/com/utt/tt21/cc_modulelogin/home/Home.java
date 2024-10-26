@@ -90,17 +90,13 @@ public class Home extends Fragment {
         init(view);
         list = new ArrayList<>();
         loadDataFromFirestore();
-
-
-
         adapter = new HomeAdapter(list, getContext());
         recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        Collections.shuffle(list);
         scrollScreen();
         btn_messenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(getContext(), messenger.class);
                 String fragment = "home";
                 intent.putExtra("fragment", fragment);
@@ -283,6 +279,7 @@ public class Home extends Fragment {
                         Log.e("FirebaseStorage", mUser.getUid());
 
                         Log.d("list",list.toString());
+                        adapter.notifyDataSetChanged();
                         Handler handler = new Handler();
                         handler.postDelayed(() -> {
                             adapter.notifyDataSetChanged(); // Cập nhật dữ liệu sau 5 giây
@@ -338,6 +335,8 @@ public class Home extends Fragment {
             }
         });
     }
+
+
 
 
 

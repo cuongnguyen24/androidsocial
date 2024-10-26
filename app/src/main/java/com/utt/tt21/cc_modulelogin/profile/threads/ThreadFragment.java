@@ -243,10 +243,11 @@ public class ThreadFragment extends Fragment {
                         });
                         homeModelList.setTimestamp(snapshotStatus.child("timestamp").getValue(String.class));
                         list.add(homeModelList);
+                        adapter.notifyDataSetChanged();
                         Handler handler = new Handler();
                         handler.postDelayed(() -> {
                             adapter.notifyDataSetChanged(); // Cập nhật dữ liệu sau 5 giây
-                        }, 3000);
+                        }, 1000);
                         refreshLayout.setRefreshing(false);
                     }
 

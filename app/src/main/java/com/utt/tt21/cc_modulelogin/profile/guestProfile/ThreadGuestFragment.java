@@ -152,10 +152,11 @@ public class ThreadGuestFragment extends Fragment {
                 homeModelList.setPostImage(imageLists);
                 homeModelList.setTimestamp(snapshotStatus.child("timestamp").getValue(String.class));
                 list.add(homeModelList);
+                adapter.notifyDataSetChanged();
                 Handler handler = new Handler();
                 handler.postDelayed(() -> {
                     adapter.notifyDataSetChanged(); // Cập nhật dữ liệu sau 5 giây
-                }, 3000);
+                }, 1000);
                 refreshLayout.setRefreshing(false);
             }
 
@@ -172,6 +173,7 @@ public class ThreadGuestFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
+
 
     private void init(View view) {
         recyclerView = view.findViewById(R.id.recyclerView);

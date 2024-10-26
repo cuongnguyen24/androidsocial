@@ -42,8 +42,7 @@ public class messenger extends AppCompatActivity {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(messenger.this, MainActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
         gestureDetector = new GestureDetector(this, new GestureListener());
