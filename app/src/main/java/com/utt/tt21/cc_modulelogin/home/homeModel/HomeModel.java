@@ -45,13 +45,6 @@ public class HomeModel {
         return userName;
     }
 
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
 
     public void setUserName(String userName) {
         this.userName = userName;
