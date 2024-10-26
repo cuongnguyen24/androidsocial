@@ -6,24 +6,24 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
+    <!-- Nút Đóng -->
     <ImageButton
-        android:id="@+id/btn_log_out"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
+        android:id="@+id/btn_close_guest"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_logout"
-        android:layout_gravity="end|top" /> <!-- Đặt ở góc phải trên cùng -->
-
-
+        android:src="@drawable/ic_close2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:layout_marginTop="35dp">
+        android:layout_marginTop="30dp">
 
         <!-- Nút chỉnh sửa và chia sẻ trang cá nhân -->
         <LinearLayout
@@ -80,7 +80,7 @@
             </LinearLayout>
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/img_avatar"
+                android:id="@+id/img_avatar_guest"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginEnd="0dp"
@@ -95,14 +95,25 @@
             android:layout_marginTop="16dp">
 
             <Button
-                android:id="@+id/btn_edit_profile"
+                android:id="@+id/btn_follow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button_border"
-                android:text="Chỉnh sửa trang cá nhân"
+                android:text="Theo dõi"
                 android:textColor="@color/white"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:layout_marginEnd="8dp"/>
+            <Button
+                android:id="@+id/btn_message"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_border"
+                android:text="Nhắn tin"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:layout_marginStart="8dp"/>
 
         </LinearLayout>
 
@@ -121,26 +132,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
-
-
-        <!-- Đường gạch ngang mờ bên dưới các tab -->
-<!--        <View-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="1dp"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            android:background="@android:color/white"-->
-<!--            android:alpha="0.3" />-->
-        <!-- Nút đăng xuất -->
-<!--        <Button-->
-<!--            android:id="@+id/btn_logout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="30dp"-->
-<!--            android:text="Log out"-->
-<!--            android:background="@drawable/button_border"-->
-<!--            android:textAllCaps="false"-->
-<!--            android:textColor="@color/white" />-->
-
-
     </LinearLayout>
 </FrameLayout>

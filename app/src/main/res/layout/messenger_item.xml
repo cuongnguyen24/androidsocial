@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="8dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="62dp"
+        android:layout_height="62dp"
+        android:id="@+id/profileImage"
+        android:src="@color/black" />
+    <LinearLayout
+        android:id="@+id/boxName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_toRightOf="@id/profileImage"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nameProfile"
+            android:text="Dabi"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/timeActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="2dp"
+            android:text="Active 4h ago"
+            android:textColor="@color/light_back1"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+        <TextView
+            android:id="@+id/lastMessenger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My last messenger"
+            android:layout_toRightOf="@id/profileImage"
+            android:layout_below="@id/boxName"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.2dp"
+        android:layout_below="@id/lastMessenger"
+        android:layout_marginTop="20dp"
+        android:background="@color/color_navigation"
+        />
+</RelativeLayout>

@@ -3,6 +3,7 @@ package com.utt.tt21.cc_modulelogin.profile;
 import static android.app.Activity.RESULT_OK;
 
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -21,8 +23,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
@@ -36,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.authentication.SignInActivity;
 import com.utt.tt21.cc_modulelogin.profile.accountmanagement.EditProfileActivity;
+import com.utt.tt21.cc_modulelogin.profile.accountmanagement.ImageDisplayActivity;
 import com.utt.tt21.cc_modulelogin.profile.threads.SectionsPagerAdapter;
 
 import java.io.IOException;
@@ -45,10 +50,10 @@ public class Profile extends Fragment {
     public static final int MY_REQUEST_CODE = 10;
     private ImageView imgAvartar;
     private TextView tvName, tvEmail, accountInfo, tvFollowers;
-
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SectionsPagerAdapter sectionsPagerAdapter;
+    private ImageButton imgBtnLogout;
 
 
     private ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
@@ -94,16 +99,16 @@ public class Profile extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
 
         // Khởi tạo nút đăng xuất
-        Button btnLogout = view.findViewById(R.id.btn_logout);
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut(); // Đăng xuất khỏi Firebase
-                Intent intent = new Intent(getActivity(), SignInActivity.class); // Chuyển về màn hình đăng nhập
-                startActivity(intent);
-                getActivity().finishAffinity(); // Đóng tất cả các activity trước đó
-            }
-        });
+//        Button btnLogout = view.findViewById(R.id.btn_logout);
+//        btnLogout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                FirebaseAuth.getInstance().signOut(); // Đăng xuất khỏi Firebase
+//                Intent intent = new Intent(getActivity(), SignInActivity.class); // Chuyển về màn hình đăng nhập
+//                startActivity(intent);
+//                getActivity().finishAffinity(); // Đóng tất cả các activity trước đó
+//            }
+//        });
 
         // Khởi tạo nút chỉnh sửa trang cá nhân
         Button btnEditProfile = view.findViewById(R.id.btn_edit_profile);
@@ -115,6 +120,44 @@ public class Profile extends Fragment {
                 startActivity(intent);
             }
         });
+
+        imgBtnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Xác nhận đăng xuất")
+                        .setMessage("Bạn có chắc chắn muốn đăng xuất không?")
+                        .setPositiveButton("Đăng xuất", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FirebaseAuth.getInstance().signOut(); // Đăng xuất khỏi Firebase
+                                Intent intent = new Intent(getActivity(), SignInActivity.class); // Chuyển về màn hình đăng nhập
+                                startActivity(intent);
+                                getActivity().finishAffinity(); // Đóng tất cả các activity trước đó
+                            }
+                        })
+                        .setNegativeButton("Hủy", null) // Nút Hủy để đóng hộp thoại
+                        .show();
+            }
+        });
+
+        imgAvartar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Lấy URL của ảnh đại diện từ FirebaseUser
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    Uri photoUrl = user.getPhotoUrl();
+                    //Toast.makeText(getActivity(), "Đường dẫn ảnh: " + photoUrl.toString(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getActivity(), ImageDisplayActivity.class); // Thay thế bằng tên Activity hiển thị ảnh của bạn
+                    if (photoUrl != null) {
+                        intent.putExtra("imageUrl", photoUrl.toString()); // Chuyển URL ảnh vào intent
+                    }
+                    startActivity(intent); // Khởi chạy Activity hiển thị ảnh
+                }
+            }
+        });
+
 
         // Sự kiện gọi dữ liệu user
         showUserInformation();
@@ -129,7 +172,7 @@ public class Profile extends Fragment {
         tvFollowers = view.findViewById(R.id.followers);
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager = view.findViewById(R.id.view_pager);
-
+        imgBtnLogout = view.findViewById(R.id.btn_log_out);
     }
 
     private void showUserInformation() {
@@ -150,9 +193,6 @@ public class Profile extends Fragment {
                     String nameProfile = dataSnapshot.child("nameProfile").getValue(String.class);
                     String emailProfile = dataSnapshot.child("emailProfile").getValue(String.class);
                     String desProfile = dataSnapshot.child("desProfile").getValue(String.class);
-                    //followers kiểu long
-                    Long followersLong = dataSnapshot.child("followers").getValue(Long.class);
-                    String followers = String.valueOf(followersLong);
 
                     // Thiết lập nameProfile vào tvName
                     if (nameProfile != null) {
@@ -175,8 +215,12 @@ public class Profile extends Fragment {
                         accountInfo.setText(desProfile); // Thiết lập văn bản cho account_info
                     }
 
-                    if (followers != null) {
-                        tvFollowers.setText( followers +" người theo dõi");
+                    //Lấy và đếm số lượng người theo dõi từ nhánh "followers"
+                    if (dataSnapshot.hasChild("followers")) {
+                        long followersCount = dataSnapshot.child("followers").getChildrenCount();
+                        tvFollowers.setText(followersCount + " người theo dõi");
+                    } else {
+                        tvFollowers.setText("0 người theo dõi");
                     }
                 }
             }

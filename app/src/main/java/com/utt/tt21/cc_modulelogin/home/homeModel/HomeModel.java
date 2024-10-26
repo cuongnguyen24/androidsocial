@@ -9,7 +9,9 @@ public class HomeModel {
     private List<String> postImage;
     private String uid;
     private String userID;
+
     private String idStatus;
+
     private String content;
 
     private int likeCount, cmtCount, reupCount, postCount;
@@ -41,6 +43,14 @@ public class HomeModel {
 
     public String getUserName() {
         return userName;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public void setUserName(String userName) {

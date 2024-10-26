@@ -215,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
                     index++;
                 }
                 idStatus = userid + "_" + index; // Tạo idStatus mới
-
                 // Đẩy dữ liệu vào node con mới
                 reference.child(userid).child(idStatus).child("content").setValue(edtContent);
                 reference.child(userid).child(idStatus).child("timestamp").setValue(random.nextInt(25) +"h");
@@ -235,53 +234,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void readDatabase() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("list_status");
 
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // Duyệt qua các phần tử trong list_status
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    // Duyệt qua các trạng thái của từng user
-                    for (DataSnapshot statusSnapshot : userSnapshot.getChildren()) {
-                        // Lấy userid từ QuangTest
-                        String userId = userSnapshot.getKey(); // Lấy key của user, tương ứng với userid
-                        // Nếu bạn muốn lấy nội dung khác từ statusSnapshot
-                        String content = statusSnapshot.child("content").getValue(String.class);
-
-                        // Hiển thị userid và content
-                        tv_nickname.setText("UserID: " + userId + "\nContent: " + content);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Xử lý lỗi nếu cần
-            }
-        });
-    }
-
-    private void onClickGetData() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("quang/name");
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String value = snapshot.getValue(String.class);
-
-                tv_nickname.setText(value);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
     private void setCheckedIcon(int idFragment) {
         switch (idFragment)
