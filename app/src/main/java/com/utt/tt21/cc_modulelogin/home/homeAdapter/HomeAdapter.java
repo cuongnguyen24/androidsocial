@@ -82,15 +82,17 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
 
             context.startActivity(intent);
         });
-        if(userID.equals(holder.mUser.getUid()))
+        if(userID != null)
         {
-            holder.btnMore.setVisibility(View.VISIBLE);
+            String mUser = holder.mUser.getUid();
+            if(userID.equals(mUser))
+            {
+                holder.btnMore.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.btnMore.setVisibility(View.INVISIBLE);
+            }
         }
-        else {
-            holder.btnMore.setVisibility(View.INVISIBLE);
-        }
-
-
         holder.btnMore.setOnClickListener(v -> {
 
             // Xu ly trong day
