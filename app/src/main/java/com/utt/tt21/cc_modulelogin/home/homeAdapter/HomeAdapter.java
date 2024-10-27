@@ -302,6 +302,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         LikeListAdapter adapter = new LikeListAdapter(context, likeList);
         recyclerView.setAdapter(adapter);
         dialog.show();
+    }
     private void deletePost(String userId, String statusId) {
         // Khởi tạo Firebase Database
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("list_status").child(userId).child(statusId);

@@ -171,13 +171,12 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
             }
         });
 
-        // Lấy userId từ account
-       String userId = account.getUserId();
-
         // Gọi phương thức loadUserAvatar để tải ảnh đại diện
       //  loadUserAvatar(userId, holder.accountImage);
-        loadUserAvatar(userId, holder.accountImage);
+       // loadUserAvatar(userId, holder.accountImage);
 
+        // Lấy userId từ account
+        String userId = account.getUserId();
         // Phần Cường thêm để xem profile của guest
         // Thêm OnClickListener cho accountName và accountImage
         View.OnClickListener profileClickListener = v -> {
@@ -185,7 +184,6 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
             intent.putExtra("uid", userId); // Truyền UID vào intent
             mContext.startActivity(intent);
         };
-
         holder.accountName.setOnClickListener(profileClickListener);
         holder.accountImage.setOnClickListener(profileClickListener);
     }

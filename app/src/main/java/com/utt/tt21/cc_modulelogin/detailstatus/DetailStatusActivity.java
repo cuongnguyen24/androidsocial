@@ -285,6 +285,7 @@ public class DetailStatusActivity extends AppCompatActivity {
         tvUserName.setText(comment.getUserName());
         TextView tvCommentContent = commentView.findViewById(R.id.tvCommentContent);
         tvCommentContent.setText(comment.getContent()); // Gán nội dung bình luận
+        //tim
         ImageButton imgLike = commentView.findViewById(R.id.btnLike);
         TextView txtCountLike = commentView.findViewById(R.id.count_Like);
         txtCountLike.setText(String.valueOf(comment.getCountLike()));

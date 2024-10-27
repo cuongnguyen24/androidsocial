@@ -187,8 +187,6 @@ public class Home extends Fragment {
                         homeModelList.setUserID(snapshotList.getKey()); // Set userID
                         homeModelList.setIdStatus(snapshot.getKey());
 
-
-
                         //Lay anh cho profile trong storage
 
                         FirebaseStorage storage = FirebaseStorage.getInstance();

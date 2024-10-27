@@ -188,35 +188,5 @@ public class GoiiFragment extends Fragment {
         BanBeAdapter adapter = new BanBeAdapter(getContext(), followingUsers);
         recyclerView.setAdapter(adapter);
     }
-//    private void fetchUserData(View view) {
-//        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                List<Account> userList = new ArrayList<>();
-//                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-//                    String userId = userSnapshot.getKey(); // Lấy user ID
-//                    Account account = userSnapshot.getValue(Account.class);
-//                    if (account != null) {
-//                        account.setUserId(userId); // Cập nhật userId vào đối tượng Account
-//                        userList.add(account);
-//                    }
-//                }
-//                setupRecyclerView(userList, view); // Truyền view vào
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                // Xử lý lỗi nếu cần
-//            }
-//        });
-//    }
-//    private void setupRecyclerView(List<Account> userList, View view) {
-//        // khởi tạo recyclerView và UserAdapter
-//        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//
-//        ListAccountAdapter adapter = new ListAccountAdapter(this,userList);
-//
-//        recyclerView.setAdapter(adapter);
-//    }
+
 }

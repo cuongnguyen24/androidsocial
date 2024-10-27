@@ -98,7 +98,6 @@ public class TimKiem extends AppCompatActivity {
                             account.setUserId(snapshot.getKey());
                             if (account != null &&!(account.getUserId().equals(userLogin)) && !hasFollowers && account.getNameProfile() != null
                                     && account.getNameProfile().toLowerCase().contains(query)){
-
                                 userList.add(account);
                             }
 

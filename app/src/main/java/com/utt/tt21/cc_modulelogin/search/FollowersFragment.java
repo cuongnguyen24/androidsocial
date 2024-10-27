@@ -65,7 +65,7 @@ public class FollowersFragment extends Fragment {
         adapter = new ListAccountAdapter(getContext(), userList, new ListAccountAdapter.IClickListener() {
             @Override
             public void onclickUpdate(List<Account> account) {
-                onUpdate(account);
+
             }
 
             @Override
@@ -103,14 +103,13 @@ public class FollowersFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         userList.clear();
-                        userList.clear();
                         List<String> followingList = new ArrayList<>();
 
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             String userId = snapshot.getKey(); // Lấy user ID
                             followingList.add(userId);
                         }
-                        userList = getUserbyID(followingList, query);
+                        getUserbyID(followingList, query);
                         if(followingList.size() == 0){
                             updateFollowingRecyclerView(new ArrayList<>());
                         }
@@ -127,14 +126,15 @@ public class FollowersFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userList.clear();
-                List<String> followingList = new ArrayList<>();
+                List<String> followerList = new ArrayList<>();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String userId = snapshot.getKey(); // Lấy user ID
-                    followingList.add(userId);
+                    followerList.add(userId);
                 }
-                userList = getUserbyID(followingList, null);
-                if(followingList.size() == 0){
+                // lay thong tin
+                getUserbyID(followerList, null);
+                if(followerList.size() == 0){
                     updateFollowingRecyclerView(new ArrayList<>());
                 }
             }
@@ -173,7 +173,6 @@ public class FollowersFragment extends Fragment {
                         }
                         if(followerId.equals(followers.get(followers.size() - 1))){
                             updateFollowingRecyclerView(acc);
-
                         }
 
                     }
@@ -196,7 +195,6 @@ public class FollowersFragment extends Fragment {
             @Override
             public void onclickUpdate(List<Account> account) {
             }
-
             @Override
             public void onCLickDelete(Account account) {
                     onClickDelete(account);
@@ -266,12 +264,11 @@ public class FollowersFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String> followingList = new ArrayList<>();
-
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String userId = snapshot.getKey(); // Lấy user ID
                     followingList.add(userId);
                 }
-                userList = getUserbyID(followingList, null);
+                getUserbyID(followingList, null);
                 adapter.notifyDataSetChanged();
             }
 
@@ -281,9 +278,6 @@ public class FollowersFragment extends Fragment {
             }
         });
 
-    }
-    private void onUpdate(List<Account> account){
-        updateFollowingRecyclerView(account);
     }
 
 }
