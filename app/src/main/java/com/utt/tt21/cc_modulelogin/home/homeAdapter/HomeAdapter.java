@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,10 +24,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.utt.tt21.cc_modulelogin.R;
 
 import com.utt.tt21.cc_modulelogin.detailstatus.DetailStatusActivity;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
+import com.utt.tt21.cc_modulelogin.post.EditPostActivity;
 import com.utt.tt21.cc_modulelogin.profile.guestProfile.GuestProfileActivity;
 import com.utt.tt21.cc_modulelogin.profile.profileModel.ImageItems;
 import com.utt.tt21.cc_modulelogin.search.Account;
@@ -188,10 +194,27 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
             }
         }
         holder.btnMore.setOnClickListener(v -> {
-
-            // Xu ly trong day
-
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Chọn hành động")
+                    .setItems(new CharSequence[]{"Sửa", "Xóa"}, (dialog, which) -> {
+                        if (which == 0) {
+                            // Người dùng chọn sửa
+                            Intent intent = new Intent(context, EditPostActivity.class);
+                            intent.putExtra("uid", currentItem.getUserID());
+                            intent.putExtra("status_id", currentItem.getIdStatus());
+                            intent.putExtra("content", currentItem.getContent());
+                            intent.putExtra("username", currentItem.getUserName());
+                            // Truyền URL của ảnh đại diện
+                            intent.putExtra("profile_image", currentItem.getProfileImage());
+                            context.startActivity(intent);
+                        } else if (which == 1) {
+                            // Hiện hộp thoại xác nhận khi xóa
+                            showDeleteConfirmationDialog(currentItem.getUserID(), currentItem.getIdStatus());
+                        }
+                    })
+                    .show();
         });
+
 
         // Xử lý sự kiện khi nhấn vào bài viết
         holder.itemView.setOnClickListener(v -> {
@@ -279,6 +302,62 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         LikeListAdapter adapter = new LikeListAdapter(context, likeList);
         recyclerView.setAdapter(adapter);
         dialog.show();
+    private void deletePost(String userId, String statusId) {
+        // Khởi tạo Firebase Database
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("list_status").child(userId).child(statusId);
+
+        // Xóa bài viết khỏi Realtime Database
+        databaseRef.removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FirebaseDatabase", "Post deleted successfully.");
+                    // Xóa ảnh khỏi Firebase Storage
+                    deleteImagesFromStorage(userId, statusId);
+                    Toast.makeText(context, "Bài viết đã được xóa.", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(exception -> {
+                    Log.e("FirebaseDatabase", "Error deleting post", exception);
+                    Toast.makeText(context, "Lỗi khi xóa bài viết.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    // Phương thức để hiển thị hộp thoại xác nhận xóa
+    private void showDeleteConfirmationDialog(String userId, String statusId) {
+        AlertDialog.Builder confirmationBuilder = new AlertDialog.Builder(context);
+        confirmationBuilder.setTitle("Xác nhận xóa")
+                .setMessage("Bạn có chắc chắn muốn xóa bài viết này không?")
+                .setPositiveButton("Có", (dialog, which) -> {
+                    // Gọi phương thức xóa bài viết
+                    deletePost(userId, statusId);
+                })
+                .setNegativeButton("Không", (dialog, which) -> {
+                    dialog.dismiss(); // Đóng hộp thoại
+                })
+                .show();
+    }
+
+    private void deleteImagesFromStorage(String userId, String statusId) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        String[] parts = statusId.split("_");
+        String idImgStt = parts[1];
+
+        // Xây dựng đường dẫn đến thư mục ảnh
+        String imagesFolderPath = "users/" + userId + "/IdImgStt_" + idImgStt + "/";
+        StorageReference imagesFolderRef = storage.getReference(imagesFolderPath);
+
+        // Xóa tất cả các ảnh trong thư mục
+        imagesFolderRef.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference item : listResult.getItems()) {
+                item.delete()
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("FirebaseStorage", "Image deleted: " + item.getName());
+                        })
+                        .addOnFailureListener(exception -> {
+                            Log.e("FirebaseStorage", "Error deleting image", exception);
+                        });
+            }
+        }).addOnFailureListener(exception -> {
+            Log.e("FirebaseStorage", "Error listing images", exception);
+        });
     }
     // Cường: thêm setonclick để vào trang profile guest
     private void setOnClickListener(HomeHolder holder, int position) {
