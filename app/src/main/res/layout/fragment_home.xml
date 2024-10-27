@@ -39,6 +39,7 @@
                     android:layout_centerVertical="true"
                     android:textSize="40sp"
                     android:textStyle="bold"/>
+
             </RelativeLayout>
         </Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

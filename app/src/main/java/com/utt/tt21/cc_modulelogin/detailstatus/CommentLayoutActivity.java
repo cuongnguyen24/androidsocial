@@ -295,7 +295,6 @@ public class CommentLayoutActivity extends AppCompatActivity {
     }
     private void fetchUserName(String userId) {
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("nameProfile");
-
         // Lấy dữ liệu tên người dùng
         databaseRef.get().addOnSuccessListener(dataSnapshot -> {
             if (dataSnapshot.exists()) {

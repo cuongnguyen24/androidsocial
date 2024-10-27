@@ -6,14 +6,15 @@ public class Comment {
     private String userName;
     private String commentId;
     private String statusId; // Thêm thuộc tính statusId
-
+    private int countLike;
     // Constructor
-    public Comment(String content, String userId, String userName, String commentId, String statusId) {
+    public Comment(String content, String userId, String userName, String commentId, String statusId, int countLike) {
         this.content = content;
         this.userId = userId;
         this.userName = userName;
         this.commentId = commentId;
         this.statusId = statusId; // Gán giá trị cho statusId
+        this.countLike = countLike;
     }
 
     // Getter
@@ -37,6 +38,10 @@ public class Comment {
         return statusId;
     }
 
+    public int getCountLike() {
+        return countLike;
+    }
+
     public void setContent(String content) {
         this.content = content;
     }
@@ -47,5 +52,9 @@ public class Comment {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public void setCountLike(int countLike) {
+        this.countLike = countLike;
     }
 }

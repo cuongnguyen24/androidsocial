@@ -1,5 +1,6 @@
 package com.utt.tt21.cc_modulelogin.messenger;
 
+
 import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.content.Context;
@@ -17,11 +18,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+
 import android.view.inputmethod.InputMethodManager;
+
+
+
+import android.widget.Toast;
+
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,8 +45,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
 
-import org.w3c.dom.Text;
 
+import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 

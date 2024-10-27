@@ -2,7 +2,9 @@ package com.utt.tt21.cc_modulelogin.messenger.chat;
 
 import android.app.Activity;
 import android.content.Context;
+
 import android.content.Intent;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,6 +23,9 @@ import com.utt.tt21.cc_modulelogin.messenger.MessengerUserModel;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+
+import java.util.List;
 
 public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapter.ChatRecyclerHolder> {
     List<ChatMessageModel> list;
@@ -38,6 +44,7 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
     }
 
     @Override
+
     public void onBindViewHolder(@NonNull ChatRecyclerAdapter.ChatRecyclerHolder holder, int position) {
         if(list.get(position).getSenderId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
             holder.leftChatView.setVisibility(View.GONE);

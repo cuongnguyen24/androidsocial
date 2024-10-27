@@ -6,15 +6,16 @@
     <!-- Ô tìm kiếm -->
     <EditText
         android:layout_marginTop="10dp"
-        android:id="@+id/searchBox"
+        android:id="@+id/edtTimKiem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:background="@drawable/rounded_button"
-        android:drawableStart="@drawable/tkiem"
-        android:drawablePadding="8dp"
-        android:hint="Tìm kiếm"
-        android:padding="12dp" />
+        android:textColor="@color/white"
+        android:hint="Tìm kiếm ..."
+        android:textColorHint="@color/light_back1"
+        android:background="@drawable/rounded_edittext_messenger"
+        android:drawableLeft="@drawable/ic_search"
+        android:padding="9dp" />
 
     <!-- Danh sách người theo dõi -->
     <androidx.recyclerview.widget.RecyclerView

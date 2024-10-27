@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/black">
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back1"
+            android:contentDescription="Quay lại" />
+        <TextView
+            android:id="@+id/toolbar_t"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:textColor="#F0EDED"
+            android:text="Thêm bạn"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </androidx.appcompat.widget.Toolbar>
+    <EditText
+        android:id="@+id/edtTimKiem"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:hint="Tìm kiếm ..."
+        android:textColorHint="@color/light_back1"
+        android:background="@drawable/rounded_edittext_messenger"
+        android:paddingLeft="10dp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:drawableLeft="@drawable/ic_search"
+        android:layout_marginBottom="10dp"/>
+    <TextView
+        android:text="* Tài khoản được đề xuất"
+        android:textColor="@color/light_back1"
+        android:textStyle="italic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></TextView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

@@ -89,7 +89,6 @@ public class Home extends Fragment {
         recyclerView.setAdapter(adapter);
         Collections.shuffle(list);
         scrollScreen();
-        
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
