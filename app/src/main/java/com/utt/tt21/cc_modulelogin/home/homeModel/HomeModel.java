@@ -79,7 +79,8 @@ public class HomeModel {
     }
 
     public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
+        if (likeCount != 0)
+            this.likeCount = likeCount;
     }
 
     public int getCmtCount() {
