@@ -4,14 +4,19 @@ package com.utt.tt21.cc_modulelogin.messenger;
 import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,135 +43,211 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
+import com.utt.tt21.cc_modulelogin.search.Account;
+import com.utt.tt21.cc_modulelogin.search.BanBeAdapter;
 
 
 import org.w3c.dom.Text;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Messenger extends Fragment {
-    private ImageButton btn_back;
-    private RecyclerView recyclerView;
-    private MessengerUserAdapter adapter;
-    private List<MessengerUserModel> list ;
-    private EditText search;
-    private TextView tvName;
-    private FirebaseUser mUser;
-
-    public Messenger() {
-        // Required empty public constructor
-    }
-
+    private DatabaseReference userRef;
+    private FirebaseAuth mAuth;
+    List<Account> userList ;
+    BanBeAdapter adapter;
+    String userLogin;
+    RecyclerView recyclerView;
+    EditText edtTimKiem;
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.activity_messenger, container, false);
-        // Khởi tạo views
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_follower, container, false);
 
-    }
+        // khởi tạo recyclerView và UserAdapter
+        recyclerView=view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        edtTimKiem = view.findViewById(R.id.edtTimKiem);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initId(view);
+        // tạo dòng kẻ phân cách item
+        DividerItemDecoration dividerItemDecoration= new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
+        // (Tùy chọn) Bạn có thể tùy chỉnh divider với một drawable
+        Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), R.drawable.custom_divider);
+        dividerItemDecoration.setDrawable(dividerDrawable);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
-
-
-
-        list = new ArrayList<>();
-        loadData();
-        adapter = new MessengerUserAdapter(list, this.getActivity());
-        Log.e("listMessenger", list.toString());
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-        recyclerView.setAdapter(adapter);
-
-        search.setOnEditorActionListener((textView, actionId, event) -> {
-
-            if (actionId == EditorInfo.IME_ACTION_DONE ||
-                    actionId == EditorInfo.IME_ACTION_SEND ||
-                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-
-                // Xử lý sự kiện nhấn Enter
-                String inputText = search.getText().toString();
-                if(inputText.isEmpty())
-                {
-                    loadAllData();
-                }
-                else {
-                    loadDataSearch(inputText);
-                }
-                return true;
-            }
-            return false;
-        });
-
-        getMyUserName();
-    }
-
-    private void loadAllData() {
-        List<MessengerUserModel> listAll = new ArrayList<>();
-        listAll.clear();
-        listAll = list;
-        adapter = new MessengerUserAdapter(listAll, this.getActivity());
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void getMyUserName() {
-        FirebaseDatabase databaseGetName = FirebaseDatabase.getInstance();
-        DatabaseReference referenceGetName = databaseGetName.getReference("users").child(mUser.getUid()).child("nameProfile");
-        tvName.setText("Anonymous");
-        referenceGetName.addValueEventListener(new ValueEventListener() {
+        edtTimKiem.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshotGetName) {
-                tvName.setText(snapshotGetName.getValue(String.class));
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchUsers(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        userList = new ArrayList<>();
+        adapter = new BanBeAdapter(getContext(),userList);
+        recyclerView.setAdapter(adapter);
+        mAuth = FirebaseAuth.getInstance();
+        userLogin = mAuth.getCurrentUser().getUid();
+        // Khởi tạo tham chiếu và xác thực Firebase
+        userRef = FirebaseDatabase.getInstance().getReference("users");
+        // Tải người dùng từ Firebase
+        loadUsers();
+        return view;
+    }
+    private void searchUsers(String query) {
+        userRef.orderByChild("nameProfile")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        userList.clear();
+                        Map<String, Boolean> following =  new HashMap<>();
+                        Object test =  dataSnapshot.child("followings").getValue();
+                        if(dataSnapshot.hasChild("followings") && (test instanceof java.util.HashMap)){
+                            following =  (Map<String, Boolean>) dataSnapshot.child("followings").getValue() ;
+                        }
+                        if (following == null) {
+                            following = new HashMap<>();
+                        }
+                        String id = following.size() > 0 ? following.keySet().toArray()[following.size() - 1].toString() : "";
+                        List<Account> friendsList = new ArrayList<>();
+
+                        // Lấy dữ liệu của tất cả những người được người dùng này theo dõi
+                        for (String followingId : following.keySet()) {
+                            userRef.child(followingId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot followingUserSnapshot) {
+                                    // Kiểm tra nếu người đó cũng theo dõi lại người dùng hiện tại
+                                    if (followingUserSnapshot.child("followings").hasChild(userLogin)) {
+                                        Account account = followingUserSnapshot.getValue(Account.class);
+                                        account.setUserId(followingUserSnapshot.getKey());
+                                        if(query != null){
+                                            if (account != null && account.getNameProfile() != null
+                                                    && account.getNameProfile().toLowerCase().contains(query)){
+                                                friendsList.add(account);
+                                            }
+                                        }else
+                                            friendsList.add(account);
+                                    }
+                                    if (followingId.equals(id)) {
+                                        updateFollowingRecyclerView(friendsList);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Handle possible errors
+                    }
+                });
+    }
+    //Chức năng tải người dùng từ Firebase và cập nhật RecyclerView
+    public void loadUsers() {
+        userRef.child(userLogin).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userList.clear();
+                Map<String, Boolean> following =  new HashMap<>();
+                Object test =  dataSnapshot.child("followings").getValue();
+                if(dataSnapshot.hasChild("followings") && (test instanceof java.util.HashMap)){
+                    following =  (Map<String, Boolean>) dataSnapshot.child("followings").getValue() ;
+                }
+                if (following == null) {
+                    following = new HashMap<>();
+                }
+                String id = following.size() > 0 ? following.keySet().toArray()[following.size() - 1].toString() : "";
+                List<Account> friendsList = new ArrayList<>();
+
+                // Lấy dữ liệu của tất cả những người được người dùng này theo dõi
+                for (String followingId : following.keySet()) {
+                    userRef.child(followingId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot followingUserSnapshot) {
+                            // Kiểm tra nếu người đó cũng theo dõi lại người dùng hiện tại
+                            if (followingUserSnapshot.child("followings").hasChild(userLogin)) {
+                                Account account = followingUserSnapshot.getValue(Account.class);
+                                account.setUserId(followingUserSnapshot.getKey());
+                                friendsList.add(account);
+                            }
+                            if (followingId.equals(id)) {
+                                updateFollowingRecyclerView(friendsList);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle possible errors
             }
         });
     }
 
-    private void loadDataSearch(String inputText) {
-        List<MessengerUserModel> listSearch = new ArrayList<>();
-        listSearch.clear();
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getName().toLowerCase().contains(inputText.toLowerCase())) {
-                listSearch.add(list.get(i));
-            }
-        }
-        adapter = new MessengerUserAdapter(listSearch, this.getActivity());
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+
+    private void updateFollowingRecyclerView(List<Account> followingUsers) {
+        // Giả sử bạn đã có RecyclerView và Adapter để hiển thị danh sách
+        BanBeAdapter adapter = new BanBeAdapter(getContext(), followingUsers);
         recyclerView.setAdapter(adapter);
-
     }
-
-    private void loadData() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-
-        list.add(new MessengerUserModel("1", "2", "Alice", "", "See you later!", "10:30 AM"));
-        list.add(new MessengerUserModel("1", "2","alibu", "", "See you later!", "10:30 AM"));
-        list.add(new MessengerUserModel("1", "2", "Binh", "", "See you later!", "10:30 AM"));
-        list.add(new MessengerUserModel("1", "2", "Nam", "", "See you later!", "10:30 AM"));
-        list.add(new MessengerUserModel("1", "2", "Khanh", "", "See you later!", "10:30 AM"));
-        list.add(new MessengerUserModel("1", "2", "Quang", "", "See you later!", "10:30 AM"));
-    }
-    private void initId(View view) {
-        btn_back = view.findViewById(R.id.btn_back);
-        recyclerView = view.findViewById(R.id.recyclerViewMessenger);
-        search = view.findViewById(R.id.ed_search);
-        tvName = view.findViewById(R.id.tv_name);
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        mUser = auth.getCurrentUser();
-    }
+//    private void fetchUserData(View view) {
+//        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                List<Account> userList = new ArrayList<>();
+//                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+//                    String userId = userSnapshot.getKey(); // Lấy user ID
+//                    Account account = userSnapshot.getValue(Account.class);
+//                    if (account != null) {
+//                        account.setUserId(userId); // Cập nhật userId vào đối tượng Account
+//                        userList.add(account);
+//                    }
+//                }
+//                setupRecyclerView(userList, view); // Truyền view vào
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                // Xử lý lỗi nếu cần
+//            }
+//        });
+//    }
+//    private void setupRecyclerView(List<Account> userList, View view) {
+//        // khởi tạo recyclerView và UserAdapter
+//        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//
+//        ListAccountAdapter adapter = new ListAccountAdapter(this,userList);
+//
+//        recyclerView.setAdapter(adapter);
+//    }
 }

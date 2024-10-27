@@ -317,12 +317,23 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
 
     private void deletePost(String userId, String statusId) {
         // Khởi tạo Firebase Database
-        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("list_status").child(userId).child(statusId);
+        DatabaseReference statusRef = FirebaseDatabase.getInstance().getReference("list_status").child(userId).child(statusId);
+        DatabaseReference commentRef = FirebaseDatabase.getInstance().getReference("list_comment").child(userId).child(statusId);
 
         // Xóa bài viết khỏi Realtime Database
-        databaseRef.removeValue()
+        statusRef.removeValue()
                 .addOnSuccessListener(aVoid -> {
                     Log.d("FirebaseDatabase", "Post deleted successfully.");
+
+                    // Xóa comment liên quan
+                    commentRef.removeValue()
+                            .addOnSuccessListener(aVoid1 -> {
+                                Log.d("FirebaseDatabase", "Comments deleted successfully.");
+                            })
+                            .addOnFailureListener(exception -> {
+                                Log.e("FirebaseDatabase", "Error deleting comments", exception);
+                            });
+
                     // Xóa ảnh khỏi Firebase Storage
                     deleteImagesFromStorage(userId, statusId);
                     Toast.makeText(context, "Bài viết đã được xóa.", Toast.LENGTH_SHORT).show();

@@ -4,12 +4,13 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="8dp"
-    android:background="@color/black">
+    android:background="@color/black"
+    android:id="@+id/messengerItemClick">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="62dp"
         android:layout_height="62dp"
-        android:id="@+id/profileImage"
+        android:id="@+id/img_avatar"
         android:src="@drawable/profile"
         app:civ_border_width="2dp"
         app:civ_border_color="@color/light_back1"/>
@@ -18,12 +19,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_toRightOf="@id/profileImage"
+        android:layout_toRightOf="@id/img_avatar"
         >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/nameProfile"
+            android:id="@+id/name"
             android:text="Dabi"
             android:textStyle="bold"
             android:textSize="18sp"
@@ -44,11 +45,11 @@
             android:textStyle="bold" />
     </LinearLayout>
         <TextView
-            android:id="@+id/lastMessenger"
+            android:id="@+id/fullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="My last messenger"
-            android:layout_toRightOf="@id/profileImage"
+            android:layout_toRightOf="@id/img_avatar"
             android:layout_below="@id/boxName"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
@@ -58,7 +59,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0.2dp"
-        android:layout_below="@id/lastMessenger"
+        android:layout_below="@id/fullName"
         android:layout_marginTop="20dp"
         android:background="@color/color_navigation"
         />

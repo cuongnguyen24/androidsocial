@@ -28,18 +28,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
-import com.utt.tt21.cc_modulelogin.messenger.MessengerUserAdapter;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-
-
-
 
 
 import java.util.List;
@@ -57,6 +49,7 @@ public class ChatActivity extends AppCompatActivity {
     private ChatRecyclerAdapter adapter;
     private RecyclerView recyclerView;
     public List<ChatMessageModel> chatList;
+    private FirebaseUser mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,8 +97,29 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        //DatabaseReference reference = FirebaseDatabase.getInstance().getReference("ChatData").child("ChatRoom").child(ChatRoom).child("chats");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("ChatData").child("ChatRoom").child(ChatRoom).child("chats");
+        reference.orderByChild("timestamp").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                chatList = new ArrayList<>();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    ChatMessageModel chatMessageModel = postSnapshot.getValue(ChatMessageModel.class);
+                    chatList.add(chatMessageModel);
 
+                }
+
+//
+                adapter = new ChatRecyclerAdapter(chatList, ChatActivity.this,mUser.getUid());
+                recyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
 
@@ -199,6 +213,8 @@ public class ChatActivity extends AppCompatActivity {
         btnMore = findViewById(R.id.btnMore);
         edtMessage = findViewById(R.id.edtMessage);
         btnSend = findViewById(R.id.btnSend);
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerViewChat);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        mUser = auth.getCurrentUser();
     }
 }

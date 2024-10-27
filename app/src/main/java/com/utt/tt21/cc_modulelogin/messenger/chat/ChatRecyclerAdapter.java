@@ -3,36 +3,28 @@ package com.utt.tt21.cc_modulelogin.messenger.chat;
 import android.app.Activity;
 import android.content.Context;
 
-import android.content.Intent;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.utt.tt21.cc_modulelogin.R;
-import com.utt.tt21.cc_modulelogin.messenger.MessengerUserModel;
-
-import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
-
 
 import java.util.List;
 
 public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapter.ChatRecyclerHolder> {
     List<ChatMessageModel> list;
     Context context;
-    public ChatRecyclerAdapter(List<ChatMessageModel> list, Activity context) {
-        list = list;
+    String uid;
+    public ChatRecyclerAdapter(List<ChatMessageModel> list, Activity context, String uid) {
+        this.list = list;
         this.context = context;
+        this.uid = uid;
     }
 
 
@@ -46,13 +38,17 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
     @Override
 
     public void onBindViewHolder(@NonNull ChatRecyclerAdapter.ChatRecyclerHolder holder, int position) {
-        if(list.get(position).getSenderId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+        if(list.get(position).getSenderId().equals(uid)) {
+            holder.leftLayout.setVisibility(View.GONE);
+            holder.rightLayout.setVisibility(View.VISIBLE);
             holder.leftChatView.setVisibility(View.GONE);
             holder.rightChatView.setVisibility(View.VISIBLE);
             holder.rightChatView.setText(list.get(position).getMessage());
         } else {
-            holder.leftChatView.setVisibility(View.VISIBLE);
+            holder.leftLayout.setVisibility(View.VISIBLE);
+            holder.rightLayout.setVisibility(View.GONE);
             holder.rightChatView.setVisibility(View.GONE);
+            holder.leftChatView.setVisibility(View.VISIBLE);
             holder.leftChatView.setText(list.get(position).getMessage());
         }
     }
@@ -63,17 +59,21 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list != null ? list.size() : 0;
     }
 
     static class ChatRecyclerHolder extends RecyclerView.ViewHolder {
         private TextView leftChatView;
         private TextView rightChatView;
-
+        private LinearLayout rightLayout;
+        private LinearLayout leftLayout;
         public ChatRecyclerHolder(@NonNull View itemView) {
             super(itemView);
             leftChatView = itemView.findViewById(R.id.left_chat_textview);
             rightChatView = itemView.findViewById(R.id.right_chat_textview);
+            rightLayout = itemView.findViewById(R.id.right_chat_layout);
+            leftLayout = itemView.findViewById(R.id.left_chat_layout);
+
         }
 
 

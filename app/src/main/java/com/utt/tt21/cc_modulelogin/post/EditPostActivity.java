@@ -36,7 +36,8 @@ public class EditPostActivity extends AppCompatActivity {
     Button btnCancel, btnUpStatus;
     private ImageUriAdapter adapter; // Sử dụng ImageUriAdapter
     private static final int PICK_IMAGE_REQUEST = 1;
-
+    private boolean hasNewImages = false;
+    private boolean isCacheDeleted = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +90,10 @@ public class EditPostActivity extends AppCompatActivity {
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
         });
 
-        btnDeleteCache.setOnClickListener(v -> deleteCacheImage());
+        btnDeleteCache.setOnClickListener(v -> {
+            deleteCacheImage();
+            isCacheDeleted = true; // Đặt trạng thái xóa cache là true
+        });
 
         // Sự kiện click cho nút cập nhật nội dung
         btnUpStatus.setOnClickListener(v -> {
@@ -97,13 +101,16 @@ public class EditPostActivity extends AppCompatActivity {
 
             // Cập nhật nội dung trước
             updateStatusContent(uid, statusId, newContent);
-
-            // Cập nhật ảnh nếu có
-            if (imageUris.isEmpty()) {
+            if(isCacheDeleted){
                 deleteOldImages(statusId);
+            }
+            // Nếu có ảnh mới, xóa ảnh cũ và cập nhật ảnh mới
+            if (hasNewImages) {
+                deleteOldImages(statusId); // Xóa ảnh cũ
+                updateImage(uid, statusId); // Cập nhật ảnh mới
             } else {
-                // Cập nhật ảnh nếu có
-                updateImage(uid, statusId);
+                // Nếu không có ảnh mới, chỉ cần kết thúc
+                finish();
             }
         });
 
@@ -174,9 +181,9 @@ public class EditPostActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri imageUri = data.getData(); // Nhận URI của ảnh đã chọn
 
-            // Xóa tất cả các ảnh cũ khỏi danh sách
-            imageUris.clear(); // Xóa các ảnh cũ
-            imageUris.add(imageUri); // Thêm ảnh mới vào danh sách
+            // Nếu có ảnh mới được chọn, thêm vào danh sách mà không xóa các ảnh cũ
+            imageUris.add(imageUri);
+            hasNewImages = true;
             adapter.notifyDataSetChanged(); // Cập nhật adapter để hiển thị ảnh mới
         }
     }

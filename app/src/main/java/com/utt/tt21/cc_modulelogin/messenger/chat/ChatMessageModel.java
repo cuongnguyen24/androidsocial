@@ -1,9 +1,20 @@
 package com.utt.tt21.cc_modulelogin.messenger.chat;
 
+import com.google.type.DateTime;
+
 public class ChatMessageModel {
     private String message;
     private String senderId;
     private String timestamp;
+
+    @Override
+    public String toString() {
+        return "ChatMessageModel{" +
+                "message='" + message + '\'' +
+                ", senderId='" + senderId + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                '}';
+    }
 
     public String getMessage() {
         return message;

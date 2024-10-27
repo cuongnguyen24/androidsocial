@@ -163,7 +163,6 @@ public class Home extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot snapshotList, @Nullable String previousChildName) {
                 DatabaseReference getList = database.getReference("list_status").child(snapshotList.getKey());
 
-                Log.e("uid", snapshotList.getKey());
                 getList.addChildEventListener(new ChildEventListener() {
 
                     @Override
