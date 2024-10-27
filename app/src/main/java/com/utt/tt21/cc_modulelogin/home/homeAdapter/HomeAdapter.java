@@ -62,24 +62,19 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
 //                .into(holder.recyclerViewImage);
 
         List<String> listImg = list.get(position).getPostImage();
-
         holder.recyclerViewImage.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         imageStringAdapter = new ImageStringAdapter(context, listImg);
         holder.recyclerViewImage.setAdapter(imageStringAdapter);
-
-
-
-
 
         // Xu ly count like
         int countLike = list.get(position).getLikeCount();
 
         if(countLike == 0)
         {
-            holder.tvLikeCount.setVisibility(View.INVISIBLE);
+            holder.count_Like.setVisibility(View.INVISIBLE);
         }
         else {
-            holder.tvLikeCount.setText(countLike+"");
+            holder.count_Like.setText(countLike+"");
         }
         //xy ly count cmt
         int countCmt = list.get(position).getCmtCount();
@@ -147,7 +142,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
     static class HomeHolder extends RecyclerView.ViewHolder{
 
         private CircleImageView profileImage;
-        private TextView tvUserName, tvTime, tvLikeCount, tvCmtCount, tvPostCount, tvReupCount, tvDes;
+        private TextView tvUserName, tvTime, count_Like, tvCmtCount, tvPostCount, tvReupCount, tvDes;
         private RecyclerView recyclerViewImage;
         private ImageButton btnLike, btnComment, btnReUp, btnPost;
         private ImageAdapter imageAdapter;
@@ -159,7 +154,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
             tvUserName = itemView.findViewById(R.id.tvName);
             tvDes = itemView.findViewById(R.id.tvDes);
             tvTime = itemView.findViewById(R.id.tvTimeStamp);
-            tvLikeCount = itemView.findViewById(R.id.tvCountLike);
+            count_Like = itemView.findViewById(R.id.count_Like);
             tvCmtCount = itemView.findViewById(R.id.tvCountCmt);
             tvPostCount = itemView.findViewById(R.id.tvCountPost);
             tvReupCount = itemView.findViewById(R.id.tvCountReUp);

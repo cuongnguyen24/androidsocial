@@ -91,15 +91,19 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
         String currentUserId = mAuth.getCurrentUser().getUid();
         //ID của người mà bạn muốn theo dõi
         String targetUserId = account.getUserId();
-
         // Kiểm tra trạng thái follow
-        checkFollowStatus(currentUserId, targetUserId, holder.followButton);
+        //checkFollowStatus(currentUserId, targetUserId, holder.followButton);
+        if(account.isDantheodoi())
+            holder.followButton.setText("Unfollow");
+        else
+            holder.followButton.setText("Follow");
+
         // Xử lý nút follow
         holder.followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (holder.followButton.getText().toString().equals("Follow")) {
-                    followUser(currentUserId, targetUserId, holder.followButton, account);
+                    followUser(currentUserId, targetUserId, holder.followButton);
                 } else {
                     // Tạo dialog
                     final Dialog dialog = new Dialog(mContext);
@@ -128,7 +132,7 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
                     buttonUnfollow.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            unfollowUser(currentUserId, targetUserId, holder.followButton, account);
+                            unfollowUser(currentUserId, targetUserId, holder.followButton);
                             clickListener.onclickUpdate(account);
                             dialog.dismiss();
                         }
@@ -231,14 +235,14 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
         });
     }
      //Hàm follow người dùng
-    private void followUser(String currentUserId, String targetUserId, Button followButton, Account account) {
+    private void followUser(String currentUserId, String targetUserId, Button followButton) {
         userRef.child(currentUserId).child("followings").child(targetUserId).setValue(true);
         userRef.child(targetUserId).child("followers").child(currentUserId).setValue(true);
         followButton.setText("Unfollow");
     }
 
     // Hàm unfollow
-    private void unfollowUser(String currentUserId, String targetUserId, Button followButton, Account account) {
+    private void unfollowUser(String currentUserId, String targetUserId, Button followButton) {
         userRef.child(targetUserId).child("followers").child(currentUserId).removeValue();
         userRef.child(currentUserId).child("followings").child(targetUserId).removeValue();
         followButton.setText("Follow");

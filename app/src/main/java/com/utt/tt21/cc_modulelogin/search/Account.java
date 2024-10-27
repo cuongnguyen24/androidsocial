@@ -4,20 +4,27 @@ public class Account {
     private String userId;// Thêm thuộc tính userId
     private String nameProfile;
     private String imgProfile;
-//    private int followers;
- //   private boolean following;
     private String desProfile;
+    private boolean Dantheodoi;
     public Account() {
         // Để Firebase sử dụng phản xạ
     }
 
-    public Account(String userId, String nameProfile, String imgProfile,String desProfile) {
+
+    public Account(String userId, String nameProfile, String imgProfile, String desProfile, boolean dangtheodoi) {
         this.userId = userId;
         this.nameProfile = nameProfile;
         this.imgProfile = imgProfile;
-//        this.followers = followers;
-   //     this.following = following;
         this.desProfile = desProfile;
+        this.Dantheodoi = dangtheodoi;
+    }
+
+    public boolean isDantheodoi() {
+        return Dantheodoi;
+    }
+
+    public void setDantheodoi(boolean dantheodoi) {
+        Dantheodoi = dantheodoi;
     }
 
     public String getUserId() {

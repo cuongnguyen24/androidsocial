@@ -87,7 +87,10 @@ public class FollowersFragment extends Fragment {
                     followingList.add(userId);
                 }
                 userList = getUserbyID(followingList);
-                adapter.notifyDataSetChanged();
+                //adapter.notifyDataSetChanged();
+                if(followingList.size() == 0){
+                    updateFollowingRecyclerView(new ArrayList<>());
+                }
             }
 
             @Override
@@ -108,15 +111,23 @@ public class FollowersFragment extends Fragment {
                         Account account = dataSnapshot.getValue(Account.class);
                         String userLogin = mAuth.getCurrentUser().getUid();
                         account.setUserId(userId);
+                        boolean hasFollowing = dataSnapshot.hasChild("followings") && dataSnapshot.child("followings").child(userLogin).exists();
+                        boolean hasFollower = dataSnapshot.hasChild("followers") && dataSnapshot.child("followers").child(userLogin).exists();
                         if (account != null  && !account.getUserId().equals(userLogin)) {
+                            if(hasFollowing && hasFollower){
+                                account.setDantheodoi(true);
+                            }
                             acc.add(account);
                         }
-                        updateFollowingRecyclerView(acc);
+                        if(followerId.equals(followers.get(followers.size() - 1))){
+                            updateFollowingRecyclerView(acc);
+
+                        }
 
                     }
-                    else {
-                        Toast.makeText(getContext(), "Bạn chưa theo dõi ai cả.", Toast.LENGTH_SHORT).show();
-                    }
+//                    else {
+//                        Toast.makeText(getContext(), "Bạn chưa theo dõi ai cả.", Toast.LENGTH_SHORT).show();
+//                    }
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -195,6 +206,31 @@ public class FollowersFragment extends Fragment {
         });
         // Hiển thị dialog
         dialog.show();
+    }
+    public void refreshData() {
+        mAuth = FirebaseAuth.getInstance();
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        userList= new ArrayList<>();
+        userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("followers");
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> followingList = new ArrayList<>();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String userId = snapshot.getKey(); // Lấy user ID
+                    followingList.add(userId);
+                }
+                userList = getUserbyID(followingList);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle possible errors
+            }
+        });
+
     }
     private void onUpdate(Account account){
         userList.remove(account);

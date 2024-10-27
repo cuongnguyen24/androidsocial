@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +31,7 @@ public class FollowingFragment extends Fragment {
     List<Account> userList ;
     ListAccountAdapter adapter;
     RecyclerView recyclerView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class FollowingFragment extends Fragment {
 //        recyclerView.addItemDecoration(dividerItemDecoration);
 
         userList = new ArrayList<>();
-        adapter = new ListAccountAdapter(getContext(), userList, new ListAccountAdapter.IClickListener() {
+        adapter = new ListAccountAdapter(getContext(),userList,new ListAccountAdapter.IClickListener() {
             @Override
             public void onclickUpdate(Account account) {
                 onUpdate(account);
@@ -56,7 +56,7 @@ public class FollowingFragment extends Fragment {
 
             @Override
             public void onCLickDelete(Account account) {
-
+                onCLickDelete(account);
             }
         },1);
         recyclerView.setAdapter(adapter);
@@ -77,8 +77,11 @@ public class FollowingFragment extends Fragment {
                     String userId = snapshot.getKey(); // Lấy user ID
                     followingList.add(userId);
                 }
-                userList = getUserbyID(followingList);
-                adapter.notifyDataSetChanged();
+
+               getUserbyID(followingList);
+                if(followingList.size() == 0){
+                    updateFollowingRecyclerView(new ArrayList<>());
+                }
             }
 
             @Override
@@ -87,7 +90,7 @@ public class FollowingFragment extends Fragment {
             }
         });
     }
-    private List<Account> getUserbyID(List<String> followers){
+    private void getUserbyID(List<String> followers){
         DatabaseReference userRef1 = FirebaseDatabase.getInstance().getReference("users");
         List<Account> acc = new ArrayList<>();
         for (String followerId: followers) {
@@ -98,15 +101,20 @@ public class FollowingFragment extends Fragment {
                         String userId = dataSnapshot.getKey(); // Lấy user ID
                         Account account = dataSnapshot.getValue(Account.class);
                         String userLogin = mAuth.getCurrentUser().getUid();
+                        account.setDantheodoi(true);
                         account.setUserId(userId);
                         if (account != null  && !account.getUserId().equals(userLogin)) {
                             acc.add(account);
                         }
-                        updateFollowingRecyclerView(acc);
+                        if(followerId.equals(followers.get(followers.size() - 1))){
+                            updateFollowingRecyclerView(acc);
+
+                        }
+
                     }
-                    else {
-                        Toast.makeText(getContext(), "Bạn chưa theo dõi ai cả.", Toast.LENGTH_SHORT).show();
-                    }
+//                    else {
+//                        Toast.makeText(getContext(), "Bạn chưa theo dõi ai cả.", Toast.LENGTH_SHORT).show();
+//                    }
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -114,7 +122,7 @@ public class FollowingFragment extends Fragment {
                 }
             });
         }
-        return  acc;
+
     }
     private void updateFollowingRecyclerView(List<Account> followingUsers) {
         // Giả sử bạn đã có RecyclerView và Adapter để hiển thị danh sách
@@ -126,13 +134,38 @@ public class FollowingFragment extends Fragment {
 
             @Override
             public void onCLickDelete(Account account) {
-
+                onCLickDelete(account);
             }
         },1);
         recyclerView.setAdapter(adapter);
     }
+    public void refreshData() {
+       // mAuth = FirebaseAuth.getInstance();
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        userList= new ArrayList<>();
+        //userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("followings");
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> followingList = new ArrayList<>();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String userId = snapshot.getKey(); // Lấy user ID
+                    followingList.add(userId);
+                }
+                getUserbyID(followingList);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle possible errors
+            }
+        });
+
+    }
     private void onUpdate(Account account){
         userList.remove(account);
         updateFollowingRecyclerView(userList);
-    }
+    };
 }

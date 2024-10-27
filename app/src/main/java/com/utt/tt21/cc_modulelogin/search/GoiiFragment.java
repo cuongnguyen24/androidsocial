@@ -23,21 +23,25 @@ import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GoiiFragment extends Fragment {
     private DatabaseReference userRef;
     private FirebaseAuth mAuth;
     List<Account> userList ;
     ListAccountAdapter adapter;
-   // private DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users");
+    String userLogin;
+    RecyclerView recyclerView;
+    // private DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users");
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_follower, container, false); // Thay đổi với layout của bạn
 
         // khởi tạo recyclerView và UserAdapter
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView=view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // tạo dòng kẻ phân cách item
@@ -60,32 +64,71 @@ public class GoiiFragment extends Fragment {
             }
         },3);
         recyclerView.setAdapter(adapter);
-
+        mAuth = FirebaseAuth.getInstance();
+        userLogin = mAuth.getCurrentUser().getUid();
         // Initialize Firebase reference and authentication
         userRef = FirebaseDatabase.getInstance().getReference("users");
-        mAuth = FirebaseAuth.getInstance();
+
 
         // Load users from Firebase
         loadUsers();
         return view;
     }
     // Function to load users from Firebase and update the RecyclerView
-    private void loadUsers() {
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void loadUsers() {
+        userRef.child(userLogin).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String userId = snapshot.getKey(); // Lấy user ID
-                    Account account = snapshot.getValue(Account.class);
-                    String userLogin = mAuth.getCurrentUser().getUid();
-                    account.setUserId(userId);
-                    if (account != null && (account.getUserId() != null &&!account.getUserId().equals(userLogin))) {
-                       // Cập nhật userId vào đối tượng Account
-                        userList.add(account);
-                    }
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    String userId = snapshot.getKey(); // Lấy user ID
+//                    Account account = snapshot.getValue(Account.class);
+//                    boolean hasFollowers = snapshot.hasChild("followers") && snapshot.child("followers").getChildrenCount() > 0;
+//                    boolean hasFollowing = snapshot.hasChild("followings") && snapshot.child("followings").getChildrenCount() > 0;
+//
+//                    String userLogin = mAuth.getCurrentUser().getUid();
+//                    account.setUserId(userId);
+//                    if (account != null && !hasFollowers && !hasFollowing && (account.getUserId() != null &&!account.getUserId().equals(userLogin))) {
+//                       // Cập nhật userId vào đối tượng Account
+//                        userList.add(account);
+//                    }
+//
+//
+                //}
+                Map<String, Boolean> following =  new HashMap<>();
+                Object test =  dataSnapshot.child("followings").getValue();
+                if(dataSnapshot.hasChild("followings") && (test instanceof java.util.HashMap)){
+
+                    following =  (Map<String, Boolean>) dataSnapshot.child("followings").getValue() ;
                 }
-               adapter.notifyDataSetChanged();
+                if (following == null) {
+                    following = new HashMap<>();
+                }
+                String id = following.size() > 0 ? following.keySet().toArray()[following.size() - 1].toString() : "";
+                List<Account> friendsList = new ArrayList<>();
+
+                // Lấy dữ liệu của tất cả những người được người dùng này theo dõi
+                for (String followingId : following.keySet()) {
+                    userRef.child(followingId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot followingUserSnapshot) {
+                            // Kiểm tra nếu người đó cũng theo dõi lại người dùng hiện tại
+                            if (followingUserSnapshot.child("followings").hasChild(userLogin)) {
+                                Account account = followingUserSnapshot.getValue(Account.class);
+                                account.setUserId(followingUserSnapshot.getKey());
+                                friendsList.add(account);
+                            }
+                            if (followingId.equals(id)) {
+                                updateFollowingRecyclerView(friendsList);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
             }
 
             @Override
@@ -95,6 +138,22 @@ public class GoiiFragment extends Fragment {
         });
     }
 
+
+    private void updateFollowingRecyclerView(List<Account> followingUsers) {
+        // Giả sử bạn đã có RecyclerView và Adapter để hiển thị danh sách
+        ListAccountAdapter adapter = new ListAccountAdapter(getContext(), followingUsers, new ListAccountAdapter.IClickListener() {
+            @Override
+            public void onclickUpdate(Account account) {
+                //onUpdate(account);
+            }
+
+            @Override
+            public void onCLickDelete(Account account) {
+//                onClickDelete(account);
+            }
+        },2);
+        recyclerView.setAdapter(adapter);
+    }
 //    private void fetchUserData(View view) {
 //        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override

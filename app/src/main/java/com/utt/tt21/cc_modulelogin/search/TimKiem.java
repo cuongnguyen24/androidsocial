@@ -2,7 +2,10 @@ package com.utt.tt21.cc_modulelogin.search;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -32,20 +35,16 @@ public class TimKiem extends AppCompatActivity {
     TKAdapter adapter;
     RecyclerView rcvView;
     ImageButton btnBack;
+    EditText edtTimKiem;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_tkiemfriend);
         super.onCreate(savedInstanceState);
         // khởi tạo recyclerView và UserAdapter
         rcvView = findViewById(R.id.rcvView);
+        edtTimKiem = findViewById(R.id.edtTimKiem );
         rcvView.setLayoutManager(new LinearLayoutManager(this));
 
-//        // tạo dòng kẻ phân cách item
-//        DividerItemDecoration dividerItemDecoration= new DividerItemDecoration(TimKiem.this,DividerItemDecoration.VERTICAL);
-//        // (Tùy chọn) Bạn có thể tùy chỉnh divider với một drawable
-//        Drawable dividerDrawable = ContextCompat.getDrawable(this, R.drawable.custom_divider);
-//        dividerItemDecoration.setDrawable(dividerDrawable);
-//        rcvView.addItemDecoration(dividerItemDecoration);
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,21 +52,50 @@ public class TimKiem extends AppCompatActivity {
                 finish();
             }
         });
-//        setSupportActionBar(toolbar);
-//        if (getSupportActionBar() != null) {
-//            // Hiển thị nút Back
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        }
-
         userList = new ArrayList<>();
         adapter = new TKAdapter(TimKiem.this, userList) ;
         rcvView.setAdapter(adapter);
         // Initialize Firebase reference and authentication
         userRef = FirebaseDatabase.getInstance().getReference("users");
         mAuth = FirebaseAuth.getInstance();
+        // Lắng nghe sự thay đổi trong EditText để thực hiện tìm kiếm khi người dùng nhập.
+        edtTimKiem.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchUsers(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         // Load users from Firebase
         loadUsers();
+    }
+    private void searchUsers(String query) {
+        userRef.orderByChild("nameProfile").startAt(query).endAt(query + "\uf8ff")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        userList.clear();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Account account = snapshot.getValue(Account.class);
+                            account.setUserId(snapshot.getKey());
+                            userList.add(account);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Xử lý lỗi khi truy vấn thất bại
+                    }
+                });
     }
     private void loadUsers() {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {

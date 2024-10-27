@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:textColor="#F0EDED"
-                android:text="homehinhlinh"
+                android:hint="homehinhlinh"
                 android:textSize="18sp"
                 android:textStyle="bold" />
             <ImageButton
@@ -54,7 +54,7 @@
             app:tabTextColor="@color/white"
             android:layout_marginTop="16dp"
             app:tabIndicatorColor="@android:color/white"/>
-        <androidx.viewpager.widget.ViewPager
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

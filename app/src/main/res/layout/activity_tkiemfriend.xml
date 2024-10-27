@@ -28,6 +28,7 @@
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
     <EditText
+        android:id="@+id/edtTimKiem"
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:hint="Tìm kiếm ..."
