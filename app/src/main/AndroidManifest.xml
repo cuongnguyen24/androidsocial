@@ -40,6 +40,9 @@
             android:name=".authentication.SignInActivity"
             android:exported="false" />
         <activity
+            android:name=".search.TimKiem"
+            android:exported="false" />
+        <activity
             android:name=".authentication.SplashActivity"
             android:exported="true">
             <intent-filter>

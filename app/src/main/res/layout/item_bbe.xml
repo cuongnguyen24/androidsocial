@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_toStartOf="@+id/btnfollow"
+        android:layout_toStartOf="@+id/btnChat"
         android:layout_centerVertical="true"
         android:layout_height="wrap_content">
         <de.hdodenhof.circleimageview.CircleImageView
@@ -35,35 +35,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#666666" />
-<!--            <TextView-->
-<!--                android:id="@+id/soTD"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:hint="followers"-->
-<!--                android:textColorHint="@color/white"-->
-<!--                android:textSize="12sp"-->
-<!--                android:textColor="@android:color/darker_gray"/>-->
+            <!--            <TextView-->
+            <!--                android:id="@+id/soTD"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:hint="followers"-->
+            <!--                android:textColorHint="@color/white"-->
+            <!--                android:textSize="12sp"-->
+            <!--                android:textColor="@android:color/darker_gray"/>-->
         </LinearLayout>
     </LinearLayout>
 
     <!-- Nút theo dõi -->
     <Button
-        android:id="@+id/btnfollow"
+        android:id="@+id/btnChat"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/btnXoa"
         android:layout_width="98dp"
+        android:text= "Nhắn tin"
         android:layout_marginEnd="10dp"
+        android:layout_alignParentEnd="true"
         android:layout_height="42dp"
-        android:background="@drawable/td_background" />
+        android:background="@drawable/tkiem_background" />
 
     <!-- Nút menu -->
-    <ImageButton
-        android:id="@+id/btnXoa"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_more2"
-        android:contentDescription="Tùy chọn thêm" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/btnXoa"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_centerVertical="true"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--        android:src="@drawable/ic_more2"-->
+<!--        android:contentDescription="Tùy chọn thêm" />-->
 </RelativeLayout>

@@ -1,21 +1,30 @@
 package com.utt.tt21.cc_modulelogin.search;
 
 public class Account {
-    private String userId;// Thêm thuộc tính userId
+    private String userId;
     private String nameProfile;
-//    private int followers;
- //   private boolean following;
+    private String imgProfile;
     private String desProfile;
+    private boolean Dantheodoi;
     public Account() {
         // Để Firebase sử dụng phản xạ
     }
 
-    public Account(String userId, String nameProfile, String desProfile) {
+
+    public Account(String userId, String nameProfile, String imgProfile, String desProfile, boolean dangtheodoi) {
         this.userId = userId;
         this.nameProfile = nameProfile;
-//        this.followers = followers;
-   //     this.following = following;
+        this.imgProfile = imgProfile;
         this.desProfile = desProfile;
+        this.Dantheodoi = dangtheodoi;
+    }
+
+    public boolean isDantheodoi() {
+        return Dantheodoi;
+    }
+
+    public void setDantheodoi(boolean dantheodoi) {
+        Dantheodoi = dantheodoi;
     }
 
     public String getUserId() {
@@ -35,9 +44,13 @@ public class Account {
         this.nameProfile = nameProfile;
     }
 
-//    public void setFollowing(boolean following) {
-//        this.following = following;
-//    }
+    public String getImgProfile() {
+        return imgProfile;
+    }
+
+    public void setImgProfile(String imgProfile) {
+        this.imgProfile = imgProfile;
+    }
 
     public String getDesProfile() {
         return desProfile;
@@ -55,8 +68,5 @@ public class Account {
 //        return followers +" followers";
 //    }
 
-//    public boolean isFollowing() {
-//        return following;
-//    }
 }
 

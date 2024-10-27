@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout; // Thêm import LinearLayout
 import android.widget.TextView;
@@ -129,6 +130,7 @@ public class DetailStatusActivity extends AppCompatActivity {
                     for (DataSnapshot commentSnapshot : userCommentSnapshot.getChildren()) {
                         String commentKey = commentSnapshot.getKey();
                         String content = commentSnapshot.child("content").getValue(String.class);
+                        int countLike = commentSnapshot.child("likeCount").getValue(Integer.class);
 
                         // Lấy tên và ảnh người dùng từ nhánh 'users'
                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
@@ -138,10 +140,10 @@ public class DetailStatusActivity extends AppCompatActivity {
                                 String userName = userSnapshot.child("nameProfile").getValue(String.class);
                                 String profileImageUrl = userSnapshot.child("profileImageUrl").getValue(String.class); // Giả sử đường dẫn ảnh lưu ở đây
 
-                                Comment comment = new Comment(content, userId, userName, commentKey, statusId);
+                                Comment comment = new Comment(content, userId, userName, commentKey, statusId, countLike);
                                 comments.add(comment);
                                 userProfileImages.add(profileImageUrl); // Thêm ảnh vào danh sách
-                                addCommentToView(uid, statusId, comment);
+                                addCommentToView(uid, statusId, comment, databaseReference);
                             }
 
                             @Override
@@ -270,8 +272,12 @@ public class DetailStatusActivity extends AppCompatActivity {
     }
 
 
-    private void addCommentToView(String uid, String statusId, Comment comment) {
+    private void addCommentToView(String uid, String statusId, Comment comment, DatabaseReference db) {
         // Tạo một view cho bình luận mới
+        DatabaseReference likes =  db.child(comment.getUserId()).child(comment.getCommentId());
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userid = user.getUid();
         View commentView = getLayoutInflater().inflate(R.layout.list_comment, null);
 
         ImageView imgUserProfile = commentView.findViewById(R.id.accountImage);
@@ -279,16 +285,61 @@ public class DetailStatusActivity extends AppCompatActivity {
         tvUserName.setText(comment.getUserName());
         TextView tvCommentContent = commentView.findViewById(R.id.tvCommentContent);
         tvCommentContent.setText(comment.getContent()); // Gán nội dung bình luận
-
+        ImageButton imgLike = commentView.findViewById(R.id.btnLike);
+        TextView txtCountLike = commentView.findViewById(R.id.count_Like);
+        txtCountLike.setText(String.valueOf(comment.getCountLike()));
         // Đặt ảnh mặc định trước khi tải ảnh từ Firebase Storage
         imgUserProfile.setImageResource(R.drawable.quang_default_avatar);
+        likes.child("likes").child(userid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    imgLike.setImageResource(R.drawable.ic_heart_filled);
+                }else{
+                    imgLike.setImageResource(R.drawable.heart);
+                }
+            }
 
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
         // Thêm view vào LinearLayout ngay lập tức
         commentContainer.addView(commentView);
 
         // Tải ảnh đại diện bằng phương thức loadUserAvatar mà không làm chậm việc hiển thị bình luận
         loadUserAvatar(comment.getUserId(), imgUserProfile);
+        // phan tim
+        imgLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                likes.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                        if (snapshot.child("likes").hasChild(userid)){
+                            likes.child("likes").child(userid).removeValue();
+                            likes.child("likeCount").setValue(comment.getCountLike() - 1);
+                            imgLike.setImageResource(R.drawable.heart);
+                            comment.setCountLike(comment.getCountLike() - 1);
+                        }else{
+                            likes.child("likes").child(userid).setValue(true);
+                            likes.child("likeCount").setValue(comment.getCountLike() + 1);
+                            imgLike.setImageResource(R.drawable.ic_heart_filled);
+
+                            comment.setCountLike(comment.getCountLike() + 1);
+                        }
+                        txtCountLike.setText(String.valueOf(comment.getCountLike()));
+                    }
+
+                    @Override
+                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
         // Thêm sự kiện nhấn giữ cho bình luận
         commentView.setOnLongClickListener(v -> {
             String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();

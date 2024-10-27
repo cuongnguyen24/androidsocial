@@ -56,6 +56,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.utt.tt21.cc_modulelogin.adapter.ViewPager2Adapter;
 import com.utt.tt21.cc_modulelogin.home.homeAdapter.ImageAdapter;
+import com.utt.tt21.cc_modulelogin.search.Search;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
@@ -100,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
 
         initId();
         ViewPager2Adapter adapter = new ViewPager2Adapter(this);
