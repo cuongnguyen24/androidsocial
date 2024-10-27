@@ -1,7 +1,5 @@
 package com.utt.tt21.cc_modulelogin.home;
 
-import static java.util.Collections.swap;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,13 +8,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
-import android.os.MessageQueue;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,12 +42,11 @@ import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.home.homeAdapter.HomeAdapter;
 import com.utt.tt21.cc_modulelogin.home.homeAdapter.ImageStringAdapter;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
-import com.utt.tt21.cc_modulelogin.messenger.messenger;
+import com.utt.tt21.cc_modulelogin.messenger.Messenger;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 
 public class Home extends Fragment {
@@ -70,7 +65,6 @@ public class Home extends Fragment {
     private HomeAdapter adapter;
     private ImageStringAdapter imageStringAdapter;
     private SwipeRefreshLayout refreshLayout;
-    private ImageButton btn_messenger;
     private ProgressBar progressBar;
     private ImageButton btn_more;
     public Home() {
@@ -95,16 +89,7 @@ public class Home extends Fragment {
         recyclerView.setAdapter(adapter);
         Collections.shuffle(list);
         scrollScreen();
-        btn_messenger.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), messenger.class);
-                String fragment = "home";
-                intent.putExtra("fragment", fragment);
-                Log.e("fragment", fragment);
-                startActivity(intent);
-            }
-        });
+
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -181,7 +166,7 @@ public class Home extends Fragment {
                         HomeModel homeModelList = new HomeModel();
                         homeModelList.setContent(snapshot.child("content").getValue(String.class));
                         homeModelList.setCmtCount(0);
-                        homeModelList.setLikeCount(snapshot.child("likeCount").getValue(Integer.class));
+                        homeModelList.setLikeCount(0);
                         homeModelList.setPostCount(0);
                         homeModelList.setReupCount(0);
                         homeModelList.setUserID(snapshotList.getKey()); // Set userID
@@ -347,7 +332,6 @@ public class Home extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        btn_messenger = view.findViewById(R.id.btn_messenger);
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         context = getContext();
         imvAvatar = view.findViewById(R.id.detailProfileImage);
