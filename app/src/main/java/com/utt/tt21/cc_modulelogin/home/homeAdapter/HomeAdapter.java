@@ -100,7 +100,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
             }
         }
         holder.btnMore.setOnClickListener(v -> {
-
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Chọn hành động")
                     .setItems(new CharSequence[]{"Sửa", "Xóa"}, (dialog, which) -> {
@@ -111,18 +110,17 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
                             intent.putExtra("status_id", currentItem.getIdStatus());
                             intent.putExtra("content", currentItem.getContent());
                             intent.putExtra("username", currentItem.getUserName());
-
-
                             // Truyền URL của ảnh đại diện
                             intent.putExtra("profile_image", currentItem.getProfileImage());
                             context.startActivity(intent);
                         } else if (which == 1) {
-                            deletePost(currentItem.getUserID(), currentItem.getIdStatus());
+                            // Hiện hộp thoại xác nhận khi xóa
+                            showDeleteConfirmationDialog(currentItem.getUserID(), currentItem.getIdStatus());
                         }
                     })
                     .show();
-
         });
+
 
         // Xử lý sự kiện khi nhấn vào bài viết
         holder.itemView.setOnClickListener(v -> {
@@ -222,6 +220,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
                     Log.e("FirebaseDatabase", "Error deleting post", exception);
                     Toast.makeText(context, "Lỗi khi xóa bài viết.", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    // Phương thức để hiển thị hộp thoại xác nhận xóa
+    private void showDeleteConfirmationDialog(String userId, String statusId) {
+        AlertDialog.Builder confirmationBuilder = new AlertDialog.Builder(context);
+        confirmationBuilder.setTitle("Xác nhận xóa")
+                .setMessage("Bạn có chắc chắn muốn xóa bài viết này không?")
+                .setPositiveButton("Có", (dialog, which) -> {
+                    // Gọi phương thức xóa bài viết
+                    deletePost(userId, statusId);
+                })
+                .setNegativeButton("Không", (dialog, which) -> {
+                    dialog.dismiss(); // Đóng hộp thoại
+                })
+                .show();
     }
 
     private void deleteImagesFromStorage(String userId, String statusId) {

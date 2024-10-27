@@ -31,6 +31,7 @@ public class EditPostActivity extends AppCompatActivity {
     TextView tvName, tvDes;
     ImageView profileImage;
     ImageButton btnChooseImage;
+    Button btnDeleteCache;
     private ArrayList<Uri> imageUris = new ArrayList<>();
     Button btnCancel, btnUpStatus;
     private ImageUriAdapter adapter; // Sử dụng ImageUriAdapter
@@ -58,6 +59,8 @@ public class EditPostActivity extends AppCompatActivity {
         profileImage = findViewById(R.id.profileImage);
         btnChooseImage = findViewById(R.id.chooseImage);
         btnUpStatus = findViewById(R.id.btnUpStatus);
+        btnDeleteCache = findViewById(R.id.deleteCacheImage);
+
 
         // Thiết lập tên và mô tả
         tvName.setText(username);
@@ -86,6 +89,8 @@ public class EditPostActivity extends AppCompatActivity {
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
         });
 
+        btnDeleteCache.setOnClickListener(v -> deleteCacheImage());
+
         // Sự kiện click cho nút cập nhật nội dung
         btnUpStatus.setOnClickListener(v -> {
             String newContent = tvDes.getText().toString();
@@ -94,17 +99,74 @@ public class EditPostActivity extends AppCompatActivity {
             updateStatusContent(uid, statusId, newContent);
 
             // Cập nhật ảnh nếu có
-            if (!imageUris.isEmpty()) { // Kiểm tra xem có ảnh mới không
-
-                // Lấy ảnh mới từ danh sách
-                Uri newImageUri = imageUris.get(imageUris.size() - 1);
-
-                // Gọi hàm để cập nhật ảnh
+            if (imageUris.isEmpty()) {
+                deleteOldImages(statusId);
+            } else {
+                // Cập nhật ảnh nếu có
                 updateImage(uid, statusId);
             }
         });
 
     }
+
+    private void deleteCacheImage() {
+        // Xóa toàn bộ ảnh trong danh sách imageUris
+        imageUris.clear();
+
+        // Cập nhật lại adapter để làm mới giao diện
+        adapter.notifyDataSetChanged();
+
+        Log.d("EditPostActivity", "All cached images have been deleted.");
+    }
+
+    private void deleteOldImages(String statusId) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = user.getUid();
+
+        // Tách statusId để lấy idImgStt
+        String[] parts = statusId.split("_");
+        String idImgStt = parts[1];
+
+        // Xây dựng đường dẫn đến thư mục ảnh
+        String imagesFolderPath = "users/" + userId + "/IdImgStt_" + idImgStt + "/";
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference(imagesFolderPath);
+
+        storageRef.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference fileRef : listResult.getItems()) {
+                // Xóa từng tệp
+                fileRef.delete()
+                        .addOnSuccessListener(aVoid -> Log.d("DeleteImage", "Successfully deleted: " + fileRef.getName()))
+                        .addOnFailureListener(exception -> Log.e("DeleteImage", "Failed to delete image", exception));
+            }
+
+            // Sau khi xóa tất cả ảnh, tạo lại file dummy
+            createEmptyFolder(idImgStt); // Gọi createEmptyFolder với idImgStt
+        }).addOnFailureListener(exception -> {
+            Log.e("DeleteImage", "Failed to list files", exception);
+        });
+    }
+
+    private void createEmptyFolder(String idImgStt) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = user.getUid();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference("users").child(userId);
+
+        // Tạo đường dẫn đến thư mục ảnh
+        StorageReference imageFolderRef = storageRef.child("IdImgStt_" + idImgStt);
+
+        // Tạo tệp tạm thời để tạo thư mục
+        StorageReference dummyFileRef = imageFolderRef.child("dummy.txt");
+        byte[] dummyData = new byte[0]; // Dữ liệu trống
+
+        dummyFileRef.putBytes(dummyData)
+                .addOnSuccessListener(taskSnapshot -> Log.d("UploadImage", "Created folder: IdImgStt_" + idImgStt))
+                .addOnFailureListener(exception -> Log.e("UploadImage", "Failed to create empty folder", exception));
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
