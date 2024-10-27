@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:padding="10dp"
+    android:layout_width="250dp"
     android:orientation="vertical"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_background">
     <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_marginTop="10dp"
         android:id="@+id/img_avatar"
         android:layout_width="54dp"
         android:layout_height="54dp"
-        android:layout_marginEnd="0dp"
         android:scaleType="centerCrop"
         android:layout_gravity="center"
         android:src="@drawable/ic_default_user" >
@@ -17,11 +17,12 @@
         android:id="@+id/dialog_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="Bỏ theo dõi lckvietnam?"
-        android:textSize="18sp"
-        android:textColor="@android:color/black" />
+        android:textSize="16sp"
+        android:textColor="@color/light_back1" />
+    <!-- Đường kẻ -->
 
     <!-- Các nút lựa chọn -->
     <LinearLayout
@@ -29,26 +30,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="30dp">
-
+        android:layout_marginTop="25dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginVertical="0dp" />
         <!-- Nút Bỏ theo dõi -->
         <Button
-            android:id="@+id/button_unfollow"
+            android:id="@+id/btn_unfollow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bỏ theo dõi"
-            android:textColor="@android:color/white"
-            android:background="@drawable/td_background"/>
-
+            android:textStyle="bold"
+            android:text="Xóa "
+            android:background="@null"
+            android:textAllCaps="false"
+            android:textColor="@android:color/holo_red_dark" />
+        <!-- Đường kẻ -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
         <!-- Nút Hủy -->
         <Button
-            android:id="@+id/button_cancel"
+            android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:background="@null"
             android:text="Hủy"
-            android:textColor="@android:color/black"
-            android:backgroundTint="@android:color/darker_gray" />
+            android:textAllCaps="false"
+            android:textColor="@android:color/black" />
     </LinearLayout>
 
 </LinearLayout>

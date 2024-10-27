@@ -53,7 +53,7 @@
                 android:id="@+id/btnMore"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="@drawable/ic_more"
+                android:background="@drawable/ic_more2"
                 tools:ignore="TouchTargetSizeCheck"
                 android:layout_toRightOf="@id/boxUser"
                 />
@@ -90,15 +90,17 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:background="@drawable/ic_heart"
-                    android:contentDescription="NULL"
                     tools:ignore="TouchTargetSizeCheck" />
                 <TextView
-                    android:id="@+id/tvCountLike"
+                    android:id="@+id/count_Like"
+                    android:hint="1"
+                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:layout_marginLeft="4dp"
-                    android:textSize="16sp"/>
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="8dp"
+                    android:textSize="12sp"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"

@@ -17,32 +17,23 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/black">
 
-            <!-- Nút quay lại -->
-            <ImageButton
-                android:id="@+id/btnBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_back1"
-                android:contentDescription="Quay lại" />
-
             <!-- Tiêu đề -->
             <TextView
-                android:id="@+id/toolbarTitle"
+                android:id="@+id/toolbar_t"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:textColor="#F0EDED"
-                android:text="homehinhlinh"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textColor="#6FC8F0"
+                android:hint="homehinhlinh"
+                android:textSize="19sp"
+                android:textStyle="bold|italic" />
             <ImageButton
                 android:id="@+id/btnTimKiem"
                 android:layout_width="wrap_content"
-                android:layout_marginLeft="180dp"
+                android:layout_marginLeft="179dp"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/tkiem"
+                android:src="@drawable/peopleadd"
                 android:contentDescription="Quay lại" />
         </androidx.appcompat.widget.Toolbar>
 
@@ -52,9 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabTextColor="@color/white"
-            android:layout_marginTop="16dp"
             app:tabIndicatorColor="@android:color/white"/>
-        <androidx.viewpager.widget.ViewPager
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
