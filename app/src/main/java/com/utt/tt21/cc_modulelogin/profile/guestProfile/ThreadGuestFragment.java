@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +36,7 @@ import com.google.firebase.storage.StorageReference;
 import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.home.homeAdapter.HomeAdapter;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
+import com.utt.tt21.cc_modulelogin.profile.threads.ThreadFragmentAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,10 +51,9 @@ public class ThreadGuestFragment extends Fragment {
     private TextView tv_nickname;
     private TextView timestamp;
     private FirebaseUser mUser;
-    private HomeAdapter adapter;
+    private ThreadFragmentAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
     private String userId; // Biến để lưu UID của người dùng
-
     public ThreadGuestFragment() {
         // Required empty public constructor
     }
@@ -73,7 +75,7 @@ public class ThreadGuestFragment extends Fragment {
         }
 
         list = new ArrayList<>();
-        adapter = new HomeAdapter(list, getContext());
+        adapter = new ThreadFragmentAdapter(list, getContext());
         recyclerView.setAdapter(adapter);
 
         if (userId != null) {
@@ -139,12 +141,24 @@ public class ThreadGuestFragment extends Fragment {
                     @Override
                     public void onSuccess(ListResult listResult) {
                         for (StorageReference item : listResult.getItems()) {
-                            item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    imageLists.add(uri.toString());
-                                }
-                            });
+                            String fileName = item.getName();
+                            if (fileName.endsWith(".jpg") || fileName.endsWith(".png")) {
+                                // Chỉ lấy URL download cho các tệp hình ảnh
+                                item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        String imageUrl = uri.toString();
+                                        imageLists.add(imageUrl); // Thêm URL của ảnh vào danh sách
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        Log.e("FirebaseStorageImage", "Lỗi khi lấy URL: " + exception.getMessage());
+                                    }
+                                });
+                            } else {
+                                Log.d("FirebaseStorageImage", "Bỏ qua tệp không phải ảnh: " + fileName);
+                            }
                         }
                     }
                 });
@@ -187,5 +201,6 @@ public class ThreadGuestFragment extends Fragment {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mUser = auth.getCurrentUser();
         refreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+
     }
 }

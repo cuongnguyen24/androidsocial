@@ -5,8 +5,10 @@
     <color name="orange">#FFA500</color>
     <color name="light_back">#201F1F</color>
     <color name="light_back1">#6C6B6B</color>
+
     <color name="my_messenger">#8C9EFF</color>
     <color name="other_messenger">#6C6B6B</color>
+
     <color name="chat_color_sender">#8C9EFF</color>
     <color name="chat_color_receiver">#6C6B6B</color>
 </resources>
