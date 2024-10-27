@@ -11,6 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +24,7 @@ import com.utt.tt21.cc_modulelogin.R;
 
 import com.utt.tt21.cc_modulelogin.detailstatus.DetailStatusActivity;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
+import com.utt.tt21.cc_modulelogin.profile.Profile;
 import com.utt.tt21.cc_modulelogin.profile.guestProfile.GuestProfileActivity;
 import com.utt.tt21.cc_modulelogin.profile.profileModel.ImageItems;
 
@@ -187,12 +191,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         // Lấy uid của người đăng bài
         String uid = list.get(position).getUserID();
 
+        // Lấy uid của người dùng hiện tại
+//        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         // Thiết lập sự kiện nhấn cho profileImage
         holder.profileImage.setOnClickListener(v -> {
-            //            Toast.makeText(context, "UID: " + uid, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(context, GuestProfileActivity.class);
-            intent.putExtra("uid", uid);
-            context.startActivity(intent);
+                Intent intent = new Intent(context, GuestProfileActivity.class);
+                intent.putExtra("uid", uid);
+                context.startActivity(intent);
         });
 
         // Thiết lập sự kiện nhấn cho tvUserName

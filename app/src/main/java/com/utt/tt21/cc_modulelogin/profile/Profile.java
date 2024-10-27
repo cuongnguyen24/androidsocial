@@ -98,18 +98,6 @@ public class Profile extends Fragment {
         // Kết nối TabLayout với ViewPager
         tabLayout.setupWithViewPager(viewPager);
 
-        // Khởi tạo nút đăng xuất
-//        Button btnLogout = view.findViewById(R.id.btn_logout);
-//        btnLogout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                FirebaseAuth.getInstance().signOut(); // Đăng xuất khỏi Firebase
-//                Intent intent = new Intent(getActivity(), SignInActivity.class); // Chuyển về màn hình đăng nhập
-//                startActivity(intent);
-//                getActivity().finishAffinity(); // Đóng tất cả các activity trước đó
-//            }
-//        });
-
         // Khởi tạo nút chỉnh sửa trang cá nhân
         Button btnEditProfile = view.findViewById(R.id.btn_edit_profile);
         btnEditProfile.setOnClickListener(new View.OnClickListener() {
@@ -157,7 +145,6 @@ public class Profile extends Fragment {
                 }
             }
         });
-
 
         // Sự kiện gọi dữ liệu user
         showUserInformation();
@@ -224,7 +211,6 @@ public class Profile extends Fragment {
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Xử lý lỗi nếu cần
