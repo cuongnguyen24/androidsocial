@@ -11,6 +11,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,11 +34,16 @@ public class TKAdapter extends RecyclerView.Adapter<TKAdapter.UserViewHolder>{
     private List<Account> accountList;
     private FirebaseAuth mAuth;
     private DatabaseReference userRef;
-    public TKAdapter(Context mContext, List<Account> accountList) {
+    private IClickListener clickListener;
+    public interface IClickListener{
+        void onclickUpdate(List<Account> account);
+    }
+    public TKAdapter(Context mContext, List<Account> accountList, IClickListener listener) {
         this.mContext = mContext;
         this.accountList = accountList;
         this.mAuth = FirebaseAuth.getInstance();
         this.userRef = FirebaseDatabase.getInstance().getReference("users");
+        this.clickListener = listener;
     }
     @NonNull
     @Override
@@ -57,12 +63,12 @@ public class TKAdapter extends RecyclerView.Adapter<TKAdapter.UserViewHolder>{
         } else {
             holder.accountImage.setImageResource(R.drawable.ic_default_user); // Hình mặc định
         }
-        holder.nickname.setText("Có thể bạn biet " + account.getNameProfile());
+        holder.nickname.setText("Có thể bạn biết " + account.getNameProfile());
         holder.btnXoa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // clickListener.onCLickDelete(account);
-                // showCustomDialog();
+                accountList.remove(account);
+                clickListener.onclickUpdate(accountList);
             }
         });
         String currentUserId = mAuth.getCurrentUser().getUid();

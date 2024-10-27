@@ -17,25 +17,16 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/black">
 
-            <!-- Nút quay lại -->
-<!--            <ImageButton-->
-<!--                android:id="@+id/btnBack"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--                android:src="@drawable/ic_back1"-->
-<!--                android:contentDescription="Quay lại" />-->
-
             <!-- Tiêu đề -->
             <TextView
                 android:id="@+id/toolbar_t"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:textColor="#F0EDED"
+                android:textColor="#6FC8F0"
                 android:hint="homehinhlinh"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="19sp"
+                android:textStyle="bold|italic" />
             <ImageButton
                 android:id="@+id/btnTimKiem"
                 android:layout_width="wrap_content"
@@ -52,7 +43,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabTextColor="@color/white"
-            android:layout_marginTop="16dp"
             app:tabIndicatorColor="@android:color/white"/>
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"

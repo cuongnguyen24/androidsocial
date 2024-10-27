@@ -1,5 +1,6 @@
 package com.utt.tt21.cc_modulelogin.home.homeAdapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -11,18 +12,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.utt.tt21.cc_modulelogin.R;
 
 import com.utt.tt21.cc_modulelogin.detailstatus.DetailStatusActivity;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
+import com.utt.tt21.cc_modulelogin.post.EditPostActivity;
 import com.utt.tt21.cc_modulelogin.profile.guestProfile.GuestProfileActivity;
 import com.utt.tt21.cc_modulelogin.profile.profileModel.ImageItems;
+import com.utt.tt21.cc_modulelogin.search.Account;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +48,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
     Context context;
     private ImageStringAdapter imageStringAdapter;
     private int countViewStatus = 0;
+    private FirebaseDatabase database;
+    private String currentUserId;
     public HomeAdapter(List<HomeModel> list, Context context) {
         this.list = list;
         this.context = context;
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     @NonNull
@@ -65,6 +81,90 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         String userID = currentItem.getUserID();
         String idStatus = currentItem.getIdStatus();
         String content = currentItem.getContent();
+
+
+        holder.count_Like.setText(String.valueOf(currentItem.getLikeCount()));
+
+        // Lấy tham chiếu đến bài đăng trong Firebase
+        DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("list_status").child(currentItem.getUserID()).child(currentItem.getIdStatus());
+
+        // Kiểm tra xem người dùng đã "tim" bài viết này chưa
+        postRef.child("likes").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    holder.btnLike.setImageResource(R.drawable.ic_heart_filled); // Đã "tim"
+                } else {
+                    holder.btnLike.setImageResource(R.drawable.heart); // Chưa "tim"
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+
+        holder.btnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                postRef.child("likes").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // Nếu đã "tim", bỏ "tim"
+                            postRef.child("likes").child(currentUserId).removeValue();
+                            postRef.child("likeCount").setValue(currentItem.getLikeCount() - 1);
+                            holder.btnLike.setImageResource(R.drawable.ic_heart_outline);
+                            currentItem.setLikeCount(currentItem.getLikeCount() - 1);
+                        } else {
+                            // Nếu chưa "tim", thêm "tim"
+                            postRef.child("likes").child(currentUserId).setValue(true);
+                            postRef.child("likeCount").setValue(currentItem.getLikeCount() + 1);
+                            holder.btnLike.setImageResource(R.drawable.ic_heart_filled);
+                            currentItem.setLikeCount(currentItem.getLikeCount() + 1);
+                        }
+                        holder.count_Like.setText(String.valueOf(currentItem.getLikeCount()));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) { }
+                });
+            }
+        });
+        holder.count_Like.setOnClickListener(v -> {
+            DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("list_status").child(currentItem.getUserID())
+                    .child(currentItem.getIdStatus())
+                    .child("likes");
+            List<Account> likeList = new ArrayList<>();
+            likesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot likeSnapshot : snapshot.getChildren()) {
+                        String userId = likeSnapshot.getKey();
+                        // Lấy thông tin người dùng từ node "users"
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                Account account = userSnapshot.getValue(Account.class);
+                                if (account != null) {
+                                    likeList.add(account);
+                                }
+                                // Khi hoàn thành việc tải dữ liệu, hiển thị dialog danh sách người dùng
+                                if (snapshot.getChildrenCount() == likeList.size()) {
+                                    showLikeListDialog(likeList);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {}
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {}
+            });
+        });
 
         holder.btnComment.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailStatusActivity.class);
@@ -94,10 +194,27 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
             }
         }
         holder.btnMore.setOnClickListener(v -> {
-
-            // Xu ly trong day
-
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Chọn hành động")
+                    .setItems(new CharSequence[]{"Sửa", "Xóa"}, (dialog, which) -> {
+                        if (which == 0) {
+                            // Người dùng chọn sửa
+                            Intent intent = new Intent(context, EditPostActivity.class);
+                            intent.putExtra("uid", currentItem.getUserID());
+                            intent.putExtra("status_id", currentItem.getIdStatus());
+                            intent.putExtra("content", currentItem.getContent());
+                            intent.putExtra("username", currentItem.getUserName());
+                            // Truyền URL của ảnh đại diện
+                            intent.putExtra("profile_image", currentItem.getProfileImage());
+                            context.startActivity(intent);
+                        } else if (which == 1) {
+                            // Hiện hộp thoại xác nhận khi xóa
+                            showDeleteConfirmationDialog(currentItem.getUserID(), currentItem.getIdStatus());
+                        }
+                    })
+                    .show();
         });
+
 
         // Xử lý sự kiện khi nhấn vào bài viết
         holder.itemView.setOnClickListener(v -> {
@@ -132,8 +249,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         holder.recyclerViewImage.setAdapter(imageStringAdapter);
         holder.recyclerViewImage.setHasFixedSize(true);
 
-
-
         // Xu ly count like
         int countLike = list.get(position).getLikeCount();
 
@@ -142,7 +257,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
             holder.count_Like.setVisibility(View.INVISIBLE);
         }
         else {
-            holder.count_Like.setText(countLike+"");
+            holder.count_Like.setVisibility(View.VISIBLE);
         }
         //xy ly count cmt
         int countCmt = list.get(position).getCmtCount();
@@ -174,13 +289,77 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         else {
             holder.tvPostCount.setText(countPost+"");
         }
-
-
         holder.tvDes.setText(list.get(position).getContent());
         // Cường: Thêm sự kiện click vào profileImage và tvUserName
         setOnClickListener(holder, position);
     }
+    // hien thi tim
+    private void showLikeListDialog( List<Account> likeList) {
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_like_list);
+        RecyclerView recyclerView = dialog.findViewById(R.id.like_rcvView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        LikeListAdapter adapter = new LikeListAdapter(context, likeList);
+        recyclerView.setAdapter(adapter);
+        dialog.show();
+    }
+    private void deletePost(String userId, String statusId) {
+        // Khởi tạo Firebase Database
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("list_status").child(userId).child(statusId);
 
+        // Xóa bài viết khỏi Realtime Database
+        databaseRef.removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FirebaseDatabase", "Post deleted successfully.");
+                    // Xóa ảnh khỏi Firebase Storage
+                    deleteImagesFromStorage(userId, statusId);
+                    Toast.makeText(context, "Bài viết đã được xóa.", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(exception -> {
+                    Log.e("FirebaseDatabase", "Error deleting post", exception);
+                    Toast.makeText(context, "Lỗi khi xóa bài viết.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    // Phương thức để hiển thị hộp thoại xác nhận xóa
+    private void showDeleteConfirmationDialog(String userId, String statusId) {
+        AlertDialog.Builder confirmationBuilder = new AlertDialog.Builder(context);
+        confirmationBuilder.setTitle("Xác nhận xóa")
+                .setMessage("Bạn có chắc chắn muốn xóa bài viết này không?")
+                .setPositiveButton("Có", (dialog, which) -> {
+                    // Gọi phương thức xóa bài viết
+                    deletePost(userId, statusId);
+                })
+                .setNegativeButton("Không", (dialog, which) -> {
+                    dialog.dismiss(); // Đóng hộp thoại
+                })
+                .show();
+    }
+
+    private void deleteImagesFromStorage(String userId, String statusId) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        String[] parts = statusId.split("_");
+        String idImgStt = parts[1];
+
+        // Xây dựng đường dẫn đến thư mục ảnh
+        String imagesFolderPath = "users/" + userId + "/IdImgStt_" + idImgStt + "/";
+        StorageReference imagesFolderRef = storage.getReference(imagesFolderPath);
+
+        // Xóa tất cả các ảnh trong thư mục
+        imagesFolderRef.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference item : listResult.getItems()) {
+                item.delete()
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("FirebaseStorage", "Image deleted: " + item.getName());
+                        })
+                        .addOnFailureListener(exception -> {
+                            Log.e("FirebaseStorage", "Error deleting image", exception);
+                        });
+            }
+        }).addOnFailureListener(exception -> {
+            Log.e("FirebaseStorage", "Error listing images", exception);
+        });
+    }
     // Cường: thêm setonclick để vào trang profile guest
     private void setOnClickListener(HomeHolder holder, int position) {
         // Lấy uid của người đăng bài

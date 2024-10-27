@@ -5,9 +5,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
@@ -16,26 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ImageButton;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
-
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
-import com.utt.tt21.cc_modulelogin.messenger.messenger;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Search extends Fragment {
@@ -43,18 +33,14 @@ public class Search extends Fragment {
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private TabAdapter tabAdapter;
-    private ImageButton btnBack;
     private FollowingFragment followingFragment;
     private FollowersFragment followersFragment;
     private GoiiFragment goiiFragment;
-    private Button btnGet, btnPush;
-    private TextView tvShow , toolbar_t;
+    private TextView  toolbar_t;
     private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
     private ImageButton btnTimKiem;
-    private Toolbar toolbar;
     public Search() {
-        // Required empty public constructor
+        // yeu cau ham tao
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,27 +48,24 @@ public class Search extends Fragment {
 
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_friend, container, false);
-        // Khởi tạo views
         mapping(view);
+        // hien ten
+        toolbar_t = view.findViewById(R.id.toolbar_t);
+        mAuth = FirebaseAuth.getInstance();
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("nameProfile");
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String value = snapshot.getValue(String.class);
+                toolbar_t.setText(value);
+            }
 
-      //  toolbar_t = view.findViewById(R.id.toolbar_t);
-//        toolbar = view.findViewById(R.id.toolbar);
-//        mAuth = FirebaseAuth.getInstance();
-//        String currentUserId = mAuth.getCurrentUser().getUid();
-//        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("nameProfile");
-//        userRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                String value = snapshot.getValue(String.class);
-//                toolbar.setTitle(value);
-//                //toolbar_t.setText(value);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         followingFragment = new FollowingFragment();
         followersFragment = new FollowersFragment();
         goiiFragment = new GoiiFragment();
@@ -148,8 +131,6 @@ public class Search extends Fragment {
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
         btnTimKiem = view.findViewById(R.id.btnTimKiem);
-
-
     }
 
 }

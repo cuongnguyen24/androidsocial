@@ -181,7 +181,7 @@ public class Home extends Fragment {
                         HomeModel homeModelList = new HomeModel();
                         homeModelList.setContent(snapshot.child("content").getValue(String.class));
                         homeModelList.setCmtCount(0);
-                        homeModelList.setLikeCount(0);
+                        homeModelList.setLikeCount(snapshot.child("likeCount").getValue(Integer.class));
                         homeModelList.setPostCount(0);
                         homeModelList.setReupCount(0);
                         homeModelList.setUserID(snapshotList.getKey()); // Set userID
@@ -225,39 +225,38 @@ public class Home extends Fragment {
                         String folderPath = "users/" + snapshotList.getKey() + "/IdImgStt_" + snapshot.child("uid").getValue(Integer.class);
                         Log.e("FirebaseStorageIamge", "URL ảnh: " + folderPath);
                         StorageReference listRef1 = storage1.getReference().child(folderPath);
-                        listRef1.listAll()
-                                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                                    @Override
-                                    public void onSuccess(ListResult listResult) {
-                                        // Duyệt qua tất cả các tệp trong thư mục
-                                        for (StorageReference item : listResult.getItems()) {
-                                            // Lấy URL download của từng ảnh
-                                            item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                @Override
-                                                public void onSuccess(Uri uri) {
-                                                    // Đây là URL của ảnh
-                                                    String imageUrl = uri.toString();
-                                                    imageUrl+=".jpg";
-                                                    imageLists.add(imageUrl);
+                        listRef1.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                            @Override
+                            public void onSuccess(ListResult listResult) {
+                                for (StorageReference item : listResult.getItems()) {
+                                    // Kiểm tra tên tệp có đuôi ".jpg" hoặc ".png" không
+                                    String fileName = item.getName();
+                                    if (fileName.endsWith(".jpg") || fileName.endsWith(".png")) {
+                                        // Chỉ lấy URL download cho các tệp hình ảnh
+                                        item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                String imageUrl = uri.toString();
+                                                imageLists.add(imageUrl); // Thêm URL của ảnh vào danh sách
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception exception) {
+                                                Log.e("FirebaseStorageImage", "Lỗi khi lấy URL: " + exception.getMessage());
+                                            }
+                                        });
+                                    } else {
+                                        Log.d("FirebaseStorageImage", "Bỏ qua tệp không phải ảnh: " + fileName);
+                                    }
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                Log.e("FirebaseStorage", "Lỗi khi liệt kê các tệp: " + exception.getMessage());
+                            }
+                        });
 
-                                                    // Bạn có thể sử dụng imageUrl để hiển thị ảnh trong ImageView hoặc lưu trữ URL
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception exception) {
-                                                    // Xử lý khi có lỗi xảy ra
-                                                    Log.e("FirebaseStorageImage", "Lỗi khi lấy URL: " + exception.getMessage());
-                                                }
-                                            });
-                                        }
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        // Xử lý khi có lỗi xảy ra
-                                        Log.e("FirebaseStorage", "Lỗi khi liệt kê các tệp: " + exception.getMessage());
-                                    }
-                                });
 
                         homeModelList.setPostImage(imageLists);
                         FirebaseDatabase databaseGetName = FirebaseDatabase.getInstance();

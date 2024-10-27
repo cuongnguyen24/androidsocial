@@ -1,14 +1,17 @@
 package com.utt.tt21.cc_modulelogin.search;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +43,8 @@ public class FollowersFragment extends Fragment {
     List<Account> userList ;
     ListAccountAdapter adapter;
     RecyclerView recyclerView;
+    EditText edtTimKiem;
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,17 +53,18 @@ public class FollowersFragment extends Fragment {
         // khởi tạo recyclerView và UserAdapter
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        edtTimKiem = view.findViewById(R.id.edtTimKiem);
         // tạo dòng kẻ phân cách item
         DividerItemDecoration dividerItemDecoration= new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
         // (Tùy chọn) Bạn có thể tùy chỉnh divider với một drawable riêng nếu muốn:
         Drawable dividerDrawable = ContextCompat.getDrawable(getContext(), R.drawable.custom_divider);
         dividerItemDecoration.setDrawable(dividerDrawable);
         recyclerView.addItemDecoration(dividerItemDecoration);
+
         userList = new ArrayList<>();
         adapter = new ListAccountAdapter(getContext(), userList, new ListAccountAdapter.IClickListener() {
             @Override
-            public void onclickUpdate(Account account) {
+            public void onclickUpdate(List<Account> account) {
                 onUpdate(account);
             }
 
@@ -72,9 +78,50 @@ public class FollowersFragment extends Fragment {
         String currentUserId = mAuth.getCurrentUser().getUid();
         userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("followers");
         loadUsers();
+        edtTimKiem.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchUsers(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        // Load users tu Firebase
+        loadUsers();
         return view;
     }
+    private void searchUsers(String query) {
+        userRef.orderByChild("nameProfile")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        userList.clear();
+                        userList.clear();
+                        List<String> followingList = new ArrayList<>();
 
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String userId = snapshot.getKey(); // Lấy user ID
+                            followingList.add(userId);
+                        }
+                        userList = getUserbyID(followingList, query);
+                        if(followingList.size() == 0){
+                            updateFollowingRecyclerView(new ArrayList<>());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Xử lý lỗi khi truy vấn thất bại
+                    }
+                });
+    }
     private void loadUsers() {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -86,8 +133,7 @@ public class FollowersFragment extends Fragment {
                     String userId = snapshot.getKey(); // Lấy user ID
                     followingList.add(userId);
                 }
-                userList = getUserbyID(followingList);
-                //adapter.notifyDataSetChanged();
+                userList = getUserbyID(followingList, null);
                 if(followingList.size() == 0){
                     updateFollowingRecyclerView(new ArrayList<>());
                 }
@@ -99,7 +145,7 @@ public class FollowersFragment extends Fragment {
             }
         });
     }
-    private List<Account> getUserbyID(List<String> followers){
+    private List<Account> getUserbyID(List<String> followers, String query){
         DatabaseReference userRef1 = FirebaseDatabase.getInstance().getReference("users");
         List<Account> acc = new ArrayList<>();
         for (String followerId: followers) {
@@ -117,7 +163,13 @@ public class FollowersFragment extends Fragment {
                             if(hasFollowing && hasFollower){
                                 account.setDantheodoi(true);
                             }
-                            acc.add(account);
+                            if(query != null){
+                                if (account != null && account.getNameProfile() != null
+                                        && account.getNameProfile().toLowerCase().contains(query)){
+                                    acc.add(account);
+                                }
+                            }else
+                                acc.add(account);
                         }
                         if(followerId.equals(followers.get(followers.size() - 1))){
                             updateFollowingRecyclerView(acc);
@@ -142,8 +194,7 @@ public class FollowersFragment extends Fragment {
         // Giả sử bạn đã có RecyclerView và Adapter để hiển thị danh sách
         ListAccountAdapter adapter = new ListAccountAdapter(getContext(), followingUsers, new ListAccountAdapter.IClickListener() {
             @Override
-            public void onclickUpdate(Account account) {
-                //onUpdate(account);
+            public void onclickUpdate(List<Account> account) {
             }
 
             @Override
@@ -168,14 +219,13 @@ public class FollowersFragment extends Fragment {
         Button buttonCancel = dialog.findViewById(R.id.btn_cancel);
 
         // Thiết lập nội dung (tùy chỉnh nếu cần)
-        dialogMessage.setText("Xóa nguoi theo dõi "+ account.getNameProfile()+ " ?");
+        dialogMessage.setText("Xóa người theo dõi "+ account.getNameProfile()+ " ?");
 
         if (account.getImgProfile() != null && !account.getImgProfile().isEmpty()) {
             Glide.with(getContext()).load(account.getImgProfile()).into(dialogIcon);
         } else {
             dialogIcon.setImageResource(R.drawable.ic_default_user); // Hình mặc định
         }
-      //  dialogIcon.setImageResource(account.getImgProfile()); // Đảm bảo bạn có hình ảnh đúng
 
         // Xử lý sự kiện cho các nút
         buttonUnfollow.setOnClickListener(new View.OnClickListener() {
@@ -221,7 +271,7 @@ public class FollowersFragment extends Fragment {
                     String userId = snapshot.getKey(); // Lấy user ID
                     followingList.add(userId);
                 }
-                userList = getUserbyID(followingList);
+                userList = getUserbyID(followingList, null);
                 adapter.notifyDataSetChanged();
             }
 
@@ -232,9 +282,8 @@ public class FollowersFragment extends Fragment {
         });
 
     }
-    private void onUpdate(Account account){
-        userList.remove(account);
-        updateFollowingRecyclerView(userList);
+    private void onUpdate(List<Account> account){
+        updateFollowingRecyclerView(account);
     }
 
 }
