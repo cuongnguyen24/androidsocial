@@ -24,8 +24,6 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 nextActivity();
             }
-
-           
         }, 2000); // delay 2s
     }
 

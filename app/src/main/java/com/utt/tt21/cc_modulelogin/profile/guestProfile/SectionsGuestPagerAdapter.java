@@ -25,12 +25,6 @@ public class SectionsGuestPagerAdapter extends FragmentPagerAdapter {
                 bundle.putString("uid", userId); // Truyền UID qua Bundle
                 threadGuestFragment.setArguments(bundle);
                 return threadGuestFragment;
-//            case 1:
-//                RepostGuestFragment repostGuestFragment = new RepostGuestFragment();
-//                Bundle repostBundle = new Bundle();
-//                repostBundle.putString("uid", userId); // Truyền UID qua Bundle
-//                repostGuestFragment.setArguments(repostBundle);
-//                return repostGuestFragment;
             default:
                 return null;
         }
@@ -46,8 +40,6 @@ public class SectionsGuestPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 return "Thread";
-//            case 1:
-//                return "Bài đăng lại";
             default:
                 return null;
         }

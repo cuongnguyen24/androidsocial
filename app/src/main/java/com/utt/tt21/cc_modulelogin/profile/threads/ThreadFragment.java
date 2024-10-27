@@ -73,19 +73,13 @@ public class ThreadFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init(view);
 
-
-
-
         list = new ArrayList<>();
         adapter = new ThreadFragmentAdapter(list, getContext());
         recyclerView.setAdapter(adapter);
         loadDataFromFirestore();
         adapter.notifyDataSetChanged();
 
-
-
         scrollScreen();
-
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -120,11 +114,8 @@ public class ThreadFragment extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
-
                     bottomNavigationView.animate().translationY(bottomNavigationView.getHeight()).setDuration(300);
                 } else if (dy < 0) {
-
-
                     bottomNavigationView.animate().translationY(0).setDuration(300);
                 }
             }
@@ -132,33 +123,21 @@ public class ThreadFragment extends Fragment {
     }
 
     private void loadDataFromFirestore() {
-
-
-
         Toast.makeText(context, mUser.getEmail(), Toast.LENGTH_SHORT).show();
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-
         DatabaseReference getMyStatus = database.getReference("list_status").child(mUser.getUid());
 
         getMyStatus.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshotStatus, @Nullable String previousChildName) {
-
                         HomeModel homeModelList = new HomeModel();
                         homeModelList.setContent(snapshotStatus.child("content").getValue(String.class));
-
                         // Sửa lại reaction
                         homeModelList.setCmtCount(0);
                         homeModelList.setLikeCount(0);
                         homeModelList.setPostCount(0);
                         homeModelList.setReupCount(0);
-
-
-
                         //Lay anh cho profile trong storage
-
                         FirebaseStorage storage = FirebaseStorage.getInstance();
                         String imagePath = "users/" + mUser.getUid() + "/"+mUser.getUid()+".jpg";
                         Log.d("FirebaseStorage", "URL ảnh: " + imagePath);
@@ -171,8 +150,6 @@ public class ThreadFragment extends Fragment {
                                 String imageUrl = uri.toString();
                                 homeModelList.setProfileImage(imageUrl);
                                 Log.d("FirebaseStorage", "URL ảnh: " + imageUrl);
-
-                                // Bạn có thể dùng URL này để hiển thị ảnh trong ImageView hoặc xử lý khác
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -181,12 +158,8 @@ public class ThreadFragment extends Fragment {
                                 Log.e("FirebaseStorage", "Lỗi khi lấy URL: " + exception.getMessage());
                             }
                         });
-
                         List<String> imageLists = new ArrayList<>();
-
-
-                        //get all list photo in storage
-
+                        //lấy tất cả list photo trong storage
                         FirebaseStorage storage1 = FirebaseStorage.getInstance();
                         // Số thứ tự bài viết
                         String folderPath = "users/" + mUser.getUid() + "/IdImgStt_" + snapshotStatus.child("uid").getValue(Integer.class);

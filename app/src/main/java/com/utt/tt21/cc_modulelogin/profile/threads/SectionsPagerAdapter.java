@@ -16,8 +16,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 return new ThreadFragment();
-//            case 1:
-//                return new RepostFragment();
             default:
                 return null;
         }
@@ -33,8 +31,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 return "Thread";
-//            case 1:
-//                return "Bài đăng lại";
             default:
                 return null;
         }

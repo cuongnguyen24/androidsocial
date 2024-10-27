@@ -66,7 +66,6 @@ public class GuestProfileActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         userRef = FirebaseDatabase.getInstance().getReference("users");
-
         initUi();
 
         // Khởi tạo adapter
@@ -135,8 +134,6 @@ public class GuestProfileActivity extends AppCompatActivity {
                 });
             }
         });
-
-
     }
 
     private void initUi() {
@@ -223,10 +220,6 @@ public class GuestProfileActivity extends AppCompatActivity {
                 // Xử lý lỗi nếu cần
             }
         });
-
-        // Nếu bạn vẫn muốn lấy ảnh đại diện từ FirebaseUser
-
-
     }
 
     // Kiểm tra trạng thái follow
@@ -240,7 +233,6 @@ public class GuestProfileActivity extends AppCompatActivity {
                     btnFollow.setText("Follow");
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Xử lý lỗi nếu cần
