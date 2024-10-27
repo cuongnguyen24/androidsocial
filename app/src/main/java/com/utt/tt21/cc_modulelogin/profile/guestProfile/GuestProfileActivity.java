@@ -94,6 +94,7 @@ public class GuestProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(GuestProfileActivity.this, ChatActivity.class);
                 intent.putExtra("name", tvName.getText().toString());
                 intent.putExtra("uid", userId);
+
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 String imagePath = "users/" + userId + "/" + userId + ".jpg";
                 StorageReference imageRef = storage.getReference().child(imagePath);

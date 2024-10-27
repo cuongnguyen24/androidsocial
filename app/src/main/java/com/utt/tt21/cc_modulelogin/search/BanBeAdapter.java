@@ -1,6 +1,7 @@
 package com.utt.tt21.cc_modulelogin.search;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.utt.tt21.cc_modulelogin.R;
+import com.utt.tt21.cc_modulelogin.messenger.chat.ChatActivity;
+import com.utt.tt21.cc_modulelogin.profile.guestProfile.GuestProfileActivity;
 
 import java.util.List;
 
@@ -59,7 +62,11 @@ public class BanBeAdapter extends RecyclerView.Adapter<BanBeAdapter.UserViewHold
         holder.btnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(mContext, ChatActivity.class);
+                intent.putExtra("name", account.getNameProfile().toString());
+                intent.putExtra("uid", account.getUserId().toString());
+                intent.putExtra("imageUrl", account.getImgProfile());
+                mContext.startActivity(intent);
             }
         });
     }
