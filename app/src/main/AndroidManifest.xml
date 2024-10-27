@@ -28,7 +28,7 @@
             android:name=".profile.guestProfile.GuestProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".messenger.messenger"
+            android:name=".messenger.messenger1"
             android:exported="false" />
         <activity
             android:name=".profile.accountmanagement.EditProfileActivity"
