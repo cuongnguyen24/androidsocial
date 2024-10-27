@@ -172,12 +172,11 @@ public class MainActivity extends AppCompatActivity {
     //push data
     private void onClickPushDataFromEditText() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = auth.getCurrentUser(); // Lấy người dùng hiện tại
+        FirebaseUser currentUser = auth.getCurrentUser();
 
         // Kiểm tra xem người dùng đã đăng nhập hay chưa
         if (currentUser != null) {
-            String userId = currentUser.getUid(); // Lấy userId từ người dùng hiện tại
-            String content = edtContent.getText().toString(); // Lấy nội dung từ EditText
+            String content = edtContent.getText().toString();
 
             if (!content.isEmpty()) {
                 // Gọi hàm push dữ liệu
@@ -405,43 +404,66 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void uploadImageToStorage() {
+        // Kiểm tra nếu không có ảnh để upload
         if (imageUris.isEmpty()) {
             Log.e("UploadImage", "No images selected.");
-            return; // Nếu không có hình ảnh để upload
+            createEmptyFolder();
+            return;
         }
 
         // Lấy userId để tạo đường dẫn
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String userId = user.getUid();
 
-        // Tạo StorageReference với đường dẫn theo yêu cầu
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference("users").child(userId);
 
         // Tăng chỉ số folder mỗi lần chọn nhiều ảnh
         storageRef.listAll().addOnSuccessListener(listResult -> {
-            // Lấy số folder hiện tại trong Firebase Storage
             int folderCount = listResult.getPrefixes().size() + 1;
-            String folderName = "IdImgStt_" + folderCount; // Tạo tên thư mục mới dựa trên số lượng folder hiện tại
-            StorageReference imageFolderRef = storageRef.child(folderName); // Tạo thư mục mới
+            String folderName = "IdImgStt_" + folderCount;
+            StorageReference imageFolderRef = storageRef.child(folderName);
 
-            Log.d("UploadImage", "Creating folder: " + folderName); // Log để kiểm tra folderName
+            Log.d("UploadImage", "Creating folder: " + folderName);
 
+            // Nếu có ảnh, tiến hành upload
             int index = 1;
             for (Uri imageUri : imageUris) {
-                // Tạo tên tệp mới cho từng ảnh
-                String imageName = "image_" + index + ".jpg"; // Tên tệp mới
-                StorageReference imageRef = imageFolderRef.child(imageName); // Tạo đường dẫn đến tệp mới
-
-                // Upload ảnh từ URI
-                uploadImage(imageUri, imageRef); // Upload ảnh vào tệp mới
-                index++; // Tăng chỉ số
+                String imageName = "image_" + index + ".jpg";
+                StorageReference imageRef = imageFolderRef.child(imageName);
+                uploadImage(imageUri, imageRef);
+                index++;
             }
         }).addOnFailureListener(exception -> {
             Log.e("UploadImage", "Failed to list files", exception);
         });
-
     }
+
+    private void createEmptyFolder() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = user.getUid();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference("users").child(userId);
+
+        storageRef.listAll().addOnSuccessListener(listResult -> {
+            int folderCount = listResult.getPrefixes().size() + 1;
+            String folderName = "IdImgStt_" + folderCount;
+            StorageReference imageFolderRef = storageRef.child(folderName);
+
+            // Tạo tệp tạm thời để tạo thư mục
+            StorageReference dummyFileRef = imageFolderRef.child("dummy.txt");
+            byte[] dummyData = new byte[0]; // Dữ liệu trống
+
+            dummyFileRef.putBytes(dummyData)
+                    .addOnSuccessListener(taskSnapshot -> Log.d("UploadImage", "Created folder: " + folderName))
+                    .addOnFailureListener(exception -> Log.e("UploadImage", "Failed to create empty folder", exception));
+        }).addOnFailureListener(exception -> {
+            Log.e("UploadImage", "Failed to list files", exception);
+        });
+    }
+
+
 
     private void uploadImage(Uri imageUri, StorageReference storageRef) {
         // Upload ảnh từ URI

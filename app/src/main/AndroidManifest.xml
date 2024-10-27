@@ -49,8 +49,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".detailstatus.CommentLayoutActivity"></activity>
-        <activity android:name=".commentInHome.CommentInHomeLayoutActivity" />
-        <activity android:name=".commentInHome.DetailStatusInHomeActivity" />
+        <activity android:name=".post.EditPostActivity"></activity>
+
 
         <activity android:name=".detailstatus.DetailStatusActivity"/>
         <activity
