@@ -36,6 +36,7 @@ public class TimKiem extends AppCompatActivity {
     RecyclerView rcvView;
     ImageButton btnBack;
     EditText edtTimKiem;
+    String userLogin;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_tkiemfriend);
@@ -53,11 +54,18 @@ public class TimKiem extends AppCompatActivity {
             }
         });
         userList = new ArrayList<>();
-        adapter = new TKAdapter(TimKiem.this, userList) ;
+        adapter = new TKAdapter(TimKiem.this, userList, new TKAdapter.IClickListener() {
+            @Override
+            public void onclickUpdate(List<Account> account) {
+                userList = account;
+                adapter.notifyDataSetChanged();
+            }
+        }) ;
         rcvView.setAdapter(adapter);
         // Initialize Firebase reference and authentication
         userRef = FirebaseDatabase.getInstance().getReference("users");
         mAuth = FirebaseAuth.getInstance();
+        userLogin = mAuth.getCurrentUser().getUid();
         // Lắng nghe sự thay đổi trong EditText để thực hiện tìm kiếm khi người dùng nhập.
         edtTimKiem.addTextChangedListener(new TextWatcher() {
             @Override
@@ -78,15 +86,22 @@ public class TimKiem extends AppCompatActivity {
         loadUsers();
     }
     private void searchUsers(String query) {
-        userRef.orderByChild("nameProfile").startAt(query).endAt(query + "\uf8ff")
+        userRef.orderByChild("nameProfile")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         userList.clear();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Account account = snapshot.getValue(Account.class);
+                            boolean hasFollowers = snapshot.hasChild("followers") && snapshot.child("followers").hasChild(userLogin);
+                            String userLogin = mAuth.getCurrentUser().getUid();
                             account.setUserId(snapshot.getKey());
-                            userList.add(account);
+                            if (account != null &&!(account.getUserId().equals(userLogin)) && !hasFollowers && account.getNameProfile() != null
+                                    && account.getNameProfile().toLowerCase().contains(query)){
+
+                                userList.add(account);
+                            }
+
                         }
                         adapter.notifyDataSetChanged();
                     }
@@ -102,13 +117,16 @@ public class TimKiem extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String userId = snapshot.getKey(); // Lấy user ID
                     Account account = snapshot.getValue(Account.class);
+                    boolean hasFollowers = snapshot.hasChild("followers") && snapshot.child("followers").hasChild(userLogin);
+                    //boolean hasFollowing = snapshot.hasChild("followings") && snapshot.child("followings").child(userLogin).getChildrenCount() > 0;
+
                     String userLogin = mAuth.getCurrentUser().getUid();
                     account.setUserId(userId);
-                    if (account != null && (account.getUserId() != null &&!account.getUserId().equals(userLogin))) {
-                        // Cập nhật userId vào đối tượng Account
+                    if (account != null  && !hasFollowers  &&!(account.getUserId().equals(userLogin))) {
+                       // Cập nhật userId vào đối tượng Account
                         userList.add(account);
                     }
                 }

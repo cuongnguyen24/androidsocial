@@ -1,7 +1,7 @@
 package com.utt.tt21.cc_modulelogin.search;
 
 public class Account {
-    private String userId;// Thêm thuộc tính userId
+    private String userId;
     private String nameProfile;
     private String imgProfile;
     private String desProfile;
@@ -44,11 +44,6 @@ public class Account {
         this.nameProfile = nameProfile;
     }
 
-//    public void setFollowing(boolean following) {
-//        this.following = following;
-//    }
-
-
     public String getImgProfile() {
         return imgProfile;
     }
@@ -73,8 +68,5 @@ public class Account {
 //        return followers +" followers";
 //    }
 
-//    public boolean isFollowing() {
-//        return following;
-//    }
 }
 

@@ -12,13 +12,10 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -38,10 +35,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.UserViewHolder> {
-//    private List<Account> accountList;
-//    public ListAccountAdapter(List<Account> accountList) {
-//        this.accountList = accountList;
-//    }
+
     private Context mContext;
     private List<Account> accountList;
     private FirebaseAuth mAuth;
@@ -50,10 +44,9 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
     private IClickListener clickListener;
     // bắt sk -> sd interface-> đưa sk ra bên ngoài main để xử lí
     public interface IClickListener{
-        void onclickUpdate(Account account);
+        void onclickUpdate(List<Account> account);
         void onCLickDelete(Account account);
     }
-
 
     public ListAccountAdapter(Context mContext, List<Account> accountList,IClickListener listener,int vitri) {
         this.mContext = mContext;
@@ -87,14 +80,13 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
 
         holder.nickname.setText(account.getDesProfile());
 //        holder.accountFollowers.setText(String.valueOf(account.getFollowers()));
-       // holder.followButton.setText(account.isFollowing() ? "Following" : "Follow");
 
         //currentUserId được lấy từ Firebase Authentication - ngdung hiện tại
         String currentUserId = mAuth.getCurrentUser().getUid();
         //ID của người mà bạn muốn theo dõi
         String targetUserId = account.getUserId();
         // Kiểm tra trạng thái follow
-        //checkFollowStatus(currentUserId, targetUserId, holder.followButton);
+        //(currentUserId, targetUserId, holder.followButton);
         if(account.isDantheodoi())
             holder.followButton.setText("Unfollow");
         else
@@ -122,8 +114,8 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
                     Button buttonCancel = dialog.findViewById(R.id.btn_cancel);
                     buttonUnfollow.setText("Bỏ theo dõi");
                     // Thiết lập nội dung (tùy chỉnh nếu cần)
-
                     dialogMessage.setText("Bỏ theo dõi "+ account.getNameProfile()+ " ?");
+
                     if (account.getImgProfile() != null && !account.getImgProfile().isEmpty()) {
                         Glide.with(mContext).load(account.getImgProfile()).into(dialogIcon);
                     } else {
@@ -135,7 +127,8 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
                         @Override
                         public void onClick(View v) {
                             unfollowUser(currentUserId, targetUserId, holder.followButton);
-                            clickListener.onclickUpdate(account);
+                            accountList.remove(account);
+                            clickListener.onclickUpdate(accountList);
                             dialog.dismiss();
                         }
                     });
@@ -227,7 +220,6 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
             accountImage = itemView.findViewById(R.id.img_avatar);
             nickname = itemView.findViewById(R.id.fullName);
             btnXoa = itemView.findViewById(R.id.btnXoa);
-            // Lấy LinearLayout chứa các nút
         }
     }
     // Kiểm tra trạng thái follow
@@ -257,7 +249,6 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
 
     // Hàm unfollow
     private void unfollowUser(String currentUserId, String targetUserId, Button followButton) {
-        //userRef.child(currentUserId).child("followings").child(targetUserId).removeValue();
         userRef.child(targetUserId).child("followers").child(currentUserId).removeValue();
         userRef.child(currentUserId).child("followings").child(targetUserId).removeValue();
         followButton.setText("Follow");

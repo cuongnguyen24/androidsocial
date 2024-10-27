@@ -171,7 +171,7 @@ public class ThreadFragmentAdapter extends RecyclerView.Adapter<ThreadFragmentAd
             tvUserName = itemView.findViewById(R.id.tvName);
             tvDes = itemView.findViewById(R.id.tvDes);
             tvTime = itemView.findViewById(R.id.tvTimeStamp);
-            tvLikeCount = itemView.findViewById(R.id.tvCountLike);
+            tvLikeCount = itemView.findViewById(R.id.count_Like);
             tvCmtCount = itemView.findViewById(R.id.tvCountCmt);
             tvPostCount = itemView.findViewById(R.id.tvCountPost);
             tvReupCount = itemView.findViewById(R.id.tvCountReUp);

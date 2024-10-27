@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="12dp"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_avatar"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_marginEnd="0dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_default_user" />
+        <!-- Thông tin người dùng -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+            <TextView
+                android:text="Linh Kun"
+                android:id="@+id/name"
+                android:textColor="#242424"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold" />
+            <TextView
+                android:text="homehinhlinh"
+                android:id="@+id/fullName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ADABAB" />
+            <!--            <TextView-->
+            <!--                android:id="@+id/soTD"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:hint="followers"-->
+            <!--                android:textColorHint="@color/white"-->
+            <!--                android:textSize="12sp"-->
+            <!--                android:textColor="@android:color/darker_gray"/>-->
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Nút theo dõi -->
+<!--    <Button-->
+<!--        android:id="@+id/btnChat"-->
+<!--        android:layout_centerVertical="true"-->
+<!--        android:layout_width="98dp"-->
+<!--        android:text= "Nhắn tin"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_height="42dp"-->
+<!--        android:background="@drawable/tkiem_background" />-->
+
+    <!-- Nút menu -->
+    <!--    <ImageButton-->
+    <!--        android:id="@+id/btnXoa"-->
+    <!--        android:layout_alignParentEnd="true"-->
+    <!--        android:layout_centerVertical="true"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:background="?attr/selectableItemBackgroundBorderless"-->
+    <!--        android:src="@drawable/ic_more2"-->
+    <!--        android:contentDescription="Tùy chọn thêm" />-->
+</RelativeLayout>

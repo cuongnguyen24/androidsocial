@@ -1,5 +1,6 @@
 package com.utt.tt21.cc_modulelogin.home.homeAdapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -17,12 +18,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.utt.tt21.cc_modulelogin.R;
 
 import com.utt.tt21.cc_modulelogin.detailstatus.DetailStatusActivity;
 import com.utt.tt21.cc_modulelogin.home.homeModel.HomeModel;
 import com.utt.tt21.cc_modulelogin.profile.guestProfile.GuestProfileActivity;
 import com.utt.tt21.cc_modulelogin.profile.profileModel.ImageItems;
+import com.utt.tt21.cc_modulelogin.search.Account;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +42,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
     Context context;
     private ImageStringAdapter imageStringAdapter;
     private int countViewStatus = 0;
+    private FirebaseDatabase database;
+    private String currentUserId;
     public HomeAdapter(List<HomeModel> list, Context context) {
         this.list = list;
         this.context = context;
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     @NonNull
@@ -65,6 +75,90 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         String userID = currentItem.getUserID();
         String idStatus = currentItem.getIdStatus();
         String content = currentItem.getContent();
+
+
+        holder.count_Like.setText(String.valueOf(currentItem.getLikeCount()));
+
+        // Lấy tham chiếu đến bài đăng trong Firebase
+        DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("list_status").child(currentItem.getUserID()).child(currentItem.getIdStatus());
+
+        // Kiểm tra xem người dùng đã "tim" bài viết này chưa
+        postRef.child("likes").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    holder.btnLike.setImageResource(R.drawable.ic_heart_filled); // Đã "tim"
+                } else {
+                    holder.btnLike.setImageResource(R.drawable.heart); // Chưa "tim"
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+
+        holder.btnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                postRef.child("likes").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // Nếu đã "tim", bỏ "tim"
+                            postRef.child("likes").child(currentUserId).removeValue();
+                            postRef.child("likeCount").setValue(currentItem.getLikeCount() - 1);
+                            holder.btnLike.setImageResource(R.drawable.ic_heart_outline);
+                            currentItem.setLikeCount(currentItem.getLikeCount() - 1);
+                        } else {
+                            // Nếu chưa "tim", thêm "tim"
+                            postRef.child("likes").child(currentUserId).setValue(true);
+                            postRef.child("likeCount").setValue(currentItem.getLikeCount() + 1);
+                            holder.btnLike.setImageResource(R.drawable.ic_heart_filled);
+                            currentItem.setLikeCount(currentItem.getLikeCount() + 1);
+                        }
+                        holder.count_Like.setText(String.valueOf(currentItem.getLikeCount()));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) { }
+                });
+            }
+        });
+        holder.count_Like.setOnClickListener(v -> {
+            DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("list_status").child(currentItem.getUserID())
+                    .child(currentItem.getIdStatus())
+                    .child("likes");
+            List<Account> likeList = new ArrayList<>();
+            likesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot likeSnapshot : snapshot.getChildren()) {
+                        String userId = likeSnapshot.getKey();
+                        // Lấy thông tin người dùng từ node "users"
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                Account account = userSnapshot.getValue(Account.class);
+                                if (account != null) {
+                                    likeList.add(account);
+                                }
+                                // Khi hoàn thành việc tải dữ liệu, hiển thị dialog danh sách người dùng
+                                if (snapshot.getChildrenCount() == likeList.size()) {
+                                    showLikeListDialog(likeList);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {}
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {}
+            });
+        });
 
         holder.btnComment.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailStatusActivity.class);
@@ -132,8 +226,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         holder.recyclerViewImage.setAdapter(imageStringAdapter);
         holder.recyclerViewImage.setHasFixedSize(true);
 
-
-
         // Xu ly count like
         int countLike = list.get(position).getLikeCount();
 
@@ -142,7 +234,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
             holder.count_Like.setVisibility(View.INVISIBLE);
         }
         else {
-            holder.count_Like.setText(countLike+"");
+            holder.count_Like.setVisibility(View.VISIBLE);
         }
         //xy ly count cmt
         int countCmt = list.get(position).getCmtCount();
@@ -174,13 +266,20 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
         else {
             holder.tvPostCount.setText(countPost+"");
         }
-
-
         holder.tvDes.setText(list.get(position).getContent());
         // Cường: Thêm sự kiện click vào profileImage và tvUserName
         setOnClickListener(holder, position);
     }
-
+    // hien thi tim
+    private void showLikeListDialog( List<Account> likeList) {
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_like_list);
+        RecyclerView recyclerView = dialog.findViewById(R.id.like_rcvView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        LikeListAdapter adapter = new LikeListAdapter(context, likeList);
+        recyclerView.setAdapter(adapter);
+        dialog.show();
+    }
     // Cường: thêm setonclick để vào trang profile guest
     private void setOnClickListener(HomeHolder holder, int position) {
         // Lấy uid của người đăng bài

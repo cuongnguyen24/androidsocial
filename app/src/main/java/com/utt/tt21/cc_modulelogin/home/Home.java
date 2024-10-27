@@ -181,7 +181,7 @@ public class Home extends Fragment {
                         HomeModel homeModelList = new HomeModel();
                         homeModelList.setContent(snapshot.child("content").getValue(String.class));
                         homeModelList.setCmtCount(0);
-                        homeModelList.setLikeCount(0);
+                        homeModelList.setLikeCount(snapshot.child("likeCount").getValue(Integer.class));
                         homeModelList.setPostCount(0);
                         homeModelList.setReupCount(0);
                         homeModelList.setUserID(snapshotList.getKey()); // Set userID
