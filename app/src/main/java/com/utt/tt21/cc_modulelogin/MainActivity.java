@@ -247,12 +247,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                 break;
-            case 3:
+            case 2:
                 bottomNavigationView.getMenu().findItem(R.id.action_notification).setChecked(true);
 
 
                 break;
-            case 4:
+            case 3:
                 bottomNavigationView.getMenu().findItem(R.id.action_profile).setChecked(true);
 
 
@@ -278,14 +278,14 @@ public class MainActivity extends AppCompatActivity {
                         idFragment = 1;
 
                         break;
-                    case 3:
+                    case 2:
                         bottomNavigationView.getMenu().findItem(R.id.action_notification).setChecked(true);
-                        idFragment = 3;
+                        idFragment = 2;
 
                         break;
-                    case 4:
+                    case 3:
                         bottomNavigationView.getMenu().findItem(R.id.action_profile).setChecked(true);
-                        idFragment = 4;
+                        idFragment = 3;
 
                         break;
 
@@ -321,11 +321,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                  if (item.getItemId() == R.id.action_notification)
                 {
-                    viewPager2.setCurrentItem(3, false);
+                    viewPager2.setCurrentItem(2, false);
                 }
                  if (item.getItemId() == R.id.action_profile)
                 {
-                    viewPager2.setCurrentItem(4, false);
+                    viewPager2.setCurrentItem(3, false);
                 }
                 return true;
             }

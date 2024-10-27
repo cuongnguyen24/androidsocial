@@ -24,22 +24,23 @@ public class ViewPager2Adapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch (position){
-
+            case 0:
+                return new Home();
             case 1:
                 return new Search();
-            case 3:              
+            case 2:
                 return new Messenger();
 
-            case 4:
+            case 3:
                 return new Profile();
-
             default:
                 return new Home();
+
         }
     }
 
     @Override
     public int getItemCount() {
-        return 5;
+        return 4;
     }
 }
