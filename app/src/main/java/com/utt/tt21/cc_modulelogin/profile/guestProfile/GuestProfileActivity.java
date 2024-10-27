@@ -43,8 +43,7 @@ public class GuestProfileActivity extends AppCompatActivity {
     private SectionsPagerAdapter sectionsPagerAdapter;
     private SectionsGuestPagerAdapter sectionsGuestPagerAdapter;
 
-    private ActivityResultLauncher<Intent> mActivityResultLauncher;
-    private String userId; // Biến để lưu UID của người dùng
+    private String userId;
 
     private FirebaseAuth mAuth;
     private DatabaseReference userRef;
