@@ -32,7 +32,6 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
         initUi();
         initListener();
     }
@@ -65,6 +64,11 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             return;
         }
+        // Kiểm tra email có kết thúc bằng @gmail.com hay không
+        if (!strEmail.endsWith("@gmail.com")) {
+            Toast.makeText(this, "Tài khoản phải sử dụng email", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Kiểm tra xem mật khẩu và xác nhận mật khẩu có khớp nhau không
         if (!strPassword.equals(strConfirmPassword)) {
@@ -89,17 +93,14 @@ public class SignUpActivity extends AppCompatActivity {
                             databaseRef.child("nameProfile").setValue(strFullName);
                             databaseRef.child("desProfile").setValue("");
                             databaseRef.child("emailProfile").setValue(strEmail);
-                            databaseRef.child("imgProfile").setValue(1); // Bạn có thể thay 1 bằng đường dẫn URL của ảnh đại diện nếu có
+                            databaseRef.child("imgProfile").setValue(1);
                             databaseRef.child("followers").setValue(0); // Số lượng người theo dõi ban đầu là 0
                             databaseRef.child("followings").setValue(0); // Số lượng người mà người dùng đang theo dõi là 0
-//                            databaseRef.child("uid").setValue(userId);
 
-                            // Sign in success, update UI with the signed-in user's information
                             Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
                             startActivity(intent);
                             finishAffinity(); // đóng tất cá các activity trước MainActivity
                         } else {
-                            // If sign in fails, display a message to the user.
                             Toast.makeText(SignUpActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }

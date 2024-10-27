@@ -55,7 +55,6 @@ public class Profile extends Fragment {
     private SectionsPagerAdapter sectionsPagerAdapter;
     private ImageButton imgBtnLogout;
 
-
     private ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -88,28 +87,13 @@ public class Profile extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         initUi(view);
-
         // Khởi tạo adapter
         sectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(sectionsPagerAdapter);
         // Kết nối TabLayout với ViewPager
         tabLayout.setupWithViewPager(viewPager);
-
-        // Khởi tạo nút đăng xuất
-//        Button btnLogout = view.findViewById(R.id.btn_logout);
-//        btnLogout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                FirebaseAuth.getInstance().signOut(); // Đăng xuất khỏi Firebase
-//                Intent intent = new Intent(getActivity(), SignInActivity.class); // Chuyển về màn hình đăng nhập
-//                startActivity(intent);
-//                getActivity().finishAffinity(); // Đóng tất cả các activity trước đó
-//            }
-//        });
-
         // Khởi tạo nút chỉnh sửa trang cá nhân
         Button btnEditProfile = view.findViewById(R.id.btn_edit_profile);
         btnEditProfile.setOnClickListener(new View.OnClickListener() {
@@ -157,8 +141,6 @@ public class Profile extends Fragment {
                 }
             }
         });
-
-
         // Sự kiện gọi dữ liệu user
         showUserInformation();
         return view;
@@ -180,10 +162,8 @@ public class Profile extends Fragment {
         if (user == null) {
             return;
         }
-
         String userId = user.getUid(); // Lấy UID của người dùng
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
-
         // Lấy thông tin từ Realtime Database
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -224,7 +204,6 @@ public class Profile extends Fragment {
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Xử lý lỗi nếu cần
@@ -234,8 +213,6 @@ public class Profile extends Fragment {
         // Nếu muốn lấy email từ FirebaseUser
         String email = user.getEmail();
         tvEmail.setText(email);
-
-        // Nếu bạn vẫn muốn lấy ảnh đại diện từ FirebaseUser
         Uri photoUrl = user.getPhotoUrl();
         Glide.with(this).load(photoUrl).error(R.drawable.ic_default_user).into(imgAvartar);
     }

@@ -60,7 +60,7 @@ public class EditProfileActivity extends AppCompatActivity { // Implementing Gal
         btnClose = findViewById(R.id.btn_close);
         edtDesc = findViewById(R.id.edt_desc_edit);
     }
-
+    // Lấy thông tin người dùng
     private void setUserInformation() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -99,12 +99,11 @@ public class EditProfileActivity extends AppCompatActivity { // Implementing Gal
             }
         });
     }
-
+    //Đặt các hành động cho nút
     private void initListener() {
         imgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                onClickRequestPermission();
                 openGallery();
             }
         });
@@ -123,14 +122,14 @@ public class EditProfileActivity extends AppCompatActivity { // Implementing Gal
             }
         });
     }
-
+    // mở thư viện ảnh
     public void openGallery() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), MY_REQUEST_CODE);
     }
 
-    // Nhận kết quả từ gallery
+    // Nhận kết quả từ thư viện ảnh
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -145,7 +144,7 @@ public class EditProfileActivity extends AppCompatActivity { // Implementing Gal
             }
         }
     }
-
+    // cập nhật thông tin người dùng
     private void updateUserInformation() {
         String fullName = edtFullName.getText().toString();
         String desc = edtDesc.getText().toString();

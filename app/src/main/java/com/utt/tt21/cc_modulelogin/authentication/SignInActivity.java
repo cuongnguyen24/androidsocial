@@ -58,6 +58,11 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             return;
         }
+        // Kiểm tra email có kết thúc bằng @gmail.com hay không
+        if (!email.endsWith("@gmail.com")) {
+            Toast.makeText(this, "Tài khoản phải sử dụng email", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         progressDialog.show();
         auth.signInWithEmailAndPassword(email, password)
