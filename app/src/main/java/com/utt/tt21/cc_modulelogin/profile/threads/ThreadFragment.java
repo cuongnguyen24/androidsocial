@@ -3,6 +3,7 @@ package com.utt.tt21.cc_modulelogin.profile.threads;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +54,7 @@ public class ThreadFragment extends Fragment {
     private TextView timestamp;
     private FirebaseUser mUser;
     DocumentReference reference;
-    private HomeAdapter adapter;
+    private ThreadFragmentAdapter adapter;
     private ImageStringAdapter imageStringAdapter;
     private SwipeRefreshLayout refreshLayout;
     public ThreadFragment() {
@@ -76,14 +77,14 @@ public class ThreadFragment extends Fragment {
 
 
         list = new ArrayList<>();
-        adapter = new HomeAdapter(list, getContext());
+        adapter = new ThreadFragmentAdapter(list, getContext());
         recyclerView.setAdapter(adapter);
         loadDataFromFirestore();
         adapter.notifyDataSetChanged();
 
 
 
-        //scrollScreen();
+        scrollScreen();
 
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -243,6 +244,10 @@ public class ThreadFragment extends Fragment {
                         homeModelList.setTimestamp(snapshotStatus.child("timestamp").getValue(String.class));
                         list.add(homeModelList);
                         adapter.notifyDataSetChanged();
+                        Handler handler = new Handler();
+                        handler.postDelayed(() -> {
+                            adapter.notifyDataSetChanged(); // Cập nhật dữ liệu sau 5 giây
+                        }, 1000);
                         refreshLayout.setRefreshing(false);
                     }
 

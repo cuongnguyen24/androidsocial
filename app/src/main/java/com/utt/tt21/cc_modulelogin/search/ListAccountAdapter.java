@@ -3,6 +3,7 @@ package com.utt.tt21.cc_modulelogin.search;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.utt.tt21.cc_modulelogin.R;
+import com.utt.tt21.cc_modulelogin.profile.guestProfile.GuestProfileActivity;
 
 import java.util.List;
 
@@ -181,6 +183,18 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
 
         // Gọi phương thức loadUserAvatar để tải ảnh đại diện
       //  loadUserAvatar(userId, holder.accountImage);
+        loadUserAvatar(userId, holder.accountImage);
+
+        // Phần Cường thêm để xem profile của guest
+        // Thêm OnClickListener cho accountName và accountImage
+        View.OnClickListener profileClickListener = v -> {
+            Intent intent = new Intent(mContext, GuestProfileActivity.class);
+            intent.putExtra("uid", userId); // Truyền UID vào intent
+            mContext.startActivity(intent);
+        };
+
+        holder.accountName.setOnClickListener(profileClickListener);
+        holder.accountImage.setOnClickListener(profileClickListener);
     }
     // Phương thức để tải ảnh đại diện
     private void loadUserAvatar(String userId, ImageView imageView) {
@@ -243,6 +257,7 @@ public class ListAccountAdapter extends RecyclerView.Adapter<ListAccountAdapter.
 
     // Hàm unfollow
     private void unfollowUser(String currentUserId, String targetUserId, Button followButton) {
+        //userRef.child(currentUserId).child("followings").child(targetUserId).removeValue();
         userRef.child(targetUserId).child("followers").child(currentUserId).removeValue();
         userRef.child(currentUserId).child("followings").child(targetUserId).removeValue();
         followButton.setText("Follow");

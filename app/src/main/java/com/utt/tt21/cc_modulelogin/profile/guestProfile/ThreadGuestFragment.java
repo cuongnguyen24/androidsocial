@@ -3,6 +3,7 @@ package com.utt.tt21.cc_modulelogin.profile.guestProfile;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -152,6 +153,10 @@ public class ThreadGuestFragment extends Fragment {
                 homeModelList.setTimestamp(snapshotStatus.child("timestamp").getValue(String.class));
                 list.add(homeModelList);
                 adapter.notifyDataSetChanged();
+                Handler handler = new Handler();
+                handler.postDelayed(() -> {
+                    adapter.notifyDataSetChanged(); // Cập nhật dữ liệu sau 5 giây
+                }, 1000);
                 refreshLayout.setRefreshing(false);
             }
 
@@ -168,6 +173,7 @@ public class ThreadGuestFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
+
 
     private void init(View view) {
         recyclerView = view.findViewById(R.id.recyclerView);

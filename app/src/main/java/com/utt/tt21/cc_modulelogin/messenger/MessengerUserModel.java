@@ -1,16 +1,9 @@
 package com.utt.tt21.cc_modulelogin.messenger;
 
 public class MessengerUserModel {
-    private String myId, userUid, name, imageUrl;
+    private String myId, userUid, name, imageUrl, lastMessage, timeActivity;
 
     public MessengerUserModel() {
-    }
-
-    public MessengerUserModel(String myId, String userUid, String name, String imageUrl) {
-        this.myId = myId;
-        this.userUid = userUid;
-        this.name = name;
-        this.imageUrl = imageUrl;
     }
 
     public String getMyId() {
@@ -43,5 +36,30 @@ public class MessengerUserModel {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
+    public String getTimeActivity() {
+        return timeActivity;
+    }
+
+    public void setTimeActivity(String timeActivity) {
+        this.timeActivity = timeActivity;
+    }
+
+    public MessengerUserModel(String myId, String userUid, String name, String imageUrl, String lastMessage, String timeActivity) {
+        this.myId = myId;
+        this.userUid = userUid;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.lastMessage = lastMessage;
+        this.timeActivity = timeActivity;
     }
 }
