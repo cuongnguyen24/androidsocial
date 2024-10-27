@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 onClickPushDataFromEditText();
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
+                reloadHome();
             }
         });
 
@@ -296,14 +296,18 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if(item.getItemId() == R.id.action_home)
+                if(item.getItemId() == R.id.action_home && viewPager2.getCurrentItem() == 0)
+                {
+                    reloadHome();
+                }
+                else
                 {
                     viewPager2.setCurrentItem(0, false);
-                    //reloadHome();
-                } else if (item.getItemId() == R.id.action_search) {
+                }
+                if (item.getItemId() == R.id.action_search) {
                     viewPager2.setCurrentItem(1, false);
                 }
-                else if (item.getItemId() == R.id.action_add) {
+                 if (item.getItemId() == R.id.action_add) {
                     if(bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED)
                     {
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -315,11 +319,11 @@ public class MainActivity extends AppCompatActivity {
                         setBtnCancel();
                     }
                 }
-                else if (item.getItemId() == R.id.action_notification)
+                 if (item.getItemId() == R.id.action_notification)
                 {
                     viewPager2.setCurrentItem(3, false);
                 }
-                else if (item.getItemId() == R.id.action_profile)
+                 if (item.getItemId() == R.id.action_profile)
                 {
                     viewPager2.setCurrentItem(4, false);
                 }
