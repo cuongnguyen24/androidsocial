@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".messenger.messenger"
+    tools:context=".messenger.messenger1"
     android:background="@color/black"
     android:orientation="vertical"
     >
@@ -32,13 +32,14 @@
                 android:background="@color/black"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_back1"
+                android:visibility="gone"
                 />
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30sp"
-                android:text="_dabi.61_"
+                android:text="Username"
                 android:textColor="@color/white"
                 android:textStyle="bold"/>
 
@@ -59,7 +60,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewMessenger"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
 

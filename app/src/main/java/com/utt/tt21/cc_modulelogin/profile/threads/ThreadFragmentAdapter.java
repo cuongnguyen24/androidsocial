@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.utt.tt21.cc_modulelogin.R;
 import com.utt.tt21.cc_modulelogin.detailstatus.DetailStatusActivity;
 import com.utt.tt21.cc_modulelogin.home.homeAdapter.ImageAdapter;
@@ -31,6 +33,7 @@ public class ThreadFragmentAdapter extends RecyclerView.Adapter<ThreadFragmentAd
     private List<HomeModel> list;
     Context context;
     private ImageStringAdapter imageStringAdapter;
+    private FirebaseUser mUser;
     private int countViewStatus = 0;
     public ThreadFragmentAdapter(List<HomeModel> list, Context context) {
         this.list = list;
@@ -54,7 +57,6 @@ public class ThreadFragmentAdapter extends RecyclerView.Adapter<ThreadFragmentAd
         Glide.with(context)
                 .load(imageUrl)
                 .placeholder(null)  // Ảnh hiển thị trong khi chờ tải
-                .error(R.drawable.profile)       // Ảnh hiển thị khi có lỗi
                 .into(holder.profileImage);
 
 //        HomeModel currentItem = list.get(position);
@@ -80,7 +82,11 @@ public class ThreadFragmentAdapter extends RecyclerView.Adapter<ThreadFragmentAd
         holder.recyclerViewImage.setHasFixedSize(true);
 
 
-
+        HomeModel currentItem = list.get(position);
+        // Hiển thị userID và idStatus nếu cần
+        String userID = currentItem.getUserID();
+        String idStatus = currentItem.getIdStatus();
+        String content = currentItem.getContent();
 
 
         // Xu ly count like
@@ -180,6 +186,7 @@ public class ThreadFragmentAdapter extends RecyclerView.Adapter<ThreadFragmentAd
             btnComment = itemView.findViewById(R.id.btnComment);
             btnReUp = itemView.findViewById(R.id.btnReup);
             btnPost = itemView.findViewById(R.id.btnPost);
+
 
         }
     }

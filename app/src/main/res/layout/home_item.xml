@@ -53,7 +53,7 @@
                 android:id="@+id/btnMore"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="@drawable/ic_more"
+                android:background="@drawable/ic_more2"
                 tools:ignore="TouchTargetSizeCheck"
                 android:layout_toRightOf="@id/boxUser"
                 />

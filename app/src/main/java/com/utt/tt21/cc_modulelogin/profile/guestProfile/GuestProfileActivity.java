@@ -22,7 +22,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.utt.tt21.cc_modulelogin.R;
+import com.utt.tt21.cc_modulelogin.messenger.chat.ChatActivity;
 import com.utt.tt21.cc_modulelogin.profile.accountmanagement.ImageDisplayActivity;
 import com.utt.tt21.cc_modulelogin.profile.threads.SectionsPagerAdapter;
 
@@ -50,7 +50,6 @@ public class GuestProfileActivity extends AppCompatActivity {
     private DatabaseReference userRef;
     private Button btnFollow;
     private ImageButton btnClose;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +93,31 @@ public class GuestProfileActivity extends AppCompatActivity {
         btnTagUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Thực hiện hành động khi nhấn nút nhắn tin
+                Intent intent = new Intent(GuestProfileActivity.this, ChatActivity.class);
+                intent.putExtra("name", tvName.getText().toString());
+                intent.putExtra("uid", userId);
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                String imagePath = "users/" + userId + "/" + userId + ".jpg";
+                StorageReference imageRef = storage.getReference().child(imagePath);
+                Log.d("FirebaseStorage123", "URL ảnh: " + imageRef);
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        // Đây là URL download của ảnh
+                        String imageUrl = uri.toString();
+                        imageUrl += ".jpg";
+                        if (imageUrl != null) {
+                            intent.putExtra("imageUrl", imageUrl);
+                            startActivity(intent);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Xử lý khi có lỗi xảy ra
+                        Log.e("FirebaseStorage123", "Lỗi khi lấy URL: " + exception.getMessage());
+                    }
+                });
             }
         });
 
